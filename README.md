@@ -9,4 +9,4 @@
    ```shell
    node server.js
    ```
-4. visit [localhost](http://localhost:3008)
+4. visit [localhost](http://localhost:3010)

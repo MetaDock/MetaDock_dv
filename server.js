@@ -723,5 +723,5 @@ function getFilePermissions(mode) {
     return lastThree.split('').map(n => perms[parseInt(n)]).join('');
 }
 
-const PORT = process.env.PORT || 3008;
+const PORT = process.env.PORT || 3010;
 app.listen(PORT, '0.0.0.0', () => console.log(`Server running on http://localhost:${PORT}`));

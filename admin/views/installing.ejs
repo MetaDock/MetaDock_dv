@@ -1,0 +1,245 @@
+<%- include('../../public/views/partials/header', { title: 'Admin Dashboard' }) %>
+<%- include('../../public/views/partials/navbar', { isAdmin: true, connectionDetails: connectionDetails }) %>
+
+<!-- 将服务器端数据作为隐藏的 input 元素 -->
+<input type="hidden" id="installationConfigData" value='<%- JSON.stringify(installationConfig || {}) %>'>
+
+<style>
+    .btn-custom-blue { background-color: #7480FF; color: black; border-color: #7480FF; }
+    .btn-custom-blue:hover { background-color: #5a67d8; border-color: #5a67d8; }
+    
+    .terminal {
+        background-color: #1a1a1a;
+        color: #fff;
+        font-family: 'Consolas', 'Monaco', monospace;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        min-height: 400px;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+    
+    .terminal-line {
+        margin: 0.5rem 0;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+    
+    .command {
+        color: #00ff00;
+    }
+    
+    .status-installing {
+        color: #ffd700;
+    }
+    
+    .status-success {
+        color: #00ff00;
+    }
+    
+    .status-error {
+        color: #ff4444;
+    }
+    
+    .timestamp {
+        color: #888;
+        margin-right: 0.5rem;
+    }
+</style>
+
+<main class="container mx-auto p-4 md:p-8 space-y-8">
+    <div class="card bg-base-200 shadow-xl">
+
+        <!-- Back Button -->
+        <div class="flex justify-start mb-4">
+            <a href="/admin/options" class="btn btn-custom-blue text-lg" >
+                <i class="ti ti-arrow-left mr-2"></i>
+                Back to Options
+            </a>
+        </div>
+        
+        <div class="card-body">
+            <div class="flex items-center gap-4 mb-4">
+                <i class="ti ti-terminal text-2xl"></i>
+                <h2 class="card-title text-2xl font-normal">Installation Terminal</h2>
+            </div>
+
+            
+            <div class="terminal" id="terminal">
+                <!-- Terminal output will be inserted here -->
+            </div>
+
+            <div class="flex justify-between items-center mt-4">
+                <div class="text-base">
+                    <span class="font-bold">Status:</span>
+                    <span id="overall-status" class="status-installing">Initializing...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+// 全局变量声明
+let successCount = 0;
+let totalCommands = 0;
+let installationComplete = false;
+let terminal;
+let overallStatus;
+let closeBtn;
+
+// 立即显示初始化消息
+document.getElementById('terminal').innerHTML = '<div class="terminal-line command">[<span class="timestamp">' + 
+    new Date().toLocaleTimeString() + '</span>] Initializing installation process...</div>';
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM Content Loaded');
+    
+    terminal = document.getElementById('terminal');
+    overallStatus = document.getElementById('overall-status');
+    closeBtn = document.getElementById('closeBtn');
+
+    // 检查隐藏的 input 元素是否存在
+    const configElement = document.getElementById('installationConfigData');
+    console.log('Config element exists:', !!configElement);
+    
+    if (!configElement) {
+        console.error('Installation config element not found!');
+        addTerminalLine('Error: Installation configuration not found', 'status-error');
+        return;
+    }
+
+    // 从隐藏的 input 元素获取安装配置
+    try {
+        const rawConfig = configElement.value;
+        console.log('Raw config value:', rawConfig);
+        
+        const installationConfig = JSON.parse(rawConfig);
+        console.log('Parsed installation config:', installationConfig);
+
+        // 确保配置对象有正确的结构
+        const validConfig = {
+            anaconda: Array.isArray(installationConfig.anaconda) ? installationConfig.anaconda : [],
+            pip: Array.isArray(installationConfig.pip) ? installationConfig.pip : [],
+            git: Array.isArray(installationConfig.git) ? installationConfig.git : []
+        };
+        console.log('Validated installation config:', validConfig);
+
+        // 获取工具数据
+        console.log('Fetching tools data...');
+        addTerminalLine('Fetching tools data...', 'command');
+        
+        fetch('/admin/data/tools_install.json')
+            .then(response => {
+                console.log('Tools data response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(tools => {
+                console.log('Tools data received:', tools);
+                addTerminalLine('Tools data received successfully', 'status-success');
+                
+                // 计算总命令数
+                Object.values(validConfig).forEach(toolList => {
+                    if (Array.isArray(toolList)) {
+                        totalCommands += toolList.length;
+                    }
+                });
+                console.log('Total commands to install:', totalCommands);
+                addTerminalLine(`Found ${totalCommands} tools to install`, 'command');
+
+                // 开始安装过程
+                simulateInstallation(tools, validConfig);
+            })
+            .catch(error => {
+                console.error('Error in installation process:', error);
+                addTerminalLine(`Error: ${error.message}`, 'status-error');
+                overallStatus.textContent = 'Error: Failed to fetch tools data';
+                overallStatus.className = 'status-error';
+            });
+    } catch (error) {
+        console.error('Error parsing installation config:', error);
+        addTerminalLine(`Error: Failed to parse installation configuration`, 'status-error');
+        overallStatus.textContent = 'Error: Invalid installation configuration';
+        overallStatus.className = 'status-error';
+    }
+});
+
+function addTerminalLine(content, type = 'command') {
+    const line = document.createElement('div');
+    line.className = `terminal-line ${type}`;
+    const timestamp = new Date().toLocaleTimeString();
+    line.innerHTML = `<span class="timestamp">[${timestamp}]</span>${content}`;
+    terminal.appendChild(line);
+    terminal.scrollTop = terminal.scrollHeight;
+}
+
+function simulateInstallation(tools, config) {
+    // 为每个方法创建安装命令
+    Object.entries(config).forEach(([method, toolList]) => {
+        if (Array.isArray(toolList) && toolList.length > 0) {
+            addTerminalLine(`\n=== Installing tools via ${method.toUpperCase()} ===`, 'command');
+            
+            toolList.forEach(toolInfo => {
+                if (!toolInfo || !toolInfo.id) {
+                    console.error('Invalid tool info:', toolInfo);
+                    return;
+                }
+
+                const tool = tools.find(t => t.id === toolInfo.id);
+                if (tool && tool.installCommands && tool.installCommands[method]) {
+                    const command = tool.installCommands[method];
+                    
+                    // 显示工具信息
+                    addTerminalLine(`\nInstalling ${tool.name}...`, 'command');
+                    addTerminalLine(`Command: ${command}`, 'command');
+                    
+                    // 模拟安装过程
+                    setTimeout(() => {
+                        addTerminalLine(`Running installation for ${tool.name}...`, 'status-installing');
+                        
+                        // 模拟安装结果（随机成功或失败）
+                        setTimeout(() => {
+                            const success = Math.random() > 0.2; // 80% 成功率
+                            if (success) {
+                                addTerminalLine(`✓ ${tool.name} installed successfully via ${method}`, 'status-success');
+                                successCount++;
+                            } else {
+                                addTerminalLine(`✗ Failed to install ${tool.name} via ${method}`, 'status-error');
+                                addTerminalLine(`Error: Installation command failed: ${command}`, 'status-error');
+                            }
+                            
+                            // 检查是否所有安装都完成
+                            if (successCount + (totalCommands - successCount) === totalCommands) {
+                                finishInstallation();
+                            }
+                        }, 2000);
+                    }, 1000);
+                } else {
+                    addTerminalLine(`\n⚠ Warning: No installation command found for ${tool?.name || toolInfo.id} via ${method}`, 'status-error');
+                }
+            });
+        }
+    });
+}
+
+function finishInstallation() {
+    installationComplete = true;
+    addTerminalLine('\n=== Installation Summary ===', 'command');
+    
+    if (successCount === totalCommands) {
+        addTerminalLine(`✓ All ${totalCommands} installations completed successfully!`, 'status-success');
+        overallStatus.textContent = 'All installations completed successfully!';
+        overallStatus.className = 'status-success';
+    } else {
+        addTerminalLine(`⚠ Installation completed with ${totalCommands - successCount} failures out of ${totalCommands} total installations`, 'status-error');
+        overallStatus.textContent = `Installation completed with ${totalCommands - successCount} failures`;
+        overallStatus.className = 'status-error';
+    }
+    document.getElementById('closeBtn').style.display = 'block';
+}
+</script>
+
+<%- include('../../public/views/partials/footer') %>

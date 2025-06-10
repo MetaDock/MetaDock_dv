@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Help Comparison Report</title>
+    <style>
+        body {
+            font-family: 'Consolas', monospace;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+        .issues {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 5px solid #ffeeba;
+        }
+        .comparison {
+            display: flex;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            position: relative;
+        }
+        .original, .generated {
+            flex: 1;
+            padding: 10px;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .original {
+            background: #fff8f8;
+            border-right: 1px solid #eee;
+        }
+        .generated {
+            background: #f8fff8;
+        }
+        .diff-header {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: -10px -10px 10px -10px;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+        }
+        .timestamp {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .empty {
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+        }
+        .match {
+            background: #e8f5e9;
+        }
+        .nomatch {
+            background: #ffebee;
+        }
+        .section-actions {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .comparison:hover .section-actions {
+            opacity: 1;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .btn-add {
+            background: #28a745;
+        }
+        .btn-modify {
+            background: #17a2b8;
+        }
+        .btn-delete {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Help Comparison Report</h1>
+            <div class="timestamp">Generated on: 2025-05-04 15:58:40</div>
+        </div>
+<div class="comparison" data-section-id="section_0">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">usage: gtdbtk align --identify_dir IDENTIFY_DIR --out_dir OUT_DIR
+                    [--skip_gtdb_refs] [--taxa_filter TAXA_FILTER]
+                    [--min_perc_aa MIN_PERC_AA]
+                    [--custom_msa_filters | --skip_trimming]
+                    [--cols_per_gene COLS_PER_GENE]
+                    [--min_consensus MIN_CONSENSUS]
+                    [--max_consensus MAX_CONSENSUS]
+                    [--min_perc_taxa MIN_PERC_TAXA] [--rnd_seed RND_SEED]
+                    [--prefix PREFIX] [--cpus CPUS] [-h]</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">usage: gtdbtk align --identify_dir IDENTIFY_DIR --out_dir OUT_DIR [--skip_gtdb_refs] [--taxa_filter TAXA_FILTER] [--min_perc_aa MIN_PERC_AA] [--custom_msa_filters | --skip_trimming] [--cols_per_gene COLS_PER_GENE] [--min_consensus MIN_CONSENSUS] [--max_consensus MAX_CONSENSUS] [--min_perc_taxa MIN_PERC_TAXA] [--rnd_seed RND_SEED] [--prefix PREFIX] [--cpus CPUS] [-h]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_1">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">required named arguments:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">required named arguments:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_2">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --identify_dir IDENTIFY_DIR
+                        output directory of 'identify' command</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --identify_dir IDENTIFY_DIR
+                        output directory of 'identify'
+                        command</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_3">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --out_dir OUT_DIR     directory to output files</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --out_dir OUT_DIR
+                        directory to output files</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_4">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">optional arguments:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">optional arguments:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_5">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --skip_gtdb_refs      do not include GTDB reference genomes in multiple
+                        sequence alignment (default: False)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --skip_gtdb_refs
+                        do not include GTDB reference
+                        genomes in multiple sequence
+                        alignment (default: False)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_6">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --taxa_filter TAXA_FILTER
+                        filter GTDB genomes to taxa (comma separated) within
+                        specific taxonomic groups (e.g., d__Bacteria or
+                        p__Proteobacteria, p__Actinobacteria)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --taxa_filter TAXA_FILTER
+                        filter GTDB genomes to taxa
+                        (comma separated) within
+                        specific taxonomic groups (e.g.,
+                        d__Bacteria or
+                        p__Proteobacteria,
+                        p__Actinobacteria)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_7">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --min_perc_aa MIN_PERC_AA
+                        filter genomes with an insufficient percentage of AA
+                        in the MSA (inclusive bound) (default: 10)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --min_perc_aa MIN_PERC_AA
+                        filter genomes with an
+                        insufficient percentage of AA in
+                        the MSA (inclusive bound)
+                        (default: 10)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_8">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --cols_per_gene COLS_PER_GENE
+                        maximum number of columns to retain per gene (default:
+                        42)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --cols_per_gene COLS_PER_GENE
+                        maximum number of columns to
+                        retain per gene (default: 42)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_9">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --min_consensus MIN_CONSENSUS
+                        minimum percentage of the same amino acid required to
+                        retain column (inclusive bound) (default: 25)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --min_consensus MIN_CONSENSUS
+                        minimum percentage of the same
+                        amino acid required to retain
+                        column (inclusive bound)
+                        (default: 25)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_10">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --max_consensus MAX_CONSENSUS
+                        maximum percentage of the same amino acid required to
+                        retain column (exclusive bound) (default: 95)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --max_consensus MAX_CONSENSUS
+                        maximum percentage of the same
+                        amino acid required to retain
+                        column (exclusive bound)
+                        (default: 95)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_11">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --min_perc_taxa MIN_PERC_TAXA
+                        minimum percentage of taxa required to retain column
+                        (inclusive bound) (default: 50)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --min_perc_taxa MIN_PERC_TAXA
+                        minimum percentage of taxa
+                        required to retain column
+                        (inclusive bound) (default: 50)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_12">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --rnd_seed RND_SEED   random seed to use for selecting columns</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --rnd_seed RND_SEED
+                        random seed to use for selecting
+                        columns</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_13">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --prefix PREFIX       desired prefix for output files (default: gtdbtk)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --prefix PREFIX
+                        desired prefix for output files
+                        (default: gtdbtk)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_14">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --cpus CPUS           number of CPUs to use (default: 1)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --cpus CPUS
+                        number of CPUs to use (default:
+                        1)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_15">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -h, --help            show help message</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -h, --help
+                        show help message</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_16">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">mutually exclusive optional arguments:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">mutually exclusive optional arguments:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_17">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --custom_msa_filters  perform custom filtering of MSA with cols_per_gene,
+                        min_consensus max_consensus, and min_perc_taxa
+                        parameters instead of using canonical mask (default:
+                        False)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --custom_msa_filters
+                        perform custom filtering of MSA
+                        with cols_per_gene,
+                        min_consensus max_consensus, and
+                        min_perc_taxa parameters instead
+                        of using canonical mask
+                        (default: False)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_18">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --skip_trimming       skip trimming step and return the full MSAs (default:
+                        False)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --skip_trimming
+                        skip trimming step and return
+                        the full MSAs (default: False)</div>
+</div>
+</div>
+    </div>
+</body>
+</html>

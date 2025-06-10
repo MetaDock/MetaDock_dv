@@ -1,0 +1,147 @@
+<%- include('partials/header', { title: 'MetaScope Dashboard' }) %>
+<%- include('partials/navbar') %>
+
+<main class="container mx-auto p-6 space-y-8">
+  <!-- Tool Search -->
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-2xl mb-4">
+        <i class="ti ti-search mr-2"></i>
+        Search Tools
+      </h2>
+      <div class="form-control">
+        <div class="join w-full">
+          <input 
+            type="text" 
+            id="tool-search" 
+            class="join-item input input-bordered w-full" 
+            placeholder="Search for tools (e.g., cutadapt, metaphlan)"
+            autocomplete="off"
+          >
+          <button class="join-item btn btn-primary">
+            <i class="ti ti-search"></i>
+          </button>
+        </div>
+        <div id="search-results" class="mt-2 hidden">
+          <!-- Search results will be displayed here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tools Navigation -->
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-2xl mb-4">
+        <i class="ti ti-tool mr-2"></i>
+        Analysis Tools
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <% Object.values(toolsConfig).forEach(tool => { %>
+          <button 
+            onclick="navigateTo('<%= tool.route %>')"
+            class="btn btn-outline h-24 flex-col gap-3 hover:bg-base-300 transition-all"
+          >
+            <i class="ti <%= tool.icon || 'ti-apps' %> text-2xl"></i>
+            <span class="text-sm"><%= tool.toolName %></span>
+          </button>
+        <% }); %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Visualization Tools -->
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-2xl mb-4">
+        <i class="ti ti-chart-dots mr-2"></i>
+        可视化工具
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <button 
+          onclick="navigateTo('visualization/bokeh')"
+          class="btn btn-outline h-24 flex-col gap-3 hover:bg-base-300 transition-all"
+        >
+          <i class="ti ti-chart-dots-3 text-2xl"></i>
+          <span class="text-sm">Bokeh</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+
+<script>
+  const navigateTo = (route) => {
+    const loader = document.createElement('div');
+    document.body.appendChild(loader);
+    setTimeout(() => window.location.href = `/${route}`, 500);
+  }
+
+  // Tool search functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('tool-search');
+    const searchResults = document.getElementById('search-results');
+    let searchTimeout;
+
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.trim();
+      
+      // Clear previous timeout
+      clearTimeout(searchTimeout);
+      
+      if (query.length < 2) {
+        searchResults.classList.add('hidden');
+        return;
+      }
+
+      // Debounce the search
+      searchTimeout = setTimeout(async () => {
+        try {
+          const response = await fetch(`/search-tools?query=${encodeURIComponent(query)}`);
+          const tools = await response.json();
+          
+          if (tools.length === 0) {
+            searchResults.innerHTML = '<div class="p-2 text-gray-500">No tools found</div>';
+            searchResults.classList.remove('hidden');
+            return;
+          }
+
+          searchResults.innerHTML = tools.map(tool => `
+            <div class="tool-result p-2 hover:bg-base-300 cursor-pointer rounded-lg" 
+                 onclick="navigateTo('${tool.route}')">
+              <div class="font-medium">${tool.toolName}</div>
+              <div class="text-sm text-gray-500">${tool.description || ''}</div>
+            </div>
+          `).join('');
+          
+          searchResults.classList.remove('hidden');
+        } catch (error) {
+          console.error('Search error:', error);
+          searchResults.innerHTML = '<div class="p-2 text-error">Error searching tools</div>';
+          searchResults.classList.remove('hidden');
+        }
+      }, 300); // 300ms debounce
+    });
+
+    // Hide search results when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+        searchResults.classList.add('hidden');
+      }
+    });
+  });
+</script>
+
+<style>
+.tool-result {
+  transition: background-color 0.2s;
+}
+
+.tool-result:hover {
+  background-color: var(--fallback-bc,oklch(var(--bc)/0.1));
+}
+</style>

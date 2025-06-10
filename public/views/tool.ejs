@@ -1,0 +1,508 @@
+<%- include('partials/header', { title: toolName + ' Configuration' }) %>
+<%- include('partials/navbar') %>
+
+<main class="container mx-auto p-6 space-y-6">
+  <!-- Command Preview -->
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-2xl mb-4">
+        <i class="ti ti-command mr-2"></i>
+        Command Builder
+      </h2>
+      
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Current Command</span>
+        </label>
+        <div class="join w-full">
+          <input 
+            type="text" 
+            id="<%= toolName %>-input" 
+            class="join-item input input-bordered font-mono flex-grow"
+            value="<%= toolName %>"
+          >
+          <button id="submit-command" class="join-item btn btn-primary">
+            <i class="ti ti-player-play"></i>
+            Execute
+          </button>
+        </div>
+        <div>
+            <button class="btn btn-primary" onclick="window.location.href='/dashboard'">Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Selected Files -->
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="card-title text-2xl">
+          <i class="ti ti-files mr-2"></i>
+          Selected Items
+        </h2>
+        <button class="btn btn-lg btn-primary text-white shadow-lg" onclick="window.location.href = window.location.pathname + '/file-browser'">
+            <i class="ti ti-folder-plus"></i>
+            Browse Files
+          </button>
+          
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="table table-zebra">
+          <thead>
+            <tr>
+              <th class="w-[60px]"></th>
+              <th>File Path</th>
+              <th class="w-[200px]">Action</th>
+            </tr>
+          </thead>
+          <tbody id="selected-files-body" class="[&_td]:align-middle">
+            <!-- Dynamic rows inserted here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Parameter Configuration -->
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-2xl mb-4">
+        <i class="ti ti-tool mr-2"></i>
+        Parameter Configuration
+      </h2>
+
+      <div id="categories" class="space-y-4">
+        <!-- Dynamically generated parameter categories -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Execution Result -->
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-2xl mb-4">
+        <i class="ti ti-terminal-2 mr-2"></i>
+        Execution Result
+      </h2>
+      <div id="command-result" class="mockup-code bg-gradient-to-br from-base-300 to-base-200">
+        <pre><code>Waiting for command execution...</code></pre>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+
+<!-- Parameter Information Modal -->
+<dialog id="parameter-info-modal" class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg mb-4">Parameter Description</h3>
+    <p id="parameter-description-text" class="whitespace-pre-line"></p>
+    <div class="modal-action">
+      <button class="btn" onclick="document.getElementById('parameter-info-modal').close()">
+        Close
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<style>
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    .shake {
+        animation: shake 0.5s ease-in-out;
+    }
+    .confirm-btn {
+        transition: all 0.3s ease;
+    }
+    .autocomplete-container {
+        position: relative;
+        flex-grow: 1;
+    }
+    .autocomplete-suggestions {
+        position: fixed;
+        background: var(--fallback-b1,oklch(var(--b1)));
+        border: 1px solid var(--fallback-bc,oklch(var(--bc)/0.1));
+        border-radius: 0.5rem;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 99999;
+        width: 100%;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .autocomplete-suggestion {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .autocomplete-suggestion:hover {
+        background-color: var(--fallback-bc,oklch(var(--bc)/0.1));
+    }
+    .autocomplete-suggestion.active {
+        background-color: var(--fallback-bc,oklch(var(--bc)/0.2));
+    }
+</style>
+
+<script>
+  function goBack() {
+    window.history.back();
+  }
+
+  // Save command to localStorage
+  function saveCommand() {
+    const command = document.getElementById('<%= toolName %>-input').value;
+    localStorage.setItem('<%= toolName %>_command', command);
+  }
+
+  // Restore command from localStorage
+  function restoreCommand() {
+    const savedCommand = localStorage.getItem('<%= toolName %>_command');
+    if (savedCommand) {
+      document.getElementById('<%= toolName %>-input').value = savedCommand;
+    }
+  }
+
+  // Modify the parameter handler to save command after each change
+  const createParameterHandler = (param, inputField) => {
+    // Extract the real parameter (content before the first space)
+    const extractRealOption = (option) => option ? option.split(' ')[0] : '';
+    
+    return (checked, userInput) => {
+      const realOption = extractRealOption(param.short || param.long);
+      const currentValue = inputField.value;
+      
+      if (checked) {
+        console.log(`userInput: "${userInput}"`);
+        // Generate command with real parameter
+        const newSegment = userInput ? `${realOption} ${userInput}` : realOption;
+        inputField.value = `${currentValue} ${newSegment}`.trim().replace(/\s+/g, ' ');
+      } else {
+        console.log(`Removing userInput: "${userInput}"`);
+        // Build dynamic regular expression matching pattern
+        const valuePattern = userInput ? `\\s+${userInput}\\b` : '';
+        const pattern = new RegExp(
+          `${realOption}${valuePattern}|${realOption}(?=\\s|$)`, 
+          'g'
+        );
+        inputField.value = currentValue
+          .replace(pattern, '')
+          .trim()
+          .replace(/\s+/g, ' ');
+      }
+      // Save command after each change
+      saveCommand();
+    }
+  }
+
+  // Parameter rendering logic
+  const renderParameters = async () => {
+    try {
+      const response = await fetch(`/get_<%= toolName %>_para`)
+      const parametersData = await response.json()
+      const categoriesDiv = document.getElementById('categories')
+      const inputField = document.getElementById('<%= toolName %>-input')
+
+      // Group parameters
+      const groupedParameters = parametersData.reduce((acc, param) => {
+        if (param.category) {
+          acc[param.category] = acc[param.category] || [];
+          // Parse display name and real parameter
+          const [realOption, ...desc] = (param.short || param.long).split(' ')
+          acc[param.category].push({
+            ...param,
+            displayOption: [realOption, ...desc].join(' '),
+            realOption: realOption
+          })
+        }
+        return acc
+      }, {})
+
+      // Create collapsible panels for categories
+      Object.entries(groupedParameters).forEach(([category, params]) => {
+        const categorySection = document.createElement('div')
+        categorySection.className = 'collapse collapse-arrow border border-base-300'
+        categorySection.innerHTML = `
+          <input type="checkbox" />
+          <div class="collapse-title text-xl font-medium">
+            ${category}
+          </div>
+          <div class="collapse-content space-y-4"></div>
+        `
+
+        params.forEach(param => {
+          const paramElement = document.createElement('div')
+          paramElement.className = 'form-control'
+          
+          // Extract options from curly braces if they exist
+          const optionsMatch = param.long?.match(/\{([^}]+)\}/);
+          const options = optionsMatch ? optionsMatch[1].split(',').map(opt => opt.trim()) : null;
+          
+          paramElement.innerHTML = `
+            <label class="label cursor-pointer justify-start gap-4">
+              <input 
+                type="checkbox" 
+                class="checkbox checkbox-primary" 
+                ${param.needs_input ? 'disabled' : ''}
+              />
+              <span class="label-text">
+                ${param.displayOption}
+                ${param.needs_input ? '<span class="text-xs text-error">(Input required)</span>' : ''}
+              </span>
+              <button 
+                class="btn btn-circle btn-sm ml-auto tooltip tooltip-left"
+                data-tip="${param.description ? 
+                  param.description
+                    .replace(/'/g, "\\'")
+                    .replace(/"/g, '\\"')
+                    .replace(/\n+/g, ' ')
+                    .replace(/\s+/g, ' ')
+                    .trim() : 
+                  'Empty description'}"
+              >
+                <i class="ti ti-info-circle text-lg"></i>
+              </button>
+            </label>
+            ${param.needs_input ? `
+              <div class="flex gap-2 mt-2">
+                <div class="autocomplete-container">
+                  <input 
+                    type="text" 
+                    placeholder="Enter value"
+                    class="input input-bordered input-sm w-full" 
+                    ${options ? 'data-options="' + options.join(',') + '"' : ''}
+                  />
+                  ${options ? '<div class="autocomplete-suggestions" style="display: none;"></div>' : ''}
+                </div>
+                <button class="btn btn-sm btn-success confirm-btn">
+                  <i class="ti ti-check"></i>
+                </button>
+              </div>
+            ` : ''}
+          `
+
+          // Event binding
+          const checkbox = paramElement.querySelector('input[type="checkbox"]')
+          const input = paramElement.querySelector('input[type="text"]')
+          const confirmBtn = paramElement.querySelector('button.btn-success')
+          const updateHandler = createParameterHandler(param, inputField)
+
+          // Add autocomplete functionality if options exist
+          if (options) {
+            const suggestionsDiv = paramElement.querySelector('.autocomplete-suggestions');
+            
+            input.addEventListener('input', (e) => {
+              const value = e.target.value.toLowerCase();
+              const filteredOptions = options.filter(opt => 
+                opt.toLowerCase().startsWith(value)
+              );
+              
+              if (filteredOptions.length > 0 && value) {
+                suggestionsDiv.innerHTML = filteredOptions.map(opt => 
+                  `<div class="autocomplete-suggestion">${opt}</div>`
+                ).join('');
+                suggestionsDiv.style.display = 'block';
+                
+                // Position the suggestions div
+                const inputRect = input.getBoundingClientRect();
+                suggestionsDiv.style.top = `${inputRect.bottom + 5}px`;
+                suggestionsDiv.style.left = `${inputRect.left}px`;
+                suggestionsDiv.style.width = `${inputRect.width}px`;
+              } else {
+                suggestionsDiv.style.display = 'none';
+              }
+            });
+
+            suggestionsDiv.addEventListener('click', (e) => {
+              if (e.target.classList.contains('autocomplete-suggestion')) {
+                input.value = e.target.textContent;
+                suggestionsDiv.style.display = 'none';
+                // Enable checkbox and update command when selecting from suggestions
+                checkbox.disabled = false;
+                updateHandler(checkbox.checked, input.value.trim());
+              }
+            });
+
+            // Close suggestions when clicking outside
+            document.addEventListener('click', (e) => {
+              if (!input.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+                suggestionsDiv.style.display = 'none';
+              }
+            });
+
+            // Handle keyboard navigation
+            input.addEventListener('keydown', (e) => {
+              const suggestions = suggestionsDiv.querySelectorAll('.autocomplete-suggestion');
+              const active = suggestionsDiv.querySelector('.active');
+              let index = Array.from(suggestions).indexOf(active);
+
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (index < suggestions.length - 1) {
+                  if (active) active.classList.remove('active');
+                  suggestions[index + 1].classList.add('active');
+                }
+              } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (index > 0) {
+                  if (active) active.classList.remove('active');
+                  suggestions[index - 1].classList.add('active');
+                }
+              } else if (e.key === 'Enter' && active) {
+                e.preventDefault();
+                input.value = active.textContent;
+                suggestionsDiv.style.display = 'none';
+                // Enable checkbox and update command when selecting from suggestions
+                checkbox.disabled = false;
+                updateHandler(checkbox.checked, input.value.trim());
+              } else if (e.key === 'Escape') {
+                suggestionsDiv.style.display = 'none';
+              }
+            });
+          }
+
+          checkbox.addEventListener('change', () => {
+            if (param.needs_input && input.value.trim() && !confirmBtn.classList.contains('btn-outline')) {
+              confirmBtn.classList.add('shake')
+              setTimeout(() => {
+                confirmBtn.classList.remove('shake')
+              }, 500)
+              checkbox.checked = false
+              return
+            }
+            const userValue = param.needs_input ? input?.value.trim() : null
+            updateHandler(checkbox.checked, userValue)
+          })
+
+          if (param.needs_input) {
+            confirmBtn.addEventListener('click', () => {
+              if (input.value.trim()) {
+                checkbox.disabled = false
+                confirmBtn.classList.replace('btn-success', 'btn-outline')
+                updateHandler(checkbox.checked, input.value.trim())
+              }
+            })
+            input.addEventListener('input', () => {
+              if (!input.value.trim()) {
+                checkbox.disabled = true
+                confirmBtn.classList.replace('btn-outline', 'btn-success')
+              } else {
+                checkbox.disabled = false
+              }
+            })
+          }
+
+          categorySection.querySelector('.collapse-content').appendChild(paramElement)
+        })
+
+        categoriesDiv.appendChild(categorySection)
+      })
+    } catch (error) {
+      console.error('Failed to load parameters:', error)
+    }
+  }
+
+  // Display parameter information
+  const showParameterInfo = (description) => {
+    const modal = document.getElementById('parameter-info-modal')
+    // Handle empty description
+    if (!description || description.trim() === '') {
+      document.getElementById('parameter-description-text').innerHTML = '<span class="text-warning">Empty description</span>'
+      modal.showModal()
+      return
+    }
+    // Only replace newlines that are not part of a command or example
+    const formattedDescription = description
+      .replace(/(?<!\$|\n\n)\n(?!\s*\*|\s*\$)/g, ' ')  // Replace single newlines with space
+      .replace(/\n\n/g, '<br><br>')  // Keep double newlines as paragraph breaks
+      .replace(/<br><br><br>/g, '<br><br>')  // Remove triple breaks
+      .replace(/^\s*<br>/, '')  // Remove leading break
+      .replace(/<br>\s*$/, '')  // Remove trailing break
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/&lt;br&gt;/g, '<br>')  // Restore <br> tags
+    document.getElementById('parameter-description-text').innerHTML = formattedDescription
+    modal.showModal()
+  }
+
+  // File table operations
+  const refreshFileTable = () => {
+    const files = JSON.parse(localStorage.getItem('<%= toolName %>_selectedFiles') || '[]')
+    const tbody = document.getElementById('selected-files-body')
+    
+    tbody.innerHTML = files.map((file, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td class="font-mono">${file}</td>
+        <td>
+          <div class="flex gap-2">
+            <button 
+              class="btn btn-square btn-sm tooltip tooltip-top"
+              data-tip="Copy to clipboard"
+              onclick="copyToClipboard('${file}')"
+            >
+              <i class="ti ti-copy"></i>
+            </button>
+            <button 
+              class="btn btn-square btn-sm btn-error tooltip tooltip-top"
+              data-tip="Remove item"
+              onclick="removeFile('${file}')"
+            >
+              <i class="ti ti-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `).join('')
+  }
+
+  const copyToClipboard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      showToast('✅ Copied to clipboard')
+    } catch {
+      showToast('❌ Copy failed', 'error')
+    }
+  }
+
+  const removeFile = (filePath) => {
+    let files = JSON.parse(localStorage.getItem('<%= toolName %>_selectedFiles') || '[]')
+    files = files.filter(f => f !== filePath)
+    localStorage.setItem('<%= toolName %>_selectedFiles', JSON.stringify(files))
+    refreshFileTable()
+    showToast('🗑️ File removed')
+  }
+
+  // Add event listener to save command when manually edited
+  document.addEventListener('DOMContentLoaded', () => {
+    const commandInput = document.getElementById('<%= toolName %>-input');
+    commandInput.addEventListener('input', saveCommand);
+    restoreCommand();
+    renderParameters();
+    refreshFileTable();
+    
+    document.getElementById('submit-command').addEventListener('click', async () => {
+      const command = commandInput.value;
+      const resultDiv = document.getElementById('command-result');
+      
+      try {
+        resultDiv.innerHTML = `<pre class="text-warning"><i class="ti ti-loader animate-spin"></i> Executing...</pre>`
+        
+        const response = await fetch('<%= commandRoute %>', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ command })
+        })
+        
+        const { output } = await response.json()
+        resultDiv.innerHTML = `<pre class="text-success">${output}</pre>`
+      } catch (error) {
+        resultDiv.innerHTML = `<pre class="text-error">Execution failed: ${error.message}</pre>`
+      }
+    })
+  })
+</script>

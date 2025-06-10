@@ -1,0 +1,242 @@
+<%- include('../public/views/partials/header', { title: 'Tool Management' }) %>
+<%- include('../public/views/partials/navbar') %>
+
+<main class="container mx-auto p-6 space-y-8">
+  <!-- Tool Details -->
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-2xl mb-4">
+        <i class="ti ti-tool mr-2"></i>
+        Tool Details
+      </h2>
+      
+      <div class="overflow-x-auto">
+        <table class="table table-zebra">
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% Object.entries(toolsConfig).forEach(([toolName, tool]) => { %>
+              <tr>
+                <td>Tool Name</td>
+                <td><%= toolName %></td>
+                <td>
+                  <div class="flex gap-2">
+                    <button 
+                      class="btn btn-sm btn-info"
+                      onclick="editTool('<%= toolName %>')"
+                    >
+                      <i class="ti ti-edit mr-1"></i>
+                      Edit
+                    </button>
+                    <button 
+                      class="btn btn-sm btn-error"
+                      onclick="deleteTool('<%= toolName %>')"
+                    >
+                      <i class="ti ti-trash mr-1"></i>
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Title</td>
+                <td><%= tool.title %></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Route</td>
+                <td><%= tool.route %></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Command Route</td>
+                <td><%= tool.commandRoute %></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Environment</td>
+                <td><%= tool.env || 'None' %></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Files</td>
+                <td>
+                  <div class="flex flex-col gap-2">
+                    <a 
+                      href="/help/<%= toolName %>_help.txt" 
+                      class="link link-info"
+                      target="_blank"
+                    >
+                      Original Help
+                    </a>
+                    <a 
+                      href="/help/<%= toolName %>_generated_help.txt" 
+                      class="link link-info"
+                      target="_blank"
+                    >
+                      Generated Help
+                    </a>
+                    <a 
+                      href="/help/<%= toolName %>_comparison.html" 
+                      class="link link-info"
+                      target="_blank"
+                    >
+                      Comparison Report
+                    </a>
+                  </div>
+                </td>
+                <td></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Tool Modal -->
+  <dialog id="editToolModal" class="modal">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg mb-4">Edit Tool</h3>
+      <form id="editToolForm" class="space-y-4">
+        <input type="hidden" name="toolName" id="editToolName">
+        
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Title</span>
+          </label>
+          <input 
+            type="text" 
+            name="title" 
+            class="input input-bordered" 
+            required
+          >
+        </div>
+        
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Environment Setup</span>
+          </label>
+          <textarea 
+            name="env" 
+            class="textarea textarea-bordered h-24" 
+            placeholder="Enter environment setup commands"
+          ></textarea>
+        </div>
+        
+        <div class="form-control">
+          <label class="label cursor-pointer">
+            <span class="label-text">Has stderr output</span>
+            <input 
+              type="checkbox" 
+              name="hasStderr" 
+              class="checkbox checkbox-primary"
+            >
+          </label>
+        </div>
+        
+        <div class="modal-action">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <button type="button" class="btn" onclick="document.getElementById('editToolModal').close()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+</main>
+
+<%- include('../public/views/partials/footer') %>
+
+<script>
+  // Edit tool
+  function editTool(toolName) {
+    const tool = toolsConfig[toolName];
+    const form = document.getElementById('editToolForm');
+    
+    // Set form values
+    form.toolName.value = toolName;
+    form.title.value = tool.title;
+    form.env.value = tool.env || '';
+    form.hasStderr.checked = tool.hasStderr;
+    
+    // Show modal
+    document.getElementById('editToolModal').showModal();
+  }
+
+  // Handle form submission
+  document.getElementById('editToolForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const toolName = formData.get('toolName');
+    
+    try {
+      const response = await fetch(`/admin/tools/${toolName}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          title: formData.get('title'),
+          env: formData.get('env'),
+          hasStderr: formData.get('hasStderr') === 'on'
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        showToast('✅ Tool updated successfully');
+        // Reload page to show changes
+        setTimeout(() => window.location.reload(), 1000);
+      } else {
+        showToast('❌ Failed to update tool: ' + result.error, 'error');
+      }
+    } catch (error) {
+      showToast('❌ Error: ' + error.message, 'error');
+    }
+  });
+
+  // Delete tool
+  async function deleteTool(toolName) {
+    if (!confirm(`Are you sure you want to delete ${toolName}?`)) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/admin/tools/${toolName}`, {
+        method: 'DELETE'
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        showToast('✅ Tool deleted successfully');
+        // Reload page to update list
+        setTimeout(() => window.location.reload(), 1000);
+      } else {
+        showToast('❌ Failed to delete tool: ' + result.error, 'error');
+      }
+    } catch (error) {
+      showToast('❌ Error: ' + error.message, 'error');
+    }
+  }
+
+  // Toast notification
+  function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type} fixed bottom-4 right-4`;
+    toast.innerHTML = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.remove();
+    }, 3000);
+  }
+</script> 

@@ -1,0 +1,237 @@
+<%- include('../../public/views/partials/header', { title: 'Admin Dashboard' }) %>
+<%- include('../../public/views/partials/navbar', { isAdmin: true, connectionDetails: connectionDetails }) %>
+
+<style>
+    .btn-custom-blue { background-color: #7480FF; color: black; border-color: #7480FF; }
+    .btn-custom-blue:hover { background-color: #5a67d8; border-color: #5a67d8; }
+    .btn-custom-red { background-color: #FF5861; color: black; border-color: #FF5861; }
+    .btn-custom-red:hover { background-color: #e04851; border-color: #e04851; }
+</style>
+
+<main class="container mx-auto p-6 space-y-8">
+  <!-- Back Button -->
+  <div class="flex justify-start mb-4">
+      <a href="/admin" class="btn btn-custom-blue text-lg">
+          <i class="ti ti-arrow-left mr-2"></i>
+          Back to Dashboard
+      </a>
+  </div>
+
+  <!-- Tool Management -->
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-2xl mb-4">
+        <i class="ti ti-tool mr-2"></i>
+        Tool Management
+      </h2>
+      
+      <!-- Help File Format Guide -->
+      <div class="collapse collapse-arrow bg-base-200 mb-4">
+        <input type="checkbox" class="peer" /> 
+        <div class="collapse-title text-lg font-medium flex items-center">
+          <i class="ti ti-info-circle text-2xl mr-2"></i>
+          Help File Format Requirements
+        </div>
+        <div class="collapse-content">
+          <div class="alert alert-info">
+            <div>
+              <p class="text-sm">The help file should be a text file (.txt) with the following format:</p>
+              <ul class="list-disc list-inside text-sm mt-2">
+                <li>Start with a "Usage:" section showing command syntax</li>
+                <li>Group parameters by categories (e.g., "Input / Output:", "Annotation:", etc.)</li>
+                <li>Each parameter should be on a new line starting with "-" or "--"</li>
+                <li>Parameter descriptions should be indented or on the next line</li>
+              </ul>
+            </div>
+          </div>
+          
+          <!-- Example Format -->
+          <div class="mt-4">
+            <h4 class="font-bold mb-2">Example Format (bakta):</h4>
+            <div class="bg-base-300 p-4 rounded-lg overflow-x-auto">
+              <pre class="text-xs whitespace-pre-wrap"><code>usage: bakta [--db DB] [--min-contig-length MIN_CONTIG_LENGTH]
+             [--prefix PREFIX] [--output OUTPUT] [--force] [--genus GENUS]
+             [--species SPECIES] [--strain STRAIN] [--plasmid PLASMID]
+             [--complete] [--prodigal-tf PRODIGAL_TF]
+             [--translation-table {11,4,25}] [--gram {+,-,?}] [--locus LOCUS]
+             [--locus-tag LOCUS_TAG] [--locus-tag-increment {1,5,10}]
+             [--keep-contig-headers] [--compliant] [--replicons REPLICONS]
+             [--regions REGIONS] [--proteins PROTEINS] [--hmms HMMS] [--meta]
+             [--skip-trna] [--skip-tmrna] [--skip-rrna] [--skip-ncrna]
+             [--skip-ncrna-region] [--skip-crispr] [--skip-cds]
+             [--skip-pseudo] [--skip-sorf] [--skip-gap] [--skip-ori]
+             [--skip-filter] [--skip-plot] [--help] [--verbose] [--debug]
+             [--threads THREADS] [--tmp-dir TMP_DIR] [--version]
+             &lt;genome&gt;
+
+Input / Output:
+  --db DB, -d DB        Database path (default = &lt;bakta_path&gt;/db)
+  --min-contig-length MIN_CONTIG_LENGTH, -m MIN_CONTIG_LENGTH
+                        Minimum contig/sequence size (default = 1)
+  --prefix PREFIX, -p PREFIX
+                        Prefix for output files
+  --output OUTPUT, -o OUTPUT
+                        Output directory (default = current working directory)
+  --force, -f           Force overwriting existing output folder
+
+Annotation:
+  --complete            All sequences are complete replicons
+  --prodigal-tf PRODIGAL_TF
+                        Path to existing Prodigal training file
+  --translation-table {11,4,25}
+                        Translation table: 11/4/25 (default = 11)
+  --gram {+,-,?}        Gram type for signal peptide predictions: +/-/?
+                        (default = ?)</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Add New Tool Form -->
+      <form id="addToolForm" class="space-y-4">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Tool Name</span>
+          </label>
+          <input 
+            type="text" 
+            name="toolName" 
+            class="input input-bordered" 
+            placeholder="Enter tool name"
+            required
+          >
+        </div>
+        
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Help File</span>
+          </label>
+          <input 
+            type="file" 
+            name="helpFile" 
+            class="file-input file-input-bordered w-full" 
+            accept=".txt"
+            required
+          >
+        </div>
+        
+        <button type="submit" class="btn btn-primary">
+          <i class="ti ti-plus mr-2"></i>
+          Add Tool
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Existing Tools -->
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-2xl mb-4">
+        <i class="ti ti-list mr-2"></i>
+        Existing Tools
+      </h2>
+      
+      <div class="overflow-x-auto">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Tool Name</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% tools.forEach(tool => { %>
+              <tr>
+                <td><%= tool.name %></td>
+                <td><%= tool.description %></td>
+                <td>
+                  <div class="flex gap-2">
+                    <!--
+                    <a href="/admin/tools/<%= tool.name %>/edit" class="btn btn-sm btn-info">
+                      <i class="ti ti-edit"></i> Edit
+                    </a>
+                    --> 
+                    <a href="/admin/tools/<%= tool.name %>/comparison" class="btn btn-sm btn-primary">
+                      <i class="ti ti-file-diff"></i> Compare
+                    </a>
+                    <button onclick="deleteTool('<%= tool.name %>')" class="btn btn-sm btn-error">
+                      <i class="ti ti-trash"></i> Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../../public/views/partials/footer') %>
+
+<script>
+  // Handle form submission
+  document.getElementById('addToolForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    
+    try {
+      const response = await fetch('/admin/upload-help', {
+        method: 'POST',
+        body: formData
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        showToast('✅ Tool added successfully');
+        // Reload page to show new tool
+        setTimeout(() => window.location.reload(), 1000);
+      } else {
+        showToast('❌ Failed to add tool: ' + result.error, 'error');
+      }
+    } catch (error) {
+      showToast('❌ Error: ' + error.message, 'error');
+    }
+  });
+
+  // Delete tool
+  async function deleteTool(toolName) {
+    if (!confirm(`Are you sure you want to delete ${toolName}?`)) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/admin/tools/${toolName}`, {
+        method: 'DELETE'
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        showToast('✅ Tool deleted successfully');
+        // Reload page to update list
+        setTimeout(() => window.location.reload(), 1000);
+      } else {
+        showToast('❌ Failed to delete tool: ' + result.error, 'error');
+      }
+    } catch (error) {
+      showToast('❌ Error: ' + error.message, 'error');
+    }
+  }
+
+  // Toast notification
+  function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type} fixed bottom-4 right-4`;
+    toast.innerHTML = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.remove();
+    }, 3000);
+  }
+</script> 

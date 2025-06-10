@@ -1,0 +1,240 @@
+[
+    {
+        "category": "optional arguments",
+        "short": "-h",
+        "long": "--help",
+        "needs_input": false,
+        "description": "show this help message and exit"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--version",
+        "needs_input": false,
+        "description": "show program's version number and exit"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-o OUTDIRNAME",
+        "long": "--outdir OUTDIRNAME",
+        "needs_input": true,
+        "description": "Output directory (required)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-i INDIRNAME",
+        "long": "--indir INDIRNAME",
+        "needs_input": true,
+        "description": "Input directory name (required)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-v",
+        "long": "--verbose",
+        "needs_input": false,
+        "description": "Give verbose output"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-f",
+        "long": "--force",
+        "needs_input": false,
+        "description": "Force file overwriting"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-s FRAGSIZE",
+        "long": "--fragsize FRAGSIZE",
+        "needs_input": true,
+        "description": "Sequence fragment size for ANIb (default 1020)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-l LOGFILE",
+        "long": "--logfile LOGFILE",
+        "needs_input": true,
+        "description": "Logfile location"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--skip_nucmer",
+        "needs_input": false,
+        "description": "Skip NUCmer runs, for testing (e.g. if output already present)"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--skip_blastn",
+        "needs_input": false,
+        "description": "Skip BLASTN runs, for testing (e.g. if output already present)"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--noclobber",
+        "needs_input": false,
+        "description": "Don't nuke existing files"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--nocompress",
+        "needs_input": false,
+        "description": "Don't compress/delete the comparison output"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-g",
+        "long": "--graphics",
+        "needs_input": false,
+        "description": "Generate heatmap of ANI"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--gformat GFORMAT",
+        "needs_input": true,
+        "description": "Graphics output format(s) [pdf|png|jpg|svg] (default pdf,png,eps meaning three file formats)"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--gmethod {mpl,seaborn}",
+        "needs_input": true,
+        "description": "Graphics output method (default mpl)"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--labels LABELS",
+        "needs_input": true,
+        "description": "Path to file containing sequence labels"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--classes CLASSES",
+        "needs_input": true,
+        "description": "Path to file containing sequence classes"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-m {ANIm,ANIb,ANIblastall,TETRA}",
+        "long": "--method {ANIm,ANIb,ANIblastall,TETRA}",
+        "needs_input": true,
+        "description": "ANI method (default ANIm)"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--scheduler {multiprocessing,SGE}",
+        "needs_input": true,
+        "description": "Job scheduler (default multiprocessing, i.e. locally)"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--workers WORKERS",
+        "needs_input": true,
+        "description": "Number of worker processes for multiprocessing (default zero, meaning use all available cores)"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--SGEgroupsize SGEGROUPSIZE",
+        "needs_input": true,
+        "description": "Number of jobs to place in an SGE array group (default\n10000)"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--SGEargs SGEARGS",
+        "needs_input": true,
+        "description": "Additional arguments for qsub"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--maxmatch",
+        "needs_input": false,
+        "description": "Override MUMmer to allow all NUCmer matches"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--nucmer_exe NUCMER_EXE",
+        "needs_input": true,
+        "description": "Path to NUCmer executable"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--filter_exe FILTER_EXE",
+        "needs_input": true,
+        "description": "Path to delta-filter executable"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--blastn_exe BLASTN_EXE",
+        "needs_input": true,
+        "description": "Path to BLASTN+ executable"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--makeblastdb_exe MAKEBLASTDB_EXE",
+        "needs_input": true,
+        "description": "Path to BLAST+ makeblastdb executable"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--blastall_exe BLASTALL_EXE",
+        "needs_input": true,
+        "description": "Path to BLASTALL executable"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--formatdb_exe FORMATDB_EXE",
+        "needs_input": true,
+        "description": "Path to BLAST formatdb executable"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--write_excel",
+        "needs_input": false,
+        "description": "Write Excel format output tables"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--rerender",
+        "needs_input": false,
+        "description": "Rerender graphics output without recalculation"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--subsample SUBSAMPLE",
+        "needs_input": true,
+        "description": "Subsample a percentage [0-1] or specific number (1-n)\nof input sequences"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--seed SEED",
+        "needs_input": true,
+        "description": "Set random seed for reproducible subsampling."
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--jobprefix JOBPREFIX",
+        "needs_input": true,
+        "description": "Prefix for SGE jobs (default ANI)."
+    }
+]

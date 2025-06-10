@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Help Comparison Report</title>
+    <style>
+        body {
+            font-family: 'Consolas', monospace;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+        .issues {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 5px solid #ffeeba;
+        }
+        .comparison {
+            display: flex;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            position: relative;
+        }
+        .original, .generated {
+            flex: 1;
+            padding: 10px;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .original {
+            background: #fff8f8;
+            border-right: 1px solid #eee;
+        }
+        .generated {
+            background: #f8fff8;
+        }
+        .diff-header {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: -10px -10px 10px -10px;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+        }
+        .timestamp {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .empty {
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+        }
+        .match {
+            background: #e8f5e9;
+        }
+        .nomatch {
+            background: #ffebee;
+        }
+        .section-actions {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .comparison:hover .section-actions {
+            opacity: 1;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .btn-add {
+            background: #28a745;
+        }
+        .btn-modify {
+            background: #17a2b8;
+        }
+        .btn-delete {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Help Comparison Report</h1>
+            <div class="timestamp">Generated on: 2025-05-04 01:55:22</div>
+        </div>
+<div class="comparison" data-section-id="section_0">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Bowtie 2 version 2.5.4 by Ben Langmead (langmea@cs.jhu.edu, www.cs.jhu.edu/~langmea)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  --nofw
+                        do not align forward (original)
+                        version of read (off)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_1">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">Usage:
+  bowtie2 [options]* -x <bt2-idx> {-1 <m1> -2 <m2> | -U <r> | --interleaved <i> | -b <bam>} [-S <sam>]</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">Usage: bowtie2 [options]* -x <bt2-idx> {-1 <m1> -2 <m2> | -U <r> | --interleaved <i> | -b <bam>} [-S <sam>]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_2">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Options (defaults in parentheses):</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -i S,1,0.75 (default), --sensitive-local</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_3">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -q                 query input files are FASTQ .fq/.fastq (default)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -q
+                        query input files are FASTQ
+                        .fq/.fastq (default)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_4">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --tab5             query input files are TAB5 .tab5</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --tab5
+                        query input files are TAB5 .tab5</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_5">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --tab6             query input files are TAB6 .tab6</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --tab6
+                        query input files are TAB6 .tab6</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_6">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --qseq             query input files are in Illumina's qseq format</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --qseq
+                        query input files are in
+                        Illumina's qseq format</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_7">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -f                 query input files are (multi-)FASTA .fa/.mfa</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -f
+                        query input files are
+                        (multi-)FASTA .fa/.mfa</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_8">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -r                 query input files are raw one-sequence-per-line</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -r
+                        query input files are raw one-
+                        sequence-per-line</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_9">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -F k:<int>,i:<int> query input files are continuous FASTA where reads
+                     are substrings (k-mers) extracted from the FASTA file
+                     and aligned at offsets 1, 1+i, 1+2i ... end of reference</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -F k:<int>,i:<int> query input files are continuous FASTA where reads
+                        are substrings (k-mers)
+                        extracted from the FASTA file
+                        and aligned at offsets 1, 1+i,
+                        1+2i ... end of reference</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_10">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -c                 <m1>, <m2>, <r> are sequences themselves, not files</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -c
+                        <m1>, <m2>, <r> are sequences
+                        themselves, not files</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_11">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -s/--skip <int>    skip the first <int> reads/pairs in the input (none)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -s, --skip <int>
+                        skip the first <int> reads/pairs
+                        in the input (none)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_12">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -u/--upto <int>    stop after first <int> reads/pairs (no limit)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -u, --upto <int>
+                        stop after first <int>
+                        reads/pairs (no limit)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_13">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -5/--trim5 <int>   trim <int> bases from 5'/left end of reads (0)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -5, --trim5 <int>
+                        trim <int> bases from 5'/left
+                        end of reads (0)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_14">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -3/--trim3 <int>   trim <int> bases from 3'/right end of reads (0)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -3, --trim3 <int>
+                        trim <int> bases from 3'/right
+                        end of reads (0)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_15">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --trim-to [3:|5:]<int> trim reads exceeding <int> bases from either 3' or 5' end
+                     If the read end is not specified then it defaults to 3 (0)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --trim-to [3:|5:]<int> trim reads exceeding <int> bases from either 3' or 5' end
+                        If the read end is not specified
+                        then it defaults to 3 (0)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_16">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --phred33          qualities are Phred+33 (default)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --phred33
+                        qualities are Phred+33 (default)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_17">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --phred64          qualities are Phred+64</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --phred64
+                        qualities are Phred+64</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_18">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --int-quals        qualities encoded as space-delimited integers</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --int-quals
+                        qualities encoded as space-
+                        delimited integers  Presets:
+                        Same as:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_19">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -N <int>           max # mismatches in seed alignment; can be 0 or 1 (0)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -N <int>
+                        max # mismatches in seed
+                        alignment; can be 0 or 1 (0)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_20">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -L <int>           length of seed substrings; must be >3, <32 (22)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -L <int>
+                        length of seed substrings; must
+                        be >3, <32 (22)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_21">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -i <func>          interval between seed substrings w/r/t read len (S,1,1.15)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -i <func>
+                        interval between seed substrings
+                        w/r/t read len (S,1,1.15)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_22">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --n-ceil <func>    func for max # non-A/C/G/Ts permitted in aln (L,0,0.15)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --n-ceil <func>
+                        func for max # non-A/C/G/Ts
+                        permitted in aln (L,0,0.15)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_23">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --dpad <int>       include <int> extra ref chars on sides of DP table (15)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --dpad <int>
+                        include <int> extra ref chars on
+                        sides of DP table (15)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_24">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --gbar <int>       disallow gaps within <int> nucs of read extremes (4)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --gbar <int>
+                        disallow gaps within <int> nucs
+                        of read extremes (4)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_25">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --ignore-quals     treat all quality values as 30 on Phred scale (off)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --ignore-quals
+                        treat all quality values as 30
+                        on Phred scale (off)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_26">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --nofw             do not align forward (original) version of read (off)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  --norc
+                        do not align reverse-complement
+                        version of read (off)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_27">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --norc             do not align reverse-complement version of read (off)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  --local
+                        local alignment; ends might be
+                        soft clipped (off)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_28">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --no-1mm-upfront   do not allow 1 mismatch alignments before attempting to
+                     scan for the optimal seeded alignments</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --no-1mm-upfront
+                        do not allow 1 mismatch
+                        alignments before attempting to
+                        scan for the optimal seeded
+                        alignments</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_29">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --end-to-end       entire read must align; no clipping (on)
+   OR</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --end-to-end
+                        entire read must align; no
+                        clipping (on) OR</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_30">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --local            local alignment; ends might be soft clipped (off)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -a/--all
+                        report all alignments; very
+                        slow, MAPQ not meaningful</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_31">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --ma <int>         match bonus (0 for --end-to-end, 2 for --local)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --ma <int>
+                        match bonus (0 for --end-to-end,
+                        2 for --local)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_32">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --mp <int>         max penalty for mismatch; lower qual = lower penalty (6)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --mp <int>
+                        max penalty for mismatch; lower
+                        qual = lower penalty (6)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_33">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --np <int>         penalty for non-A/C/G/Ts in read/ref (1)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --np <int>
+                        penalty for non-A/C/G/Ts in
+                        read/ref (1)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_34">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --rdg <int>,<int>  read gap open, extend penalties (5,3)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --rdg <int>,<int>
+                        read gap open, extend penalties
+                        (5,3)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_35">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --rfg <int>,<int>  reference gap open, extend penalties (5,3)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --rfg <int>,<int>
+                        reference gap open, extend
+                        penalties (5,3)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_36">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --score-min <func> min acceptable alignment score w/r/t read length
+                     (G,20,8 for local, L,-0.6,-0.6 for end-to-end)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  --score-min <func> min acceptable alignment score w/r/t read length
+                        (G,20,8 for local, L,-0.6,-0.6
+                        for end-to-end)  Reporting:
+                        (default)          look for
+                        multiple alignments, report
+                        best, with MAPQ OR</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_37">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -k <int>           report up to <int> alns per read; MAPQ not meaningful
+   OR</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -k <int>
+                        report up to <int> alns per
+                        read; MAPQ not meaningful OR</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_38">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  -a/--all           report all alignments; very slow, MAPQ not meaningful</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  --met <int>
+                        report internal counters &
+                        metrics every <int> secs (1)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_39">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -D <int>           give up extending after <int> failed extends in a row (15)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -D <int>
+                        give up extending after <int>
+                        failed extends in a row (15)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_40">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -R <int>           for reads w/ repetitive seeds, try <int> sets of seeds (2)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -R <int>
+                        for reads w/ repetitive seeds,
+                        try <int> sets of seeds (2)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_41">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -I/--minins <int>  minimum fragment length (0)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -I, --minins <int>
+                        minimum fragment length (0)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_42">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -X/--maxins <int>  maximum fragment length (500)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -X, --maxins <int>
+                        maximum fragment length (500)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_43">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --fr/--rf/--ff     -1, -2 mates align fw/rev, rev/fw, fw/fw (--fr)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -2 mates align fw/rev, rev/fw, fw/fw (--fr), --fr/--rf/--ff
+                        -1</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_44">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --no-mixed         suppress unpaired alignments for paired reads</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --no-mixed
+                        suppress unpaired alignments for
+                        paired reads</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_45">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --no-discordant    suppress discordant alignments for paired reads</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --no-discordant
+                        suppress discordant alignments
+                        for paired reads</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_46">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --dovetail         concordant when mates extend past each other</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --dovetail
+                        concordant when mates extend
+                        past each other</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_47">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --no-contain       not concordant when one mate alignment contains other</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --no-contain
+                        not concordant when one mate
+                        alignment contains other</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_48">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --no-overlap       not concordant when mates overlap at all</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --no-overlap
+                        not concordant when mates
+                        overlap at all</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_49">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --align-paired-reads
+                     Bowtie2 will, by default, attempt to align unpaired BAM reads.
+                     Use this option to align paired-end reads instead.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --align-paired-reads
+                        Bowtie2 will, by default,
+                        attempt to align unpaired BAM
+                        reads. Use this option to align
+                        paired-end reads instead.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_50">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --preserve-tags    Preserve tags from the original BAM record by
+                     appending them to the end of the corresponding SAM output.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --preserve-tags
+                        Preserve tags from the original
+                        BAM record by appending them to
+                        the end of the corresponding SAM
+                        output.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_51">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -t/--time          print wall-clock time taken by search phases</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -t, --time
+                        print wall-clock time taken by
+                        search phases</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_52">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --un <path>        write unpaired reads that didn't align to <path></div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --un <path>
+                        write unpaired reads that didn't
+                        align to <path></div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_53">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --al <path>        write unpaired reads that aligned at least once to <path></div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --al <path>
+                        write unpaired reads that
+                        aligned at least once to <path></div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_54">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --un-conc <path>   write pairs that didn't align concordantly to <path></div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --un-conc <path>
+                        write pairs that didn't align
+                        concordantly to <path></div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_55">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --al-conc <path>   write pairs that aligned concordantly at least once to <path>
+    (Note: for --un, --al, --un-conc, or --al-conc, add '-gz' to the option name, e.g.
+    --un-gz <path>, to gzip compress output, or add '-bz2' to bzip2 compress output.)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  --al-conc <path>
+                        write pairs that aligned
+                        concordantly at least once to
+                        <path> (Note: for --un, --al,
+                        --un-conc, or --al-conc, add
+                        '-gz' to the option name, e.g.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_56">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --quiet            print nothing to stderr except serious errors</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --quiet
+                        print nothing to stderr except
+                        serious errors</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_57">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --met-file <path>  send metrics to file at <path> (off)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --met-file <path>
+                        send metrics to file at <path>
+                        (off)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_58">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --met-stderr       send metrics to stderr (off)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --met-stderr
+                        send metrics to stderr (off)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_59">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --met <int>        report internal counters & metrics every <int> secs (1)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -p, --threads <int> number of alignment threads to launch (1)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_60">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --no-unal          suppress SAM records for unaligned reads</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --no-unal
+                        suppress SAM records for
+                        unaligned reads</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_61">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --no-head          suppress header lines, i.e. lines starting with @</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --no-head
+                        suppress header lines, i.e.
+                        lines starting with @</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_62">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --no-sq            suppress @SQ header lines</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --no-sq
+                        suppress @SQ header lines</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_63">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --rg-id <text>     set read group id, reflected in @RG line and RG:Z: opt field</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --rg-id <text>
+                        set read group id, reflected in
+                        @RG line and RG:Z: opt field</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_64">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --rg <text>        add <text> ("lab:value") to @RG line of SAM header.
+                     Note: @RG line only printed when --rg-id is set.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --rg <text>
+                        add <text> ("lab:value") to @RG
+                        line of SAM header. Note: @RG
+                        line only printed when --rg-id
+                        is set.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_65">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --omit-sec-seq     put '*' in SEQ and QUAL fields for secondary alignments.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --omit-sec-seq
+                        put '*' in SEQ and QUAL fields
+                        for secondary alignments.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_66">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --sam-no-qname-trunc
+                     Suppress standard behavior of truncating readname at first whitespace
+                     at the expense of generating non-standard SAM.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --sam-no-qname-trunc
+                        Suppress standard behavior of
+                        truncating readname at first
+                        whitespace at the expense of
+                        generating non-standard SAM.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_67">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --xeq              Use '='/'X', instead of 'M,' to specify matches/mismatches in SAM record.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --xeq
+                        Use '='/'X', instead of 'M,' to
+                        specify matches/mismatches in
+                        SAM record.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_68">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --soft-clipped-unmapped-tlen
+                     Exclude soft-clipped bases when reporting TLEN.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --soft-clipped-unmapped-tlen
+                        Exclude soft-clipped bases when
+                        reporting TLEN.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_69">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --sam-append-comment
+                     Append FASTA/FASTQ comment to SAM record.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --sam-append-comment
+                        Append FASTA/FASTQ comment to
+                        SAM record.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_70">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --sam-opt-config <config>
+                     Use <config>, example '-MD,YP,-AS', to toggle SAM Optional fields.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --sam-opt-config <config>
+                        Use <config>, example
+                        '-MD,YP,-AS', to toggle SAM
+                        Optional fields.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_71">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  -p/--threads <int> number of alignment threads to launch (1)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  --seed <int>
+                        seed for random number generator
+                        (0)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_72">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --reorder          force SAM output order to match order of input reads</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --reorder
+                        force SAM output order to match
+                        order of input reads</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_73">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --mm               use memory-mapped I/O for index; many 'bowtie's can share</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --mm
+                        use memory-mapped I/O for index;
+                        many 'bowtie's can share</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_74">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --qc-filter        filter out reads that are bad according to QSEQ filter</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --qc-filter
+                        filter out reads that are bad
+                        according to QSEQ filter</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_75">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --seed <int>       seed for random number generator (0)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  --version
+                        print version information and
+                        quit</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_76">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --non-deterministic
+                     seed rand. gen. arbitrarily instead of using read attributes</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --non-deterministic
+                        seed rand. gen. arbitrarily
+                        instead of using read attributes</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_77">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --version          print version information and quit</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -h, --help
+                        print this usage message</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_78">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  -h/--help          print this usage message</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -i S,1,0.50, --very-sensitive</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_1">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Input:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_18">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">For --end-to-end:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_19">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -i S,0,2.50, --very-fast</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_20">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -i S,0,2.50, --fast</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_21">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -i S,1,1.15 (default), --sensitive</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_23">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">For --local:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_24">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -i S,1,2.00, --very-fast-local</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_25">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -i S,1,1.75, --fast-local</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_27">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -i S,1,0.50, --very-sensitive-local</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_28">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Alignment:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_41">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Scoring:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_50">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Effort:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_53">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Paired-end:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_62">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">BAM:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_65">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Output:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_71">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  --un-gz <path>, to gzip compress output, or add '-bz2' to bzip2 compress output.)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_87">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Performance:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_91">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Other:</div>
+</div>
+</div>
+    </div>
+</body>
+</html>

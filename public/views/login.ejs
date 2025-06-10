@@ -1,0 +1,370 @@
+<%- include('partials/header', { title: 'MetaScope Login' }) %>
+<%- include('partials/navbar') %>
+
+<main class="container mx-auto p-6">
+  <!-- Login Type Selection -->
+  <div class="flex justify-center mb-8">
+    <div class="tabs tabs-boxed">
+      <a class="tab tab-active" onclick="switchTab('ssh')">SSH Connection</a>
+      <a class="tab" onclick="switchTab('admin')">Admin Login</a>
+    </div>
+  </div>
+
+  <!-- SSH Connection Form -->
+  <div id="sshForm" class="card bg-base-200 shadow-xl max-w-2xl mx-auto">
+    <div class="card-body">
+      <h2 class="card-title text-2xl mb-4">
+        <i class="ti ti-server-2 mr-2"></i>
+        SSH Connection Configuration
+      </h2>
+      
+      <form id="sshConnectionForm" class="space-y-4">
+        <!-- Responsive Grid Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Host</span>
+            </label>
+            <input 
+              type="text" 
+              id="host" 
+              name="host"
+              placeholder="example.com"
+              class="input input-bordered"
+              required
+            >
+          </div>
+
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Port</span>
+            </label>
+            <input 
+              type="number" 
+              id="port" 
+              name="port" 
+              value="22"
+              class="input input-bordered"
+              required
+            >
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Username</span>
+            </label>
+            <input 
+              type="text" 
+              id="username" 
+              name="username"
+              placeholder="username"
+              class="input input-bordered"
+              required
+            >
+          </div>
+
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Password</span>
+            </label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password"
+              class="input input-bordered"
+              required
+            >
+          </div>
+        </div>
+
+        <div class="flex justify-end mt-6">
+          <button type="submit" class="btn btn-primary gap-2">
+            <i class="ti ti-plug-connected"></i>
+            Establish Connection
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Login Form -->
+  <div id="adminForm" class="card bg-base-200 shadow-xl max-w-2xl mx-auto hidden">
+    <div class="card-body">
+      <h2 class="card-title text-2xl mb-4">
+        <i class="ti ti-shield-lock mr-2"></i>
+        Admin Login
+      </h2>
+      
+      <form id="adminLoginForm" class="space-y-4">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Username</span>
+          </label>
+          <input 
+            type="text" 
+            name="username"
+            placeholder="admin"
+            class="input input-bordered"
+            required
+          >
+        </div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Password</span>
+          </label>
+          <input 
+            type="password" 
+            name="password"
+            class="input input-bordered"
+            required
+          >
+        </div>
+
+        <div class="flex justify-end mt-6">
+          <button type="submit" class="btn btn-primary gap-2">
+            <i class="ti ti-login"></i>
+            Login
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<!-- Connection Status Modal -->
+<dialog id="connectionModal" class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg" id="modalTitle">Connection Status</h3>
+    <p class="py-4" id="modalMessage"></p>
+    <div class="modal-action"></div>
+  </div>
+</dialog>
+
+<%- include('partials/footer') %>
+
+<script>
+  function showModal(title, message, isSuccess = false, options = null) {
+    const modal = document.getElementById('connectionModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalAction = document.querySelector('.modal-action');
+    
+    modalTitle.textContent = title;
+    modalMessage.textContent = message;
+    
+    // Set icon and color based on success status
+    modalTitle.innerHTML = `${isSuccess ? '<i class="ti ti-circle-check text-success mr-2"></i>' : '<i class="ti ti-circle-x text-error mr-2"></i>'} ${title}`;
+    
+    // Clear existing buttons
+    modalAction.innerHTML = '';
+    
+    if (options) {
+      // Add option buttons
+      options.forEach(option => {
+        const button = document.createElement('button');
+        button.className = `btn ${option.class || 'btn-primary'} gap-2`;
+        button.innerHTML = `${option.icon ? `<i class="ti ${option.icon}"></i>` : ''} ${option.text}`;
+        button.onclick = () => {
+          modal.close();
+          option.action();
+        };
+        modalAction.appendChild(button);
+      });
+    } else {
+      // Add default close button
+      const closeButton = document.createElement('button');
+      closeButton.className = 'btn';
+      closeButton.textContent = 'Close';
+      closeButton.onclick = () => modal.close();
+      modalAction.appendChild(closeButton);
+    }
+    
+    modal.showModal();
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('connectionModal');
+    modal.close();
+  }
+
+  async function switchTab(tab) {
+    const tabs = document.querySelectorAll('.tab');
+    const sshForm = document.getElementById('sshForm');
+    const adminForm = document.getElementById('adminForm');
+    
+    tabs.forEach(t => t.classList.remove('tab-active'));
+    event.target.classList.add('tab-active');
+    
+    if (tab === 'ssh') {
+      sshForm.classList.remove('hidden');
+      adminForm.classList.add('hidden');
+    } else {
+      // 检查SSH连接状态
+      try {
+        const response = await fetch('/check-connection');
+        const status = await response.json();
+        
+        if (!status.connected) {
+          showModal('SSH Connection Required', 'Please establish SSH connection first', false);
+          // 切换回SSH标签
+          tabs[0].click();
+          return;
+        }
+        
+        sshForm.classList.add('hidden');
+        adminForm.classList.remove('hidden');
+      } catch (error) {
+        console.error('Connection check error:', error);
+        showModal('Error', 'Failed to check connection status', false);
+      }
+    }
+  }
+
+  // SSH Connection Form Handler
+  document.getElementById('sshConnectionForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    
+    try {
+      submitBtn.classList.add('loading');
+      submitBtn.disabled = true;
+      
+      const response = await fetch('/connect', {
+        method: 'POST',
+        body: formData
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.details || data.error || 'Connection failed');
+      }
+      
+      // Show success modal with options
+      showModal(
+        'Connection Successful', 
+        'SSH connection established successfully. Choose your next step:',
+        true,
+        [
+          {
+            text: 'Go to Dashboard',
+            icon: 'ti-layout-dashboard',
+            class: 'btn-primary',
+            action: () => window.location.href = '/dashboard'
+          },
+          {
+            text: 'Admin Login',
+            icon: 'ti-shield-lock',
+            class: 'btn-secondary',
+            action: () => {
+              // Switch to admin login tab
+              document.querySelectorAll('.tab')[1].click();
+            }
+          }
+        ]
+      );
+      
+    } catch (error) {
+      console.error('Connection error:', error);
+      showModal('Connection Failed', error.message, false);
+    } finally {
+      submitBtn.classList.remove('loading');
+      submitBtn.disabled = false;
+    }
+  });
+
+  // Admin login form submission
+  document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    
+    try {
+      const response = await fetch('/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: formData.get('username'),
+          password: formData.get('password')
+        })
+      });
+
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        showModal(
+          'Login Successful',
+          'You have been logged in as an administrator.',
+          true,
+          [{
+            text: 'Go to Dashboard',
+            icon: 'ti ti-dashboard',
+            action: () => window.location.href = data.redirect || '/admin'
+          }]
+        );
+      } else {
+        showModal(
+          'Login Failed',
+          data.error || 'Invalid credentials',
+          false
+        );
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      showModal(
+        'Login Error',
+        'An error occurred during login. Please try again.',
+        false
+      );
+    }
+  });
+</script>
+
+<style>
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  background: white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  max-width: 500px;
+  width: 90%;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+.modal-action {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+@keyframes modalSlideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+</style> 

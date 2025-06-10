@@ -1,0 +1,436 @@
+[
+    {
+        "category": "Options",
+        "short": "-h",
+        "long": "--help",
+        "needs_input": false,
+        "description": "Show this help message and exit"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--version",
+        "needs_input": false,
+        "description": "Show version number and exit"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--debug",
+        "needs_input": false,
+        "description": "Print debug log. Use twice to also print DP matrices"
+    },
+    {
+        "category": "Options",
+        "short": "-j CORES",
+        "long": "--cores CORES",
+        "needs_input": true,
+        "description": "Number of CPU cores to use. Use 0 to auto-detect.\nDefault: 1\n\nFinding adapters:\nParameters -a, -g, -b specify adapters to be removed from each read (or from\nR1 if data is paired-end. If specified multiple times, only the best\nmatching adapter is trimmed (but see the --times option). Use notation\n'file:FILE' to read adapter sequences from a FASTA file.\n"
+    },
+    {
+        "category": "Options",
+        "short": "-a ADAPTER",
+        "long": "--adapter ADAPTER",
+        "needs_input": true,
+        "description": "Sequence of an adapter ligated to the 3' end (paired\ndata: of the first read). The adapter and subsequent\nbases are trimmed. If a '$' character is appended\n('anchoring'), the adapter is only found if it is a\nsuffix of the read."
+    },
+    {
+        "category": "Options",
+        "short": "-g ADAPTER",
+        "long": "--front ADAPTER",
+        "needs_input": true,
+        "description": "Sequence of an adapter ligated to the 5' end (paired\ndata: of the first read). The adapter and any preceding\nbases are trimmed. Partial matches at the 5' end are\nallowed. If a '^' character is prepended ('anchoring'),\nthe adapter is only found if it is a prefix of the read."
+    },
+    {
+        "category": "Options",
+        "short": "-b ADAPTER",
+        "long": "--anywhere ADAPTER",
+        "needs_input": true,
+        "description": "Sequence of an adapter that may be ligated to the 5' or\n3' end (paired data: of the first read). Both types of\nmatches as described under -a and -g are allowed. If the\nfirst base of the read is part of the match, the\nbehavior is as with -g, otherwise as with -a. This\noption is mostly for rescuing failed library\npreparations - do not use if you know which end your\nadapter was ligated to!"
+    },
+    {
+        "category": "Options",
+        "short": "-e E",
+        "long": "--errors E",
+        "needs_input": true,
+        "description": "Maximum allowed error rate (if 0 <= E < 1), or absolute\nnumber of errors for full-length adapter match (if E is\nan integer >= 1). Error rate = no. of errors divided by\nlength of matching region. Default: 0.1 (10%)"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--no-indels",
+        "needs_input": false,
+        "description": "Allow only mismatches in alignments. Default: allow both mismatches and indels"
+    },
+    {
+        "category": "Options",
+        "short": "-n COUNT",
+        "long": "--times COUNT",
+        "needs_input": true,
+        "description": "Remove up to COUNT adapters from each read. Default: 1"
+    },
+    {
+        "category": "Options",
+        "short": "-O MINLENGTH",
+        "long": "--overlap MINLENGTH",
+        "needs_input": true,
+        "description": "Require MINLENGTH overlap between read and adapter for\nan adapter to be found. Default: 3"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--match-read-wildcards",
+        "needs_input": false,
+        "description": "Interpret IUPAC wildcards in reads. Default: False"
+    },
+    {
+        "category": "Options",
+        "short": "-N",
+        "long": "--no-match-adapter-wildcards",
+        "needs_input": false,
+        "description": "Do not interpret IUPAC wildcards in adapters."
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--action {trim,retain,mask,lowercase,crop,none}",
+        "needs_input": true,
+        "description": "What to do if a match was found. trim: trim adapter and\nup- or downstream sequence; retain: trim, but retain\nadapter; mask: replace with 'N' characters; lowercase:\nconvert to lowercase; crop: trim up and downstream\nsequence; none: leave unchanged. Default: trim"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--revcomp",
+        "needs_input": false,
+        "description": "Check both the read and its reverse complement for adapter matches. If match is on reverse-complemented\nversion, output that one. Default: check only read\n"
+    },
+    {
+        "category": "Additional read modifications",
+        "short": "-u LEN",
+        "long": "--cut LEN",
+        "needs_input": true,
+        "description": "Remove LEN bases from each read (or R1 if paired; use -U option for R2). If LEN is positive, remove bases from\nthe beginning. If LEN is negative, remove bases from the\nend. Can be used twice if LENs have different signs.\nApplied *before* adapter trimming."
+    },
+    {
+        "category": "Additional read modifications",
+        "short": null,
+        "long": "--nextseq-trim 3'CUTOFF",
+        "needs_input": true,
+        "description": "NextSeq-specific quality trimming (each read). Trims\nalso dark cycles appearing as high-quality G bases."
+    },
+    {
+        "category": "Additional read modifications",
+        "short": "-q [5'CUTOFF,]3'CUTOFF",
+        "long": "--quality-cutoff [5'CUTOFF,]3'CUTOFF",
+        "needs_input": true,
+        "description": "Trim low-quality bases from 5' and/or 3' ends of each\nread before adapter removal. Applied to both reads if\ndata is paired. If one value is given, only the 3' end\nis trimmed. If two comma-separated cutoffs are given,\nthe 5' end is trimmed with the first cutoff, the 3' end\nwith the second."
+    },
+    {
+        "category": "Additional read modifications",
+        "short": null,
+        "long": "--quality-base N",
+        "needs_input": true,
+        "description": "Assume that quality values in FASTQ are encoded as ascii(quality + N). This needs to be set to 64 for some\nold Illumina FASTQ files. Default: 33"
+    },
+    {
+        "category": "Additional read modifications",
+        "short": null,
+        "long": "--poly-a",
+        "needs_input": false,
+        "description": "Trim poly-A tails"
+    },
+    {
+        "category": "Additional read modifications",
+        "short": "-l LENGTH",
+        "long": "--length LENGTH",
+        "needs_input": true,
+        "description": "Shorten reads to LENGTH. Positive values remove bases at\nthe end while negative ones remove bases at the\nbeginning. This and the following modifications are\napplied after adapter trimming."
+    },
+    {
+        "category": "Additional read modifications",
+        "short": null,
+        "long": "--trim-n",
+        "needs_input": false,
+        "description": "Trim N's on ends of reads."
+    },
+    {
+        "category": "Additional read modifications",
+        "short": null,
+        "long": "--length-tag TAG",
+        "needs_input": true,
+        "description": "Search for TAG followed by a decimal number in the description field of the read. Replace the decimal\nnumber with the correct length of the trimmed read. For\nexample, use --length-tag 'length=' to correct fields\nlike 'length=123'."
+    },
+    {
+        "category": "Additional read modifications",
+        "short": null,
+        "long": "--strip-suffix STRIP_SUFFIX",
+        "needs_input": true,
+        "description": "Remove this suffix from read names if present. Can be\ngiven multiple times."
+    },
+    {
+        "category": "Additional read modifications",
+        "short": "-x PREFIX",
+        "long": "--prefix PREFIX",
+        "needs_input": true,
+        "description": "Add this prefix to read names. Use {name} to insert the\nname of the matching adapter."
+    },
+    {
+        "category": "Additional read modifications",
+        "short": "-y SUFFIX",
+        "long": "--suffix SUFFIX",
+        "needs_input": true,
+        "description": "Add this suffix to read names; can also include {name}"
+    },
+    {
+        "category": "Additional read modifications",
+        "short": null,
+        "long": "--rename TEMPLATE",
+        "needs_input": true,
+        "description": "Rename reads using TEMPLATE containing variables such as {id}, {adapter_name} etc. (see documentation)"
+    },
+    {
+        "category": "Additional read modifications",
+        "short": "-z",
+        "long": "--zero-cap",
+        "needs_input": false,
+        "description": "Change negative quality values to zero. \nFiltering of processed reads:\nFilters are applied after above read modifications. Paired-end reads are\nalways discarded pairwise (see also --pair-filter).\n"
+    },
+    {
+        "category": "Additional read modifications",
+        "short": "-m LEN[:LEN2]",
+        "long": "--minimum-length LEN[:LEN2]",
+        "needs_input": true,
+        "description": "Discard reads shorter than LEN. Default: 0"
+    },
+    {
+        "category": "Additional read modifications",
+        "short": "-M LEN[:LEN2]",
+        "long": "--maximum-length LEN[:LEN2]",
+        "needs_input": true,
+        "description": "Discard reads longer than LEN. Default: no limit"
+    },
+    {
+        "category": "Additional read modifications",
+        "short": null,
+        "long": "--max-n COUNT",
+        "needs_input": true,
+        "description": "Discard reads with more than COUNT 'N' bases. If COUNT is a number between 0 and 1, it is interpreted as a\nfraction of the read length."
+    },
+    {
+        "category": "Additional read modifications",
+        "short": null,
+        "long": "--max-ee ERRORS",
+        "needs_input": true,
+        "description": "Discard reads whose expected number of errors (computed\nfrom quality values) exceeds ERRORS."
+    },
+    {
+        "category": "Additional read modifications",
+        "short": null,
+        "long": "--max-aer ERROR_RATE",
+        "needs_input": true,
+        "description": "as --max-expected-errors (see above), but divided by\nlength to account for reads of varying length."
+    },
+    {
+        "category": "Additional read modifications",
+        "short": null,
+        "long": "--discard",
+        "needs_input": false,
+        "description": "Discard reads that contain an adapter. Use also -O to\navoid discarding too many randomly matching reads."
+    },
+    {
+        "category": "Additional read modifications",
+        "short": null,
+        "long": "--trimmed-only",
+        "needs_input": false,
+        "description": "Discard reads that do not contain an adapter."
+    },
+    {
+        "category": "Additional read modifications",
+        "short": null,
+        "long": "--discard-casava",
+        "needs_input": false,
+        "description": "Discard reads that did not pass CASAVA filtering (header has :Y:).\n"
+    },
+    {
+        "category": "Output",
+        "short": null,
+        "long": "--quiet",
+        "needs_input": false,
+        "description": "Print only error messages."
+    },
+    {
+        "category": "Output",
+        "short": null,
+        "long": "--report {full,minimal}",
+        "needs_input": true,
+        "description": "Which type of report to print: 'full' or 'minimal'.\nDefault: full"
+    },
+    {
+        "category": "Output",
+        "short": null,
+        "long": "--json FILE",
+        "needs_input": true,
+        "description": "Dump report in JSON format to FILE"
+    },
+    {
+        "category": "Output",
+        "short": "-o FILE",
+        "long": "--output FILE",
+        "needs_input": true,
+        "description": "Write trimmed reads to FILE. FASTQ or FASTA format is\nchosen depending on input. Summary report is sent to\nstandard output. Use '{name}' for demultiplexing (see\ndocs). Default: write to standard output"
+    },
+    {
+        "category": "Output",
+        "short": null,
+        "long": "--fasta",
+        "needs_input": false,
+        "description": "Output FASTA to standard output even on FASTQ input."
+    },
+    {
+        "category": "Output",
+        "short": null,
+        "long": "--compression-level N",
+        "needs_input": true,
+        "description": "Compression level for compressed output files. Default:\n1"
+    },
+    {
+        "category": "Output",
+        "short": "-Z",
+        "long": null,
+        "needs_input": false,
+        "description": "DEPRECATED because compression level 1 is now the default."
+    },
+    {
+        "category": "Output",
+        "short": null,
+        "long": "--info-file FILE",
+        "needs_input": true,
+        "description": "Write information about each read and its adapter matches into FILE. See the documentation for the file\nformat."
+    },
+    {
+        "category": "Output",
+        "short": "-r FILE",
+        "long": "--rest-file FILE",
+        "needs_input": true,
+        "description": "When the adapter matches in the middle of a read, write\nthe rest (after the adapter) to FILE."
+    },
+    {
+        "category": "Output",
+        "short": null,
+        "long": "--wildcard-file FILE",
+        "needs_input": true,
+        "description": "When the adapter has N wildcard bases, write adapter bases matching wildcard positions to FILE. (Inaccurate\nwith indels.)"
+    },
+    {
+        "category": "Output",
+        "short": null,
+        "long": "--too-short-output FILE",
+        "needs_input": true,
+        "description": "Write reads that are too short (according to length\nspecified by -m) to FILE. Default: discard reads"
+    },
+    {
+        "category": "Output",
+        "short": null,
+        "long": "--too-long-output FILE",
+        "needs_input": true,
+        "description": "Write reads that are too long (according to length\nspecified by -M) to FILE. Default: discard reads"
+    },
+    {
+        "category": "Output",
+        "short": null,
+        "long": "--untrimmed-output FILE",
+        "needs_input": true,
+        "description": "Write reads that do not contain any adapter to FILE.\nDefault: output to same file as trimmed reads\n\nPaired-end options:\nThe -A/-G/-B/-U/-Q options work like their lowercase counterparts, but are\napplied to R2 (second read in pair)\n"
+    },
+    {
+        "category": "Output",
+        "short": "-A ADAPTER",
+        "long": null,
+        "needs_input": true,
+        "description": "3' adapter to be removed from R2"
+    },
+    {
+        "category": "Output",
+        "short": "-G ADAPTER",
+        "long": null,
+        "needs_input": true,
+        "description": "5' adapter to be removed from R2"
+    },
+    {
+        "category": "Output",
+        "short": "-B ADAPTER",
+        "long": null,
+        "needs_input": true,
+        "description": "5'/3 adapter to be removed from R2"
+    },
+    {
+        "category": "Output",
+        "short": "-U LENGTH",
+        "long": null,
+        "needs_input": true,
+        "description": "Remove LENGTH bases from R2"
+    },
+    {
+        "category": "Output",
+        "short": "-Q [5'CUTOFF,]3'CUTOFF",
+        "long": null,
+        "needs_input": true,
+        "description": "Quality-trimming cutoff for R2. Default: same as for R1"
+    },
+    {
+        "category": "Output",
+        "short": "-L LENGTH",
+        "long": null,
+        "needs_input": true,
+        "description": "Shorten R2 to LENGTH. Default: same as for R1"
+    },
+    {
+        "category": "Output",
+        "short": "-p FILE",
+        "long": "--paired-output FILE",
+        "needs_input": true,
+        "description": "Write R2 to FILE."
+    },
+    {
+        "category": "Output",
+        "short": null,
+        "long": "--pair-adapters",
+        "needs_input": false,
+        "description": "Treat adapters given with -a/-A etc. as pairs. Either both or none are removed from each read pair."
+    },
+    {
+        "category": "Output",
+        "short": null,
+        "long": "--pair-filter {any,both,first}",
+        "needs_input": true,
+        "description": "Which of the reads in a paired-end read have to match\nthe filtering criterion in order for the pair to be\nfiltered. Default: any"
+    },
+    {
+        "category": "Output",
+        "short": null,
+        "long": "--interleaved",
+        "needs_input": false,
+        "description": "Read and/or write interleaved paired-end reads."
+    },
+    {
+        "category": "Output",
+        "short": null,
+        "long": "--untrimmed-paired-output FILE",
+        "needs_input": true,
+        "description": "Write second read in a pair to this FILE when no adapter\nwas found. Use with --untrimmed-output. Default: output\nto same file as trimmed reads"
+    },
+    {
+        "category": "Output",
+        "short": null,
+        "long": "--too-short-paired-output FILE",
+        "needs_input": true,
+        "description": "Write second read in a pair to this file if pair is too\nshort."
+    },
+    {
+        "category": "Output",
+        "short": null,
+        "long": "--too-long-paired-output FILE",
+        "needs_input": true,
+        "description": "Write second read in a pair to this file if pair is too\nlong."
+    }
+]

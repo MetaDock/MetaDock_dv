@@ -1,0 +1,5 @@
+{
+    "usage": [
+        "usage: gtdbtk align --identify_dir IDENTIFY_DIR --out_dir OUT_DIR [--skip_gtdb_refs] [--taxa_filter TAXA_FILTER] [--min_perc_aa MIN_PERC_AA] [--custom_msa_filters | --skip_trimming] [--cols_per_gene COLS_PER_GENE] [--min_consensus MIN_CONSENSUS] [--max_consensus MAX_CONSENSUS] [--min_perc_taxa MIN_PERC_TAXA] [--rnd_seed RND_SEED] [--prefix PREFIX] [--cpus CPUS] [-h]"
+    ]
+}

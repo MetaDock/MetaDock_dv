@@ -1,0 +1,107 @@
+[
+  {
+    "category": "required named arguments",
+    "short": null,
+    "long": "--identify_dir IDENTIFY_DIR",
+    "needs_input": true,
+    "description": "output directory of 'identify' command"
+  },
+  {
+    "category": "required named arguments",
+    "short": null,
+    "long": "--out_dir OUT_DIR",
+    "needs_input": true,
+    "description": "directory to output files"
+  },
+  {
+    "category": "optional arguments",
+    "short": null,
+    "long": "--skip_gtdb_refs",
+    "needs_input": false,
+    "description": "do not include GTDB reference genomes in multiple sequence alignment (default: False)"
+  },
+  {
+    "category": "optional arguments",
+    "short": null,
+    "long": "--taxa_filter TAXA_FILTER",
+    "needs_input": true,
+    "description": "filter GTDB genomes to taxa (comma separated) within\nspecific taxonomic groups (e.g., d__Bacteria or\np__Proteobacteria, p__Actinobacteria)"
+  },
+  {
+    "category": "optional arguments",
+    "short": null,
+    "long": "--min_perc_aa MIN_PERC_AA",
+    "needs_input": true,
+    "description": "filter genomes with an insufficient percentage of AA\nin the MSA (inclusive bound) (default: 10)"
+  },
+  {
+    "category": "optional arguments",
+    "short": null,
+    "long": "--cols_per_gene COLS_PER_GENE",
+    "needs_input": true,
+    "description": "maximum number of columns to retain per gene (default:\n42)"
+  },
+  {
+    "category": "optional arguments",
+    "short": null,
+    "long": "--min_consensus MIN_CONSENSUS",
+    "needs_input": true,
+    "description": "minimum percentage of the same amino acid required to\nretain column (inclusive bound) (default: 25)"
+  },
+  {
+    "category": "optional arguments",
+    "short": null,
+    "long": "--max_consensus MAX_CONSENSUS",
+    "needs_input": true,
+    "description": "maximum percentage of the same amino acid required to\nretain column (exclusive bound) (default: 95)"
+  },
+  {
+    "category": "optional arguments",
+    "short": null,
+    "long": "--min_perc_taxa MIN_PERC_TAXA",
+    "needs_input": true,
+    "description": "minimum percentage of taxa required to retain column\n(inclusive bound) (default: 50)"
+  },
+  {
+    "category": "optional arguments",
+    "short": null,
+    "long": "--rnd_seed RND_SEED",
+    "needs_input": true,
+    "description": "random seed to use for selecting columns"
+  },
+  {
+    "category": "optional arguments",
+    "short": null,
+    "long": "--prefix PREFIX",
+    "needs_input": true,
+    "description": "desired prefix for output files (default: gtdbtk)"
+  },
+  {
+    "category": "optional arguments",
+    "short": null,
+    "long": "--cpus CPUS",
+    "needs_input": true,
+    "description": "number of CPUs to use (default: 1)"
+  },
+  {
+    "category": "optional arguments",
+    "short": "-h",
+    "long": "--help",
+    "needs_input": false,
+    "description": "show help message"
+  },
+  {
+    "category": "mutually exclusive optional arguments",
+    "short": null,
+    "long": "--custom_msa_filters",
+    "needs_input": false,
+    "description": "perform custom filtering of MSA with cols_per_gene, min_consensus max_consensus, and min_perc_taxa\nparameters instead of using canonical mask (default:\nFalse)"
+  },
+  {
+    "category": "mutually exclusive optional arguments",
+    "short": null,
+    "long": "--skip_trimming",
+    "needs_input": false,
+    "description": "skip trimming step and return the full MSAs (default: False)"
+  }
+]

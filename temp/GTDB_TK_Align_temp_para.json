@@ -1,0 +1,9 @@
+[
+    {
+        "category": "required named arguments",
+        "short": "-2",
+        "long": "--2",
+        "needs_input": true,
+        "description": "2"
+    }
+]

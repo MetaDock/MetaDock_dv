@@ -1,0 +1,35 @@
+[
+    {
+        "id": "cutadapt",
+        "name": "cutadapt",
+        "description": "A tool to find and remove adapter sequences, primers, poly-A tails and other types of unwanted sequence from your high-throughput sequencing reads.",
+        "validMethods": ["anaconda", "pip", "git"],
+        "isRecommended": true,
+        "installCommands": {
+            "anaconda": "conda install -c bioconda cutadapt",
+            "pip": "pip install cutadapt",
+            "git": "git clone https://github.com/marcelm/cutadapt.git && cd cutadapt && pip install ."
+        }
+    },
+    {
+        "id": "metaphlan",
+        "name": "MetaPhlan",
+        "description": "MetaPhlAn is a computational tool for profiling the composition of microbial communities from metagenomic shotgun sequencing data.",
+        "validMethods": ["anaconda", "git"],
+        "isRecommended": true,
+        "installCommands": {
+            "anaconda": "conda install -c bioconda metaphlan",
+            "git": "git clone https://github.com/biobakery/MetaPhlAn.git && cd MetaPhlAn && pip install ."
+        }
+    },
+    {
+        "id": "fastqc",
+        "name": "FastQC",
+        "description": "A quality control tool for high throughput sequence data.",
+        "validMethods": ["anaconda"],
+        "isRecommended": false,
+        "installCommands": {
+            "anaconda": "conda install -c bioconda fastqc"
+        }
+    }
+]

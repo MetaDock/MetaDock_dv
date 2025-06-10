@@ -1,0 +1,9 @@
+[
+    {
+        "category": "TEST",
+        "short": "-TEST",
+        "long": "--TEST",
+        "needs_input": true,
+        "description": "TEST"
+    }
+]

@@ -1,0 +1,730 @@
+<%- include('partials/header', { title: 'File Browser' }) %>
+<%- include('partials/navbar') %>
+
+<main class="container mx-auto p-4 space-y-6">
+    <div class="breadcrumbs text-sm">
+        <ul>
+            <% 
+            const pathParts = currentDir.split('/').filter(part => part);
+            const pathPartsForBreadcrumb = [];
+            %>
+            <li>
+                <a href="/<%= tool %>/file-browser?dir=/">root</a>
+            </li>
+            <% pathParts.forEach((part, index) => { 
+                pathPartsForBreadcrumb.push(part);
+                const path = '/' + pathPartsForBreadcrumb.join('/');
+            %>
+                <li>
+                    <a href="/<%= tool %>/file-browser?dir=<%= encodeURIComponent(path) %>">
+                        <%= part %>
+                    </a>
+                </li>
+            <% }) %>
+        </ul>        
+    </div>
+
+    <div class="join w-full max-w-2xl">
+        <input 
+            type="text" 
+            id="dirInput" 
+            placeholder="/path/to/directory"
+            class="join-item input input-bordered w-full" 
+            value="<%= currentDir %>"
+        >
+        <button onclick="goToFolder()" class="join-item btn btn-primary">
+            <i class="ti ti-arrow-right"></i>
+        </button>
+    </div>
+
+
+    <div class="overflow-x-auto rounded-lg border border-base-300">
+        <table class="table table-zebra">
+            <thead class="bg-base-200">
+                <tr>
+                    <th class="w-[120px]">Permission</th>
+                    <th class="w-[120px]">Size</th>
+                    <th class="w-[180px]">Date</th>
+                    <th>Item</th>
+                    <th class="w-[150px]">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (filelist.length > 0) { %>
+                    <% filelist.forEach(file => { %>
+                    <tr>
+                        <td><%= file.permissions %></td>
+                        <td><%= file.size %></td>
+                        <td><%= file.date %></td>
+                        <td><%= file.filename %></td>
+                        <td class="file-actions">
+                            <% if (file.isDirectory) { %>
+                                <button onclick="navigateToFolder('<%= file.filename %>')" class="folder-btn">Open</button>
+                            <% } else { %>
+                                <button onclick="selectFile('<%= file.filename %>')" class="file-btn">Select</button>
+                            <% } %>
+                        </td>
+                    </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="5" class="text-center py-8 text-gray-500">
+                            No files found
+                        </td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="flex items-center justify-between bg-base-200 p-4 rounded-box">
+        <div class="flex gap-2">
+            <button onclick="goBack()" class="btn btn-outline">
+                <i class="ti ti-arrow-left"></i>
+                Back
+            </button>
+            <button 
+                onclick="completeSelection()" 
+                class="btn btn-primary"
+                id="completeBtn"
+            >
+                <i class="ti ti-check"></i>
+                Complete Selection
+                <span class="badge badge-neutral ml-2" id="selected-count">0</span>
+            </button>
+            <button 
+                onclick="clearSelection()" 
+                class="btn btn-outline btn-error"
+            >
+                <i class="ti ti-trash"></i>
+                Clear Selection
+            </button>
+        </div>
+        <div class="flex gap-2">
+            <label class="btn btn-outline">
+                <i class="ti ti-upload"></i>
+                Upload Files
+                <input type="file" id="fileInput" multiple style="display: none" onchange="handleFileUpload(event)">
+            </label>
+            <button onclick="downloadSelectedFiles()" class="btn btn-outline">
+                <i class="ti ti-download"></i>
+                Download Selected
+            </button>
+            <button onclick="deleteSelectedFiles()" class="btn btn-outline btn-error">
+                <i class="ti ti-trash"></i>
+                Delete Selected
+            </button>
+        </div>
+    </div>
+
+    <!-- Progress Modal -->
+    <dialog id="progressModal" class="modal">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg" id="progressTitle">Processing...</h3>
+            <div class="py-4">
+                <progress class="progress progress-primary w-full" id="progressBar" value="0" max="100"></progress>
+                <p class="text-center mt-2" id="progressText">0%</p>
+            </div>
+        </div>
+    </dialog>
+</main>
+
+<%- include('partials/footer') %>
+
+<style>
+    .file-actions button {
+        border-radius: 12px; 
+        padding: 4px 8px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.1s ease; 
+    }
+
+    .file-actions .file-btn {
+        background-color: #90A4AE; 
+        color: white;
+    }
+
+    .file-actions .folder-btn {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .file-actions .file-btn:hover {
+        background-color: #607D8B; 
+    }
+
+    .file-actions .folder-btn:hover {
+        background-color: #388E3C;
+    }
+
+    .file-actions .file-btn.selected {
+        background-color: #7480FF; 
+        color: white;
+    }
+
+    .file-actions button:active {
+        transform: scale(0.95); 
+    }
+
+    /* Progress Modal Styles */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal-box {
+        background: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        max-width: 500px;
+        width: 90%;
+    }
+
+    .progress {
+        height: 0.5rem;
+        border-radius: 0.25rem;
+    }
+
+    /* Add styles for the directory input */
+    .join.w-full.max-w-2xl {
+        margin-bottom: 1rem;
+    }
+
+    .join.w-full.max-w-2xl input {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .join.w-full.max-w-2xl button {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+</style>
+
+<script>
+    // Get the tool name from the URL
+    const toolName = window.location.pathname.split('/')[1];
+    let selectedFiles = JSON.parse(localStorage.getItem(`${toolName}_selectedFiles`) || '[]');
+
+    // Create a simple path module for browser environment
+    const path = {
+        posix: {
+            join: (...parts) => {
+                return parts.join('/').replace(/\/+/g, '/');
+            }
+        }
+    };
+
+    // Update the displayed count of selected files
+    function updateSelectionCounter() {
+        document.getElementById('selected-count').textContent = `${selectedFiles.length} selected`;
+    }
+
+    /**
+     * Navigate to a subfolder
+     */
+    function navigateToFolder(folderPath) {
+        // Get current directory from the input field
+        const currentDir = document.getElementById('dirInput').value.trim();
+        
+        // Normalize the path by joining current directory and folder path
+        const normalizedPath = path.posix.join(currentDir, folderPath)
+            .replace(/\/+/g, '/') // Replace multiple slashes with single slash
+            .replace(/^\/?/, '/'); // Ensure path starts with a single slash
+
+        const basePath = window.location.pathname.split('/')[1]; 
+        const url = `/${basePath}/file-browser?dir=${encodeURIComponent(normalizedPath)}`;
+        window.location.href = url;
+    }
+
+    /**
+     * Handles file selection toggle.
+     * If selected, the button's style and text are updated.
+     */
+    function selectFile(filename) {
+        const button = event.target;
+        const index = selectedFiles.indexOf(filename);
+
+        if (index === -1) {
+            selectedFiles.push(filename);
+            button.classList.add('selected');
+            button.textContent = "Selected";
+        } else {
+            selectedFiles.splice(index, 1);
+            button.classList.remove('selected');
+            button.textContent = "Select";
+        }
+
+        button.classList.add('clicked');
+        setTimeout(() => {
+            button.classList.remove('clicked');
+        }, 200);
+
+        // Add a click animation effect
+        button.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            button.style.transform = 'scale(1)';
+        }, 100);
+
+        // Update selection count
+        updateSelectionCounter();
+
+        // Store selection in localStorage to persist across refreshes
+        localStorage.setItem(`${toolName}_selectedFiles`, JSON.stringify(selectedFiles));
+    }
+
+    /**
+     * Restore selection state from localStorage when page loads.
+     */
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const connectionCheck = await fetch('/check-connection');
+            const connectionStatus = await connectionCheck.json();
+            if (!connectionStatus.connected) {
+                alert('Connection lost. Please reconnect to the server.');
+                return;
+            }
+        } catch (error) {
+            console.error('Connection check failed:', error);
+            alert('Connection lost. Please reconnect to the server.');
+            return;
+        }
+
+        // Restore selection state from localStorage
+        document.querySelectorAll('button').forEach(button => {
+            const onclickAttr = button.getAttribute('onclick');
+            if (onclickAttr && onclickAttr.startsWith('selectFile')) {
+                const filename = onclickAttr.split("'")[1]; // Extract filename
+                // Check if this filename is in the selectedFiles array
+                if (selectedFiles.some(selectedFilename => selectedFilename === filename)) {
+                    button.classList.add('selected');
+                    button.textContent = "Selected";
+                }
+            }
+        });
+        updateSelectionCounter();
+    });
+
+    /**
+     * Navigate to a manually entered folder
+     */
+    function goToFolder() {
+        const dirPath = document.getElementById('dirInput').value.trim();
+        if (!dirPath) {
+            alert('Please enter a folder path.');
+            return;
+        }
+
+        // Normalize the path
+        const normalizedPath = dirPath
+            .replace(/\/+/g, '/') // Replace multiple slashes with single slash
+            .replace(/^\/?/, '/'); // Ensure path starts with a single slash
+
+        fetch(`/check-folder?dir=${encodeURIComponent(normalizedPath)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    const basePath = window.location.pathname.split('/')[1]; 
+                    window.location.href = `/${basePath}/file-browser?dir=${encodeURIComponent(normalizedPath)}`;
+                } else {
+                    alert('Folder not found. Please check the path and try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error checking folder path. Please try again.');
+            });
+    }
+
+    // Add event listener for Enter key in directory input
+    document.getElementById('dirInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            goToFolder();
+        }
+    });
+
+    /**
+     * Navigate back to the tool's main page.
+     */
+    function goBack() {
+        const currentDir = '<%= currentDir %>';
+        const tool = window.location.pathname.split('/')[1];
+        
+        if (currentDir === '/' || currentDir === '') {
+            window.location.href = `http://localhost:3008/${tool}`;
+            return;
+        }
+        
+        const parentDir = currentDir.split('/').slice(0, -1).join('/') || '/';
+        window.location.href = `/${tool}/file-browser?dir=${encodeURIComponent(parentDir)}`;
+    }
+
+    /**
+     * Completes file selection and navigates back to the base directory.
+     * Ensures valid paths before storing.
+     */
+    function completeSelection() {
+        try {
+            const validNewFiles = selectedFiles.filter(f => 
+                f && !f.includes('/') && !f.includes('\\')
+            );
+            
+            const storedFiles = JSON.parse(localStorage.getItem(`${toolName}_selectedFiles`) || '[]');
+            const mergedFiles = [...new Set([...storedFiles, ...validNewFiles])];
+
+            localStorage.setItem(`${toolName}_selectedFiles`, JSON.stringify(mergedFiles));
+
+            // Change button color to indicate completion
+            const completeBtn = document.querySelector('button[onclick="completeSelection()"]');
+            completeBtn.style.backgroundColor = '#4CAF50';
+            
+            setTimeout(() => {
+                const basePath = window.location.pathname.split('/').slice(0, 2).join('/'); 
+                window.location.href = basePath;
+            }, 500);
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error occurred');
+        }
+    }
+
+    /**
+     * Navigates to a new directory based on user selection.
+     */
+    function navigate(newDir) {
+        const currentPath = window.location.pathname;  // Get current path
+        window.location.href = currentPath + '?dir=' + encodeURIComponent(newDir);
+    }
+
+    /**
+     * Shows the progress modal with the given title
+     */
+    function showProgressModal(title) {
+        const modal = document.getElementById('progressModal');
+        document.getElementById('progressTitle').textContent = title;
+        document.getElementById('progressBar').value = 0;
+        document.getElementById('progressText').textContent = '0%';
+        modal.showModal();
+    }
+
+    /**
+     * Updates the progress bar
+     */
+    function updateProgress(percent) {
+        document.getElementById('progressBar').value = percent;
+        document.getElementById('progressText').textContent = `${percent}%`;
+    }
+
+    /**
+     * Handles file upload from local system
+     */
+    async function handleFileUpload(event) {
+        const files = event.target.files;
+        if (!files.length) return;
+
+        // Check connection status first
+        try {
+            const connectionCheck = await fetch('/check-connection');
+            const connectionStatus = await connectionCheck.json();
+            if (!connectionStatus.connected) {
+                throw new Error(connectionStatus.error || 'Connection lost. Please reconnect.');
+            }
+        } catch (error) {
+            console.error('Connection check failed:', error);
+            alert('Connection lost. Please reconnect to the server.');
+            return;
+        }
+
+        showProgressModal('Uploading Files...');
+        const formData = new FormData();
+        
+        // Add each file to formData with proper error checking
+        for (let file of files) {
+            if (!file || !file.name) {
+                console.error('Invalid file:', file);
+                continue;
+            }
+            formData.append('files', file);
+        }
+
+        // Add current directory with proper error checking
+        const currentDir = '<%= currentDir %>';
+        if (!currentDir) {
+            alert('Error: Current directory is not defined');
+            return;
+        }
+        formData.append('currentDir', currentDir);
+
+        try {
+            const response = await fetch('/upload-files', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Upload failed');
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let result = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                
+                const chunk = decoder.decode(value);
+                const lines = chunk.split('\n').filter(line => line.trim());
+                
+                for (const line of lines) {
+                    try {
+                        const data = JSON.parse(line);
+                        if (data.progress) {
+                            updateProgress(data.progress);
+                        }
+                        if (data.success) {
+                            alert('Files uploaded successfully!');
+                            window.location.reload();
+                        }
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+                    } catch (e) {
+                        console.error('Error parsing response:', e);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            alert(error.message || 'Failed to upload files. Please try again.');
+        } finally {
+            // Reset file input
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput) {
+                fileInput.value = '';
+            }
+            // Close progress modal
+            const modal = document.getElementById('progressModal');
+            if (modal) {
+                modal.close();
+            }
+        }
+    }
+
+    /**
+     * Downloads selected files
+     */
+    async function downloadSelectedFiles() {
+        if (selectedFiles.length === 0) {
+            alert('Please select files to download');
+            return;
+        }
+
+        showProgressModal('Preparing Download...');
+        try {
+            const cleanFiles = selectedFiles.map(filePath => {
+                const cleanPath = filePath.replace(/\\/g, '/').replace(/\/+/g, '/');
+                return cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`;
+            });
+
+            const response = await fetch('/download-files', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    files: cleanFiles,
+                    currentDir: '<%= currentDir %>'
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Download failed');
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'selected_files.zip';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            a.remove();
+
+            const modal = document.getElementById('progressModal');
+            if (modal) modal.close();
+            alert('Files downloaded successfully!');
+
+        } catch (error) {
+            console.error('Download error:', error);
+            alert(`Failed to download files: ${error.message}`);
+        } finally {
+            const modal = document.getElementById('progressModal');
+            if (modal && modal.open) modal.close();
+        }
+    }
+
+    /**
+     * Clears all selected files
+     */
+    function clearSelection() {
+        selectedFiles = [];
+        localStorage.setItem(`${toolName}_selectedFiles`, JSON.stringify(selectedFiles));
+        
+        // Reset all selection buttons
+        document.querySelectorAll('button').forEach(button => {
+            const onclickAttr = button.getAttribute('onclick');
+            if (onclickAttr && onclickAttr.startsWith('selectFile')) {
+                button.classList.remove('selected');
+                button.textContent = "Select";
+            }
+        });
+        
+        updateSelectionCounter();
+    }
+
+    /**
+     * Deletes selected files
+     */
+    async function deleteSelectedFiles() {
+        if (selectedFiles.length === 0) {
+            alert('Please select files to delete');
+            return;
+        }
+
+        if (!confirm(`Are you sure you want to delete ${selectedFiles.length} file(s)?`)) {
+            return;
+        }
+
+        // Check connection status first
+        try {
+            const connectionCheck = await fetch('/check-connection');
+            const connectionStatus = await connectionCheck.json();
+            if (!connectionStatus.connected) {
+                throw new Error(connectionStatus.error || 'Connection lost. Please reconnect.');
+            }
+        } catch (error) {
+            console.error('Connection check failed:', error);
+            alert('Connection lost. Please reconnect to the server.');
+            return;
+        }
+
+        showProgressModal('Deleting Files...');
+        try {
+            // Clean and normalize file paths before sending
+            const cleanFiles = selectedFiles.map(filePath => {
+                const cleanPath = filePath.replace(/\\/g, '/').replace(/\/+/g, '/');
+                return cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`;
+            });
+
+            const response = await fetch('/delete-files', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    files: cleanFiles,
+                    currentDir: '<%= currentDir %>'
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Delete failed');
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let deleteSuccess = false;
+            let errorMessage = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                
+                const chunk = decoder.decode(value);
+                const lines = chunk.split('\n').filter(line => line.trim());
+                
+                for (const line of lines) {
+                    try {
+                        const data = JSON.parse(line);
+                        if (data.progress) {
+                            updateProgress(data.progress);
+                        }
+                        if (data.success) {
+                            deleteSuccess = true;
+                        }
+                        if (data.error) {
+                            errorMessage = data.error;
+                        }
+                    } catch (e) {
+                        console.error('Error parsing response:', e);
+                    }
+                }
+            }
+
+            // Close modal before showing alert
+            const modal = document.getElementById('progressModal');
+            if (modal) {
+                modal.close();
+            }
+
+            if (deleteSuccess) {
+                // Clear all selection states
+                selectedFiles = [];
+                // Clear localStorage for all tools
+                Object.keys(localStorage).forEach(key => {
+                    if (key.endsWith('_selectedFiles')) {
+                        localStorage.removeItem(key);
+                    }
+                });
+                
+                // Reset all selection buttons
+                document.querySelectorAll('button').forEach(button => {
+                    const onclickAttr = button.getAttribute('onclick');
+                    if (onclickAttr && onclickAttr.startsWith('selectFile')) {
+                        button.classList.remove('selected');
+                        button.textContent = "Select";
+                    }
+                });
+                
+                // Update selection counter
+                updateSelectionCounter();
+                
+                alert('Files deleted successfully!');
+                
+                // Force reload the page
+                window.location.href = window.location.href;
+            } else if (errorMessage) {
+                throw new Error(errorMessage);
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            alert(`Failed to delete files: ${error.message}`);
+        } finally {
+            // Reset file input
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput) {
+                fileInput.value = '';
+            }
+            // Close progress modal if not already closed
+            const modal = document.getElementById('progressModal');
+            if (modal && modal.open) {
+                modal.close();
+            }
+        }
+    }
+
+</script>
+

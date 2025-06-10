@@ -1,0 +1,2725 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Help Comparison Report</title>
+    <style>
+        body {
+            font-family: 'Consolas', monospace;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+        .issues {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 5px solid #ffeeba;
+        }
+        .comparison {
+            display: flex;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            position: relative;
+        }
+        .original, .generated {
+            flex: 1;
+            padding: 10px;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .original {
+            background: #fff8f8;
+            border-right: 1px solid #eee;
+        }
+        .generated {
+            background: #f8fff8;
+        }
+        .diff-header {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: -10px -10px 10px -10px;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+        }
+        .timestamp {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .empty {
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+        }
+        .match {
+            background: #e8f5e9;
+        }
+        .nomatch {
+            background: #ffebee;
+        }
+        .section-actions {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .comparison:hover .section-actions {
+            opacity: 1;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .btn-add {
+            background: #28a745;
+        }
+        .btn-modify {
+            background: #17a2b8;
+        }
+        .btn-delete {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Help Comparison Report</h1>
+            <div class="timestamp">Generated on: 2025-05-04 01:42:16</div>
+        </div>
+<div class="issues">
+<h2>Content Issues</h2>
+<ul>
+<li>Warning: D:\file\MetaScope_normal\MetaScope\parameters\BBmap_usage.json - Usage content is empty</li>
+</ul>
+</div>
+<div class="comparison" data-section-id="section_0">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">BBMap</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_1">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Written by Brian Bushnell, from Dec. 2010 - present</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_2">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Last modified September 15, 2022</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_3">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Description:  Fast and accurate splice-aware read aligner.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_4">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Please read bbmap/docs/guides/BBMapGuide.txt for more information.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_5">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">To index:     bbmap.sh ref=<reference fasta></div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_6">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">To map:       bbmap.sh in=<reads> out=<output sam></div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_7">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">To map without writing an index:
+    bbmap.sh ref=<reference fasta> in=<reads> out=<output sam> nodisk</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_8">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">in=stdin will accept reads from standard in, and out=stdout will write to</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_9">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">standard out, but file extensions are still needed to specify the format of the</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_10">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">input and output files e.g. in=stdin.fa.gz will read gzipped fasta from</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_11">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">standard in; out=stdout.sam.gz will write gzipped sam.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_12">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Indexing Parameters (required when building the index):</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_13">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">nodisk=f                Set to true to build index in memory and write nothing
+                        to disk except output.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_14">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">ref=<file>              Specify the reference sequence.  Only do this ONCE,
+                        when building the index (unless using 'nodisk').</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_15">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">build=1                 If multiple references are indexed in the same directory,
+                        each needs a unique numeric ID (unless using 'nodisk').</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_16">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">k=13                    Kmer length, range 8-15.  Longer is faster but uses
+                        more memory.  Shorter is more sensitive.
+                        If indexing and mapping are done in two steps, K should
+                        be specified each time.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_17">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">path=<.>                Specify the location to write the index, if you don't
+                        want it in the current working directory.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_18">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">usemodulo=f             Throw away ~80% of kmers based on remainder modulo a
+                        number (reduces RAM by 50% and sensitivity slightly).
+                        Should be enabled both when building the index AND
+                        when mapping.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_19">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">rebuild=f               Force a rebuild of the index (ref= should be set).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_20">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Input Parameters:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_21">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">build=1                 Designate index to use.  Corresponds to the number
+                        specified when building the index.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_22">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">in=<file>               Primary reads input; required parameter.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_23">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">in2=<file>              For paired reads in two files.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_24">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">interleaved=auto        True forces paired/interleaved input; false forces
+                        single-ended mapping. If not specified, interleaved
+                        status will be autodetected from read names.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_25">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">fastareadlen=500        Break up FASTA reads longer than this.  Max is 500 for
+                        BBMap and 6000 for BBMapPacBio.  Only works for FASTA
+                        input (use 'maxlen' for FASTQ input).  The default for
+                        bbmap.sh is 500, and for mapPacBio.sh is 6000.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_26">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">unpigz=f                Spawn a pigz (parallel gzip) process for faster
+                        decompression than using Java.
+                        Requires pigz to be installed.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_27">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">touppercase=t           (tuc) Convert lowercase letters in reads to upper case
+                        (otherwise they will not match the reference).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_28">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Sampling Parameters:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_29">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">reads=-1                Set to a positive number N to only process the first N
+                        reads (or pairs), then quit.  -1 means use all reads.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_30">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">samplerate=1            Set to a number from 0 to 1 to randomly select that
+                        fraction of reads for mapping. 1 uses all reads.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_31">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">skipreads=0             Set to a number N to skip the first N reads (or pairs),
+                        then map the rest.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_32">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Mapping Parameters:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_33">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">fast=f                  This flag is a macro which sets other paramters to run
+                        faster, at reduced sensitivity.  Bad for RNA-seq.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_34">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">slow=f                  This flag is a macro which sets other paramters to run
+                        slower, at greater sensitivity.  'vslow' is even slower.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_35">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">maxindel=16000          Don't look for indels longer than this. Lower is faster.
+                        Set to >=100k for RNAseq with long introns like mammals.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_36">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">strictmaxindel=f        When enabled, do not allow indels longer than 'maxindel'.
+                        By default these are not sought, but may be found anyway.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_37">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">tipsearch=100           Look this far for read-end deletions with anchors
+                        shorter than K, using brute force.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_38">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">minid=0.76              Approximate minimum alignment identity to look for.
+                        Higher is faster and less sensitive.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_39">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">minhits=1               Minimum number of seed hits required for candidate sites.
+                        Higher is faster.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_40">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">local=f                 Set to true to use local, rather than global, alignments.
+                        This will soft-clip ugly ends of poor alignments.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_41">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">perfectmode=f           Allow only perfect mappings when set to true (very fast).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_42">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">semiperfectmode=f       Allow only perfect and semiperfect (perfect except for
+                        N's in the reference) mappings.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_43">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">threads=auto            (t) Set to number of threads desired.  By default, uses
+                        all cores available.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_44">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">ambiguous=best          (ambig) Set behavior on ambiguously-mapped reads (with
+                        multiple top-scoring mapping locations).
+                            best    (use the first best site)
+                            toss    (consider unmapped)
+                            random  (select one top-scoring site randomly)
+                            all     (retain all top-scoring sites)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_45">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">samestrandpairs=f       (ssp) Specify whether paired reads should map to the
+                        same strand or opposite strands.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_46">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">requirecorrectstrand=t  (rcs) Forbid pairing of reads without correct strand
+                        orientation.  Set to false for long-mate-pair libraries.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_47">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">killbadpairs=f          (kbp) If a read pair is mapped with an inappropriate
+                        insert size or orientation, the read with the lower
+                        mapping quality is marked unmapped.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_48">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">pairedonly=f            (po) Treat unpaired reads as unmapped.  Thus they will
+                        be sent to 'outu' but not 'outm'.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_49">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">rcomp=f                 Reverse complement both reads prior to mapping (for LMP
+                        outward-facing libraries).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_50">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">rcompmate=f             Reverse complement read2 prior to mapping.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_51">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">pairlen=32000           Set max allowed distance between paired reads.
+                        (insert size)=(pairlen)+(read1 length)+(read2 length)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_52">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">rescuedist=1200         Don't try to rescue paired reads if avg. insert size
+                        greater than this.  Lower is faster.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_53">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">rescuemismatches=32     Maximum mismatches allowed in a rescued read.  Lower
+                        is faster.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_54">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">averagepairdist=100     (apd) Initial average distance between paired reads.
+                        Varies dynamically; does not need to be specified.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_55">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">deterministic=f         Run in deterministic mode.  In this case it is good
+                        to set averagepairdist.  BBMap is deterministic
+                        without this flag if using single-ended reads,
+                        or run singlethreaded.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_56">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">bandwidthratio=0        (bwr) If above zero, restrict alignment band to this
+                        fraction of read length.  Faster but less accurate.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_57">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">bandwidth=0             (bw) Set the bandwidth directly.
+                        fraction of read length.  Faster but less accurate.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_58">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">usejni=f                (jni) Do alignments faster, in C code.  Requires
+                        compiling the C code; details are in /jni/README.txt.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_59">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">maxsites2=800           Don't analyze (or print) more than this many alignments
+                        per read.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_60">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">ignorefrequentkmers=t   (ifk) Discard low-information kmers that occur often.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_61">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">excludefraction=0.03    (ef) Fraction of kmers to ignore.  For example, 0.03
+                        will ignore the most common 3% of kmers.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_62">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">greedy=t                Use a greedy algorithm to discard the least-useful
+                        kmers on a per-read basis.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_63">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">kfilter=0               If positive, potential mapping sites must have at
+                        least this many consecutive exact matches.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_64">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Quality and Trimming Parameters:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_65">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">qin=auto                Set to 33 or 64 to specify input quality value ASCII
+                        offset. 33 is Sanger, 64 is old Solexa.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_66">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">qout=auto               Set to 33 or 64 to specify output quality value ASCII
+                        offset (only if output format is fastq).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_67">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">qtrim=f                 Quality-trim ends before mapping.  Options are:
+                        'f' (false), 'l' (left), 'r' (right), and 'lr' (both).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_68">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">untrim=f                Undo trimming after mapping.  Untrimmed bases will be
+                        soft-clipped in cigar strings.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_69">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">trimq=6                 Trim regions with average quality below this
+                        (phred algorithm).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_70">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">mintrimlength=60        (mintl) Don't trim reads to be shorter than this.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_71">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">fakefastaquality=-1     (ffq) Set to a positive number 1-50 to generate fake
+                        quality strings for fasta input reads.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_72">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">ignorebadquality=f      (ibq) Keep going, rather than crashing, if a read has
+                        out-of-range quality values.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_73">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">usequality=t            Use quality scores when determining which read kmers
+                        to use as seeds.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_74">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">minaveragequality=0     (maq) Do not map reads with average quality below this.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_75">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">maqb=0                  If positive, calculate maq from this many initial bases.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_76">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Output Parameters:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_77">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">out=<file>              Write all reads to this file.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_78">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">outu=<file>             Write only unmapped reads to this file.  Does not
+                        include unmapped paired reads with a mapped mate.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_79">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">outm=<file>             Write only mapped reads to this file.  Includes
+                        unmapped paired reads with a mapped mate.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_80">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">mappedonly=f            If true, treats 'out' like 'outm'.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_81">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">bamscript=<file>        (bs) Write a shell script to <file> that will turn
+                        the sam output into a sorted, indexed bam file.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_82">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">ordered=f               Set to true to output reads in same order as input.
+                        Slower and uses more memory.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_83">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">overwrite=f             (ow) Allow process to overwrite existing files.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_84">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">secondary=f             Print secondary alignments.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_85">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">sssr=0.95               (secondarysitescoreratio) Print only secondary alignments
+                        with score of at least this fraction of primary.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_86">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">ssao=f                  (secondarysiteasambiguousonly) Only print secondary
+                        alignments for ambiguously-mapped reads.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_87">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">maxsites=5              Maximum number of total alignments to print per read.
+                        Only relevant when secondary=t.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_88">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">quickmatch=f            Generate cigar strings more quickly.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_89">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">trimreaddescriptions=f  (trd) Truncate read and ref names at the first whitespace,
+                        assuming that the remainder is a comment or description.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_90">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">ziplevel=2              (zl) Compression level for zip or gzip output.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_91">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">pigz=f                  Spawn a pigz (parallel gzip) process for faster
+                        compression than Java.  Requires pigz to be installed.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_92">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">machineout=f            Set to true to output statistics in machine-friendly
+                        'key=value' format.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_93">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">printunmappedcount=f    Print the total number of unmapped reads and bases.
+                        If input is paired, the number will be of pairs
+                        for which both reads are unmapped.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_94">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">showprogress=0          If positive, print a '.' every X reads.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_95">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">showprogress2=0         If positive, print the number of seconds since the
+                        last progress update (instead of a '.').</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_96">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">renamebyinsert=f        Renames reads based on their mapped insert size.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_97">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Bloom-Filtering Parameters (bloomfilter.sh is the standalone version).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_98">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">bloom=f                 Use a Bloom filter to ignore reads not sharing kmers
+                        with the reference.  This uses more memory, but speeds
+                        mapping when most reads don't match the reference.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_99">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">bloomhashes=2           Number of hash functions.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_100">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">bloomminhits=3          Number of consecutive hits to be considered matched.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_101">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">bloomk=31               Bloom filter kmer length.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_102">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">bloomserial=t           Use the serialized Bloom filter for greater loading
+                        speed, if available.  If not, generate and write one.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_103">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Post-Filtering Parameters:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_104">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">idfilter=0              Independant of minid; sets exact minimum identity
+                        allowed for alignments to be printed.  Range 0 to 1.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_105">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">subfilter=-1            Ban alignments with more than this many substitutions.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_106">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">insfilter=-1            Ban alignments with more than this many insertions.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_107">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">delfilter=-1            Ban alignments with more than this many deletions.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_108">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">indelfilter=-1          Ban alignments with more than this many indels.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_109">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">editfilter=-1           Ban alignments with more than this many edits.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_110">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">inslenfilter=-1         Ban alignments with an insertion longer than this.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_111">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">dellenfilter=-1         Ban alignments with a deletion longer than this.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_112">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">nfilter=-1              Ban alignments with more than this many ns.  This
+                        includes nocall, noref, and off scaffold ends.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_113">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Sam flags and settings:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_114">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">noheader=f              Disable generation of header lines.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_115">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">sam=1.4                 Set to 1.4 to write Sam version 1.4 cigar strings,
+                        with = and X, or 1.3 to use M.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_116">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">saa=t                   (secondaryalignmentasterisks) Use asterisks instead of
+                        bases for sam secondary alignments.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_117">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">cigar=t                 Set to 'f' to skip generation of cigar strings (faster).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_118">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">keepnames=f             Keep original names of paired reads, rather than
+                        ensuring both reads have the same name.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_119">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">intronlen=999999999     Set to a lower number like 10 to change 'D' to 'N' in
+                        cigar strings for deletions of at least that length.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_120">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">rgid=                   Set readgroup ID.  All other readgroup fields
+                        can be set similarly, with the flag rgXX=
+                        If you set a readgroup flag to the word 'filename',
+                        e.g. rgid=filename, the input file name will be used.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_121">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">mdtag=f                 Write MD tags.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_122">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">nhtag=f                 Write NH tags.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_123">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">xmtag=f                 Write XM tags (may only work correctly with ambig=all).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_124">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">amtag=f                 Write AM tags.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_125">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">nmtag=f                 Write NM tags.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_126">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">xstag=f                 Set to 'xs=fs', 'xs=ss', or 'xs=us' to write XS tags
+                        for RNAseq using firststrand, secondstrand, or
+                        unstranded libraries.  Needed by Cufflinks.
+                        JGI mainly uses 'firststrand'.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_127">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">stoptag=f               Write a tag indicating read stop location, prefixed by YS:i:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_128">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">lengthtag=f             Write a tag indicating (query,ref) alignment lengths,
+                        prefixed by YL:Z:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_129">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">idtag=f                 Write a tag indicating percent identity, prefixed by YI:f:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_130">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">inserttag=f             Write a tag indicating insert size, prefixed by X8:Z:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_131">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">scoretag=f              Write a tag indicating BBMap's raw score, prefixed by YR:i:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_132">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">timetag=f               Write a tag indicating this read's mapping time, prefixed by X0:i:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_133">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">boundstag=f             Write a tag indicating whether either read in the pair
+                        goes off the end of the reference, prefixed by XB:Z:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_134">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">notags=f                Turn off all optional tags.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_135">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Histogram and statistics output parameters:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_136">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">scafstats=<file>        Statistics on how many reads mapped to which scaffold.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_137">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">refstats=<file>         Statistics on how many reads mapped to which reference
+                        file; only for BBSplit.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_138">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">sortscafs=t             Sort scaffolds or references by read count.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_139">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">bhist=<file>            Base composition histogram by position.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_140">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">qhist=<file>            Quality histogram by position.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_141">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">aqhist=<file>           Histogram of average read quality.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_142">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">bqhist=<file>           Quality histogram designed for box plots.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_143">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">lhist=<file>            Read length histogram.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_144">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">ihist=<file>            Write histogram of insert sizes (for paired reads).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_145">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">ehist=<file>            Errors-per-read histogram.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_146">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">qahist=<file>           Quality accuracy histogram of error rates versus
+                        quality score.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_147">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">indelhist=<file>        Indel length histogram.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_148">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">mhist=<file>            Histogram of match, sub, del, and ins rates by
+                        read location.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_149">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">gchist=<file>           Read GC content histogram.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_150">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">gcbins=100              Number gchist bins.  Set to 'auto' to use read length.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_151">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">gcpairs=t               Use average GC of paired reads.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_152">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">idhist=<file>           Histogram of read count versus percent identity.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_153">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">idbins=100              Number idhist bins.  Set to 'auto' to use read length.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_154">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">statsfile=stderr        Mapping statistics are printed here.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_155">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Coverage output parameters (these may reduce speed and use more RAM):</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_156">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">covstats=<file>         Per-scaffold coverage info.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_157">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">rpkm=<file>             Per-scaffold RPKM/FPKM counts.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_158">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">covhist=<file>          Histogram of # occurrences of each depth level.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_159">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">basecov=<file>          Coverage per base location.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_160">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">bincov=<file>           Print binned coverage per location (one line per X bases).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_161">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">covbinsize=1000         Set the binsize for binned coverage output.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_162">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">nzo=t                   Only print scaffolds with nonzero coverage.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_163">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">twocolumn=f             Change to true to print only ID and Avg_fold instead of
+                        all 6 columns to the 'out=' file.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_164">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">32bit=f                 Set to true if you need per-base coverage over 64k.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_165">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">strandedcov=f           Track coverage for plus and minus strand independently.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_166">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">startcov=f              Only track start positions of reads.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_167">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">secondarycov=t          Include coverage of secondary alignments.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_168">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">physcov=f               Calculate physical coverage for paired reads.
+                        This includes the unsequenced bases.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_169">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">delcoverage=t           (delcov) Count bases covered by deletions as covered.
+                        True is faster than false.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_170">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">covk=0                  If positive, calculate kmer coverage statistics.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_171">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">Java Parameters:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">Java Parameters:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_172">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">-Xmx                    This will set Java's memory usage,
+                        overriding autodetection.
+                        -Xmx20g will specify 20 gigs of RAM, and -Xmx800m
+                        will specify 800 megs.  The max is typically 85% of
+                        physical memory.  The human genome requires around 24g,
+                        or 12g with the 'usemodulo' flag.  The index uses
+                        roughly 6 bytes per reference base.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -Xmx20g will specify 20 gigs of RAM, and -Xmx800m
+                        will specify 800 megs.  The max
+                        is typically 85% of physical
+                        memory.  The human genome
+                        requires around 24g, or 12g with
+                        the 'usemodulo' flag.  The index
+                        uses roughly 6 bytes per
+                        reference base.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_173">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">-eoom                   This flag will cause the process to exit if an
+                        out-of-memory exception occurs.  Requires Java 8u92+.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -eoom
+                        This flag will cause the process
+                        to exit if an out-of-memory
+                        exception occurs.  Requires Java
+                        8u92+.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_174">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">-da                     Disable assertions.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -Xmx
+                        This will set Java's memory
+                        usage, overriding autodetection.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_175">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Please contact Brian Bushnell at bbushnell@lbl.gov if you encounter</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -da
+                        Disable assertions.  Please
+                        contact Brian Bushnell at
+                        bbushnell@lbl.gov if you
+                        encounter any problems, or post
+                        at: http://seqanswers.com/forums
+                        /showthread.php?t=41057</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_176">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">any problems, or post at: http://seqanswers.com/forums/showthread.php?t=41057</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">goes off the end of the reference, prefixed by XB:Z:
+  notags=, f
+                        Turn off all optional tags.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_5">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">To map without writing an index:
+  in=, stdin
+                        will accept reads from standard
+                        in, and out=stdout will write to</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_6">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Indexing Parameters (required when building the index):
+  nodisk=, f
+                        Set to true to build index in
+                        memory and write nothing to disk
+                        except output.
+  ref=, <file>
+                        Specify the reference sequence.
+                        Only do this ONCE, when building
+                        the index (unless using
+                        'nodisk').
+  build=, 1
+                        If multiple references are
+                        indexed in the same directory,
+                        each needs a unique numeric ID
+                        (unless using 'nodisk').
+  k=, 13
+                        Kmer length, range 8-15.  Longer
+                        is faster but uses more memory.
+                        Shorter is more sensitive. If
+                        indexing and mapping are done in
+                        two steps, K should be specified
+                        each time.
+  path=, <.>
+                        Specify the location to write
+                        the index, if you don't want it
+                        in the current working
+                        directory.
+  usemodulo=, f
+                        Throw away ~80% of kmers based
+                        on remainder modulo a number
+                        (reduces RAM by 50% and
+                        sensitivity slightly). Should be
+                        enabled both when building the
+                        index AND when mapping.
+  rebuild=, f
+                        Force a rebuild of the index
+                        (ref= should be set).</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_7">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Input Parameters:
+  build=, 1
+                        Designate index to use.
+                        Corresponds to the number
+                        specified when building the
+                        index.
+  in=, <file>
+                        Primary reads input; required
+                        parameter.
+  in2=, <file>
+                        For paired reads in two files.
+  interleaved=, auto
+                        True forces paired/interleaved
+                        input; false forces single-ended
+                        mapping. If not specified,
+                        interleaved status will be
+                        autodetected from read names.
+  fastareadlen=, 500
+                        Break up FASTA reads longer than
+                        this.  Max is 500 for BBMap and
+                        6000 for BBMapPacBio.  Only
+                        works for FASTA input (use
+                        'maxlen' for FASTQ input).  The
+                        default for bbmap.sh is 500, and
+                        for mapPacBio.sh is 6000.
+  unpigz=, f
+                        Spawn a pigz (parallel gzip)
+                        process for faster decompression
+                        than using Java. Requires pigz
+                        to be installed.
+  touppercase=, t
+                        (tuc) Convert lowercase letters
+                        in reads to upper case
+                        (otherwise they will not match
+                        the reference).</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_8">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Sampling Parameters:
+  reads=, -1
+                        Set to a positive number N to
+                        only process the first N reads
+                        (or pairs), then quit.  -1 means
+                        use all reads.
+  samplerate=, 1
+                        Set to a number from 0 to 1 to
+                        randomly select that fraction of
+                        reads for mapping. 1 uses all
+                        reads.
+  skipreads=, 0
+                        Set to a number N to skip the
+                        first N reads (or pairs), then
+                        map the rest.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_9">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Mapping Parameters:
+  fast=, f
+                        This flag is a macro which sets
+                        other paramters to run faster,
+                        at reduced sensitivity.  Bad for
+                        RNA-seq.
+  slow=, f
+                        This flag is a macro which sets
+                        other paramters to run slower,
+                        at greater sensitivity.  'vslow'
+                        is even slower.
+  maxindel=, 16000
+                        Don't look for indels longer
+                        than this. Lower is faster. Set
+                        to >=100k for RNAseq with long
+                        introns like mammals.
+  strictmaxindel=, f
+                        When enabled, do not allow
+                        indels longer than 'maxindel'.
+                        By default these are not sought,
+                        but may be found anyway.
+  tipsearch=, 100
+                        Look this far for read-end
+                        deletions with anchors shorter
+                        than K, using brute force.
+  minid=, 0.76
+                        Approximate minimum alignment
+                        identity to look for. Higher is
+                        faster and less sensitive.
+  minhits=, 1
+                        Minimum number of seed hits
+                        required for candidate sites.
+                        Higher is faster.
+  local=, f
+                        Set to true to use local, rather
+                        than global, alignments. This
+                        will soft-clip ugly ends of poor
+                        alignments.
+  perfectmode=, f
+                        Allow only perfect mappings when
+                        set to true (very fast).
+  semiperfectmode=, f
+                        Allow only perfect and
+                        semiperfect (perfect except for
+                        N's in the reference) mappings.
+  threads=, auto
+                        (t) Set to number of threads
+                        desired.  By default, uses all
+                        cores available.
+  ambiguous=, best
+                        (ambig) Set behavior on
+                        ambiguously-mapped reads (with
+                        multiple top-scoring mapping
+                        locations). best    (use the
+                        first best site) toss
+                        (consider unmapped) random
+                        (select one top-scoring site
+                        randomly) all     (retain all
+                        top-scoring sites)
+  samestrandpairs=, f
+                        (ssp) Specify whether paired
+                        reads should map to the same
+                        strand or opposite strands.
+  requirecorrectstrand=, t
+                        (rcs) Forbid pairing of reads
+                        without correct strand
+                        orientation.  Set to false for
+                        long-mate-pair libraries.
+  killbadpairs=, f
+                        (kbp) If a read pair is mapped
+                        with an inappropriate insert
+                        size or orientation, the read
+                        with the lower mapping quality
+                        is marked unmapped.
+  pairedonly=, f
+                        (po) Treat unpaired reads as
+                        unmapped.  Thus they will be
+                        sent to 'outu' but not 'outm'.
+  rcomp=, f
+                        Reverse complement both reads
+                        prior to mapping (for LMP
+                        outward-facing libraries).
+  rcompmate=, f
+                        Reverse complement read2 prior
+                        to mapping.
+  pairlen=, 32000
+                        Set max allowed distance between
+                        paired reads. (insert
+                        size)=(pairlen)+(read1
+                        length)+(read2 length)
+  rescuedist=, 1200
+                        Don't try to rescue paired reads
+                        if avg. insert size greater than
+                        this.  Lower is faster.
+  rescuemismatches=, 32
+                        Maximum mismatches allowed in a
+                        rescued read.  Lower is faster.
+  averagepairdist=, 100
+                        (apd) Initial average distance
+                        between paired reads. Varies
+                        dynamically; does not need to be
+                        specified.
+  deterministic=, f
+                        Run in deterministic mode.  In
+                        this case it is good to set
+                        averagepairdist.  BBMap is
+                        deterministic without this flag
+                        if using single-ended reads, or
+                        run singlethreaded.
+  bandwidthratio=, 0
+                        (bwr) If above zero, restrict
+                        alignment band to this fraction
+                        of read length.  Faster but less
+                        accurate.
+  bandwidth=, 0
+                        (bw) Set the bandwidth directly.
+                        fraction of read length.  Faster
+                        but less accurate.
+  usejni=, f
+                        (jni) Do alignments faster, in C
+                        code.  Requires compiling the C
+                        code; details are in
+                        /jni/README.txt.
+  maxsites2=, 800
+                        Don't analyze (or print) more
+                        than this many alignments per
+                        read.
+  ignorefrequentkmers=, t
+                        (ifk) Discard low-information
+                        kmers that occur often.
+  excludefraction=, 0.03
+                        (ef) Fraction of kmers to
+                        ignore.  For example, 0.03 will
+                        ignore the most common 3% of
+                        kmers.
+  greedy=, t
+                        Use a greedy algorithm to
+                        discard the least-useful kmers
+                        on a per-read basis.
+  kfilter=, 0
+                        If positive, potential mapping
+                        sites must have at least this
+                        many consecutive exact matches.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_10">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Quality and Trimming Parameters:
+  qin=, auto
+                        Set to 33 or 64 to specify input
+                        quality value ASCII offset. 33
+                        is Sanger, 64 is old Solexa.
+  qout=, auto
+                        Set to 33 or 64 to specify
+                        output quality value ASCII
+                        offset (only if output format is
+                        fastq).
+  qtrim=, f
+                        Quality-trim ends before
+                        mapping.  Options are: 'f'
+                        (false), 'l' (left), 'r'
+                        (right), and 'lr' (both).
+  untrim=, f
+                        Undo trimming after mapping.
+                        Untrimmed bases will be soft-
+                        clipped in cigar strings.
+  trimq=, 6
+                        Trim regions with average
+                        quality below this (phred
+                        algorithm).
+  mintrimlength=, 60
+                        (mintl) Don't trim reads to be
+                        shorter than this.
+  fakefastaquality=, -1
+                        (ffq) Set to a positive number
+                        1-50 to generate fake quality
+                        strings for fasta input reads.
+  ignorebadquality=, f
+                        (ibq) Keep going, rather than
+                        crashing, if a read has out-of-
+                        range quality values.
+  usequality=, t
+                        Use quality scores when
+                        determining which read kmers to
+                        use as seeds.
+  minaveragequality=, 0
+                        (maq) Do not map reads with
+                        average quality below this.
+  maqb=, 0
+                        If positive, calculate maq from
+                        this many initial bases.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_11">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Output Parameters:
+  out=, <file>
+                        Write all reads to this file.
+  outu=, <file>
+                        Write only unmapped reads to
+                        this file.  Does not include
+                        unmapped paired reads with a
+                        mapped mate.
+  outm=, <file>
+                        Write only mapped reads to this
+                        file.  Includes unmapped paired
+                        reads with a mapped mate.
+  mappedonly=, f
+                        If true, treats 'out' like
+                        'outm'.
+  bamscript=, <file>
+                        (bs) Write a shell script to
+                        <file> that will turn the sam
+                        output into a sorted, indexed
+                        bam file.
+  ordered=, f
+                        Set to true to output reads in
+                        same order as input. Slower and
+                        uses more memory.
+  overwrite=, f
+                        (ow) Allow process to overwrite
+                        existing files.
+  secondary=, f
+                        Print secondary alignments.
+  sssr=, 0.95
+                        (secondarysitescoreratio) Print
+                        only secondary alignments with
+                        score of at least this fraction
+                        of primary.
+  ssao=, f
+                        (secondarysiteasambiguousonly)
+                        Only print secondary alignments
+                        for ambiguously-mapped reads.
+  maxsites=, 5
+                        Maximum number of total
+                        alignments to print per read.
+                        Only relevant when secondary=t.
+  quickmatch=, f
+                        Generate cigar strings more
+                        quickly.
+  trimreaddescriptions=, f
+                        (trd) Truncate read and ref
+                        names at the first whitespace,
+                        assuming that the remainder is a
+                        comment or description.
+  ziplevel=, 2
+                        (zl) Compression level for zip
+                        or gzip output.
+  pigz=, f
+                        Spawn a pigz (parallel gzip)
+                        process for faster compression
+                        than Java.  Requires pigz to be
+                        installed.
+  machineout=, f
+                        Set to true to output statistics
+                        in machine-friendly 'key=value'
+                        format.
+  'key=, value'
+                        format.
+  printunmappedcount=, f
+                        Print the total number of
+                        unmapped reads and bases. If
+                        input is paired, the number will
+                        be of pairs for which both reads
+                        are unmapped.
+  showprogress=, 0
+                        If positive, print a '.' every X
+                        reads.
+  showprogress2=, 0
+                        If positive, print the number of
+                        seconds since the last progress
+                        update (instead of a '.').
+  renamebyinsert=, f
+                        Renames reads based on their
+                        mapped insert size.
+  bloom=, f
+                        Use a Bloom filter to ignore
+                        reads not sharing kmers with the
+                        reference.  This uses more
+                        memory, but speeds mapping when
+                        most reads don't match the
+                        reference.
+  bloomhashes=, 2
+                        Number of hash functions.
+  bloomminhits=, 3
+                        Number of consecutive hits to be
+                        considered matched.
+  bloomk=, 31
+                        Bloom filter kmer length.
+  bloomserial=, t
+                        Use the serialized Bloom filter
+                        for greater loading speed, if
+                        available.  If not, generate and
+                        write one.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_12">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Post-Filtering Parameters:
+  idfilter=, 0
+                        Independant of minid; sets exact
+                        minimum identity allowed for
+                        alignments to be printed.  Range
+                        0 to 1.
+  subfilter=, -1
+                        Ban alignments with more than
+                        this many substitutions.
+  insfilter=, -1
+                        Ban alignments with more than
+                        this many insertions.
+  delfilter=, -1
+                        Ban alignments with more than
+                        this many deletions.
+  indelfilter=, -1
+                        Ban alignments with more than
+                        this many indels.
+  editfilter=, -1
+                        Ban alignments with more than
+                        this many edits.
+  inslenfilter=, -1
+                        Ban alignments with an insertion
+                        longer than this.
+  dellenfilter=, -1
+                        Ban alignments with a deletion
+                        longer than this.
+  nfilter=, -1
+                        Ban alignments with more than
+                        this many ns.  This includes
+                        nocall, noref, and off scaffold
+                        ends.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_13">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Sam flags and settings:
+  noheader=, f
+                        Disable generation of header
+                        lines.
+  sam=, 1.4
+                        Set to 1.4 to write Sam version
+                        1.4 cigar strings, with = and X,
+                        or 1.3 to use M.
+  saa=, t
+                        (secondaryalignmentasterisks)
+                        Use asterisks instead of bases
+                        for sam secondary alignments.
+  cigar=, t
+                        Set to 'f' to skip generation of
+                        cigar strings (faster).
+  keepnames=, f
+                        Keep original names of paired
+                        reads, rather than ensuring both
+                        reads have the same name.
+  intronlen=, 999999999
+                        Set to a lower number like 10 to
+                        change 'D' to 'N' in cigar
+                        strings for deletions of at
+                        least that length.
+  rgid=, null
+                        Set readgroup ID.  All other
+                        readgroup fields can be set
+                        similarly, with the flag rgXX=
+                        If you set a readgroup flag to
+                        the word 'filename', e.g.
+                        rgid=filename, the input file
+                        name will be used.
+  mdtag=, f
+                        Write MD tags.
+  nhtag=, f
+                        Write NH tags.
+  xmtag=, f
+                        Write XM tags (may only work
+                        correctly with ambig=all).
+  amtag=, f
+                        Write AM tags.
+  nmtag=, f
+                        Write NM tags.
+  xstag=, f
+                        Set to 'xs=fs', 'xs=ss', or
+                        'xs=us' to write XS tags for
+                        RNAseq using firststrand,
+                        secondstrand, or unstranded
+                        libraries.  Needed by Cufflinks.
+                        JGI mainly uses 'firststrand'.
+  stoptag=, f
+                        Write a tag indicating read stop
+                        location, prefixed by YS:i:
+  lengthtag=, f
+                        Write a tag indicating
+                        (query,ref) alignment lengths,
+                        prefixed by YL:Z:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_14">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">prefixed by YL:Z:
+  idtag=, f
+                        Write a tag indicating percent
+                        identity, prefixed by YI:f:
+  inserttag=, f
+                        Write a tag indicating insert
+                        size, prefixed by X8:Z:
+  scoretag=, f
+                        Write a tag indicating BBMap's
+                        raw score, prefixed by YR:i:
+  timetag=, f
+                        Write a tag indicating this
+                        read's mapping time, prefixed by
+                        X0:i:
+  boundstag=, f
+                        Write a tag indicating whether
+                        either read in the pair goes off
+                        the end of the reference,
+                        prefixed by XB:Z:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_16">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Histogram and statistics output parameters:
+  scafstats=, <file>
+                        Statistics on how many reads
+                        mapped to which scaffold.
+  refstats=, <file>
+                        Statistics on how many reads
+                        mapped to which reference file;
+                        only for BBSplit.
+  sortscafs=, t
+                        Sort scaffolds or references by
+                        read count.
+  bhist=, <file>
+                        Base composition histogram by
+                        position.
+  qhist=, <file>
+                        Quality histogram by position.
+  aqhist=, <file>
+                        Histogram of average read
+                        quality.
+  bqhist=, <file>
+                        Quality histogram designed for
+                        box plots.
+  lhist=, <file>
+                        Read length histogram.
+  ihist=, <file>
+                        Write histogram of insert sizes
+                        (for paired reads).
+  ehist=, <file>
+                        Errors-per-read histogram.
+  qahist=, <file>
+                        Quality accuracy histogram of
+                        error rates versus quality
+                        score.
+  indelhist=, <file>
+                        Indel length histogram.
+  mhist=, <file>
+                        Histogram of match, sub, del,
+                        and ins rates by read location.
+  gchist=, <file>
+                        Read GC content histogram.
+  gcbins=, 100
+                        Number gchist bins.  Set to
+                        'auto' to use read length.
+  gcpairs=, t
+                        Use average GC of paired reads.
+  idhist=, <file>
+                        Histogram of read count versus
+                        percent identity.
+  idbins=, 100
+                        Number idhist bins.  Set to
+                        'auto' to use read length.
+  statsfile=, stderr
+                        Mapping statistics are printed
+                        here.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_17">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Coverage output parameters (these may reduce speed and use more RAM):
+  covstats=, <file>
+                        Per-scaffold coverage info.
+  rpkm=, <file>
+                        Per-scaffold RPKM/FPKM counts.
+  covhist=, <file>
+                        Histogram of # occurrences of
+                        each depth level.
+  basecov=, <file>
+                        Coverage per base location.
+  bincov=, <file>
+                        Print binned coverage per
+                        location (one line per X bases).
+  covbinsize=, 1000
+                        Set the binsize for binned
+                        coverage output.
+  nzo=, t
+                        Only print scaffolds with
+                        nonzero coverage.
+  twocolumn=, f
+                        Change to true to print only ID
+                        and Avg_fold instead of all 6
+                        columns to the 'out=' file.
+  32bit=, f
+                        Set to true if you need per-base
+                        coverage over 64k.
+  strandedcov=, f
+                        Track coverage for plus and
+                        minus strand independently.
+  startcov=, f
+                        Only track start positions of
+                        reads.
+  secondarycov=, t
+                        Include coverage of secondary
+                        alignments.
+  physcov=, f
+                        Calculate physical coverage for
+                        paired reads. This includes the
+                        unsequenced bases.
+  delcoverage=, t
+                        (delcov) Count bases covered by
+                        deletions as covered. True is
+                        faster than false.
+  covk=, 0
+                        If positive, calculate kmer
+                        coverage statistics.</div>
+</div>
+</div>
+    </div>
+</body>
+</html>

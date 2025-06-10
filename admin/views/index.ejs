@@ -1,0 +1,50 @@
+<%- include('../../public/views/partials/header', { title: 'Admin Dashboard' }) %>
+<%- include('../../public/views/partials/navbar', { isAdmin: true, connectionDetails: connectionDetails }) %>
+
+<style>
+    .selection-card {
+        background-color: #7480FF;
+        color: black;
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .selection-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+    .icon-placeholder {
+        width: 100px;
+        height: 100px;
+        background-color: black;
+        mask-size: contain;
+        mask-repeat: no-repeat;
+        mask-position: center;
+    }
+    .download-icon {
+        mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-download" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>');
+    }
+    .add-icon {
+        mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>');
+    }
+</style>
+
+<main class="flex-grow flex items-center justify-center p-8">
+    <div class="flex flex-col md:flex-row gap-8 lg:gap-16">
+        <a href="/admin/search" class="card w-80 lg:w-[400px] h-[400px] selection-card shadow-xl">
+            <div class="card-body items-center justify-center text-center gap-8">
+                <div class="icon-placeholder download-icon"></div>
+                <h2 class="card-title text-2xl font-normal">
+                    Install Recommended
+                </h2>
+            </div>
+        </a>
+
+        <a href="/admin/tool_management" class="card w-80 lg:w-[400px] h-[400px] selection-card shadow-xl">
+            <div class="card-body items-center justify-center text-center gap-8">
+                <div class="icon-placeholder add-icon"></div>
+                <h2 class="card-title text-2xl font-normal">Add New Tools</h2>
+            </div>
+        </a>
+    </div>
+</main>
+
+<%- include('../../public/views/partials/footer') %>

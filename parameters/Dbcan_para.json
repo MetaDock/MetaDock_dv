@@ -1,0 +1,184 @@
+[
+    {
+        "category": "options",
+        "short": "-h",
+        "long": "--help",
+        "needs_input": false,
+        "description": "show this help message and exit"
+    },
+    {
+        "category": "options",
+        "short": "-c CLUSTER",
+        "long": "--cluster CLUSTER",
+        "needs_input": true,
+        "description": "Predict CGCs via CGCFinder. This argument requires an\nauxillary locations file if a protein input is being\nused"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--dbCANFile DBCANFILE",
+        "needs_input": true,
+        "description": "Indicate the file name of HMM database such as\ndbCAN.txt, please use the newest one from dbCAN2\nwebsite."
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--dia_eval DIA_EVAL",
+        "needs_input": true,
+        "description": "DIAMOND E Value"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--dia_cpu DIA_CPU",
+        "needs_input": true,
+        "description": "Number of CPU cores that DIAMOND is allowed to use"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--hmm_eval HMM_EVAL",
+        "needs_input": true,
+        "description": "HMMER E Value"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--hmm_cov HMM_COV",
+        "needs_input": true,
+        "description": "HMMER Coverage val"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--hmm_cpu HMM_CPU",
+        "needs_input": true,
+        "description": "Number of CPU cores that HMMER is allowed to use"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--hotpep_hits HOTPEP_HITS",
+        "needs_input": true,
+        "description": "Hotpep Hit value"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--hotpep_freq HOTPEP_FREQ",
+        "needs_input": true,
+        "description": "Hotpep Frequency value"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--hotpep_cpu HOTPEP_CPU",
+        "needs_input": true,
+        "description": "Number of CPU cores that Hotpep is allowed to use"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--tf_eval TF_EVAL",
+        "needs_input": true,
+        "description": "tf.hmm HMMER E Value"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--tf_cov TF_COV",
+        "needs_input": true,
+        "description": "tf.hmm HMMER Coverage val"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--tf_cpu TF_CPU",
+        "needs_input": true,
+        "description": "tf.hmm Number of CPU cores that HMMER is allowed to use"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--stp_eval STP_EVAL",
+        "needs_input": true,
+        "description": "stp.hmm HMMER E Value"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--stp_cov STP_COV",
+        "needs_input": true,
+        "description": "stp.hmm HMMER Coverage val"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--stp_cpu STP_CPU",
+        "needs_input": true,
+        "description": "stp.hmm Number of CPU cores that HMMER is allowed to use"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--out_pre OUT_PRE",
+        "needs_input": true,
+        "description": "Output files prefix"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--out_dir OUT_DIR",
+        "needs_input": true,
+        "description": "Output directory"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--db_dir DB_DIR",
+        "needs_input": true,
+        "description": "Database directory"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--cgc_dis CGC_DIS",
+        "needs_input": true,
+        "description": "CGCFinder Distance value"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--cgc_sig_genes {tp,tf,all}",
+        "needs_input": true,
+        "description": "CGCFinder Signature Genes value"
+    },
+    {
+        "category": "options",
+        "short": "-t {hmmer,diamond,hotpep,all} [{hmmer,diamond,hotpep,all} ...]",
+        "long": "--tools {hmmer,diamond,hotpep,all} [{hmmer,diamond,hotpep,all} ...]",
+        "needs_input": true,
+        "description": "Choose a combination of tools to run"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--use_signalP USE_SIGNALP",
+        "needs_input": true,
+        "description": "Use signalP or not, remember, you need to setup\nsignalP tool first. Because of signalP license, Docker\nversion does not have signalP."
+    },
+    {
+        "category": "options",
+        "short": "-g {p,n,all}",
+        "long": "--gram {p,n,all}",
+        "needs_input": true,
+        "description": "Choose gram+(p) or gram-(n) for proteome/prokaryote\nnucleotide, which are params of SingalP, only if user\nuse singalP"
+    },
+    {
+        "category": "positional arguments",
+        "short": "prok=",
+        "long": "prokaryote;",
+        "needs_input": true,
+        "description": "meta=metagenome"
+    }
+]

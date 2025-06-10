@@ -1,0 +1,281 @@
+<%- include('../../public/views/partials/header', { title: 'Admin Dashboard' }) %>
+<%- include('../../public/views/partials/navbar', { isAdmin: true, connectionDetails: connectionDetails }) %>
+
+<style>
+    .btn-custom-blue { background-color: #7480FF; color: black; border-color: #7480FF; }
+    .btn-custom-blue:hover { background-color: #5a67d8; border-color: #5a67d8; }
+    .btn-custom-red { background-color: #FF5861; color: black; border-color: #FF5861; }
+    .btn-custom-red:hover { background-color: #e04851; border-color: #e04851; }
+    
+    .drop-zone {
+        min-height: 500px;
+        transition: background-color 0.2s ease;
+    }
+    .tool-tag {
+        cursor: grab;
+        color: white;
+    }
+    .tool-tag:active {
+        cursor: grabbing;
+    }
+    /* Visual feedback for drag-and-drop */
+    .drop-zone.drag-enter-ok {
+        background-color: rgba(154, 225, 148, 0.2) !important; /* Light green overlay */
+    }
+    .drop-zone.drag-enter-fail {
+        background-color: rgba(233, 160, 149, 0.2) !important; /* Light red overlay */
+    }
+    .tool-tag.sortable-ghost {
+        opacity: 0.4;
+    }
+    .method-header {
+        pointer-events: none; /* 防止标题被拖动 */
+    }
+    .method-header * {
+        pointer-events: none; /* 防止标题内的元素被拖动 */
+    }
+</style>
+
+<main class="container mx-auto p-4 md:p-8 space-y-8">
+    <!-- Back Button -->
+    <div class="flex justify-start mb-4">
+        <a href="/admin/search" class="btn btn-custom-blue text-lg">
+            <i class="ti ti-arrow-left mr-2"></i>
+            Back to Search
+        </a>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="card bg-base-200 shadow-xl">
+        <div class="card-body">
+            <div class="flex items-center gap-4 mb-4">
+                <h2 class="card-title text-2xl mb-4">
+                    <i class="ti ti-search text-2xl"></i>
+                    Search Tools
+                </h2>
+            </div>
+            <div class="flex items-center gap-4">
+                <input type="text" id="searchInput" placeholder="Search by tool name..." 
+                       class="input input-bordered w-full text-base" />
+                <button id="searchBtn" class="btn btn-custom-blue text-base">Search</button>
+                <button id="clearBtn" class="btn btn-custom-red text-base">Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-base-200 shadow-xl">
+        <div class="card-body">
+            <div class="flex items-center gap-4 mb-4">
+                <h2 class="card-title text-2xl mb-4">
+                    <i class="ti ti-download text-2xl"></i>
+                    Download Options
+                </h2>
+                <p class="text-base text-base-content/50 ml-6">Drag to switch installation method</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-4">
+                <h3 class="text-xl font-normal text-center">Anaconda</h3>
+                <h3 class="text-xl font-normal text-center">Pip</h3>
+                <h3 class="text-xl font-normal text-center">Git Clone</h3>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div id="anaconda-zone" data-method="anaconda" class="card bg-base-300 drop-zone">
+                    <div class="card-body">
+                        <div class="drop-container min-h-[400px]">
+                            <% if (locals.selectedTools) { %>
+                                <% selectedTools.forEach(tool => { %>
+                                    <% if (tool.validMethods[0] === 'anaconda') { %>
+                                        <div class="badge badge-success text-base p-4 tool-tag mb-2" 
+                                             data-tool-id="<%= tool.id %>" 
+                                             data-valid-methods='<%= JSON.stringify(tool.validMethods) %>'>
+                                            <%= tool.name %>
+                                        </div>
+                                    <% } %>
+                                <% }) %>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pip-zone" data-method="pip" class="card bg-base-300 drop-zone">
+                    <div class="card-body">
+                        <div class="drop-container min-h-[400px]">
+                            <% if (locals.selectedTools) { %>
+                                <% selectedTools.forEach(tool => { %>
+                                    <% if (tool.validMethods[0] === 'pip') { %>
+                                        <div class="badge badge-warning text-base p-4 tool-tag mb-2" 
+                                             data-tool-id="<%= tool.id %>" 
+                                             data-valid-methods='<%= JSON.stringify(tool.validMethods) %>'>
+                                            <%= tool.name %>
+                                        </div>
+                                    <% } %>
+                                <% }) %>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="git-zone" data-method="git" class="card bg-base-300 drop-zone">
+                    <div class="card-body">
+                        <div class="drop-container min-h-[400px]">
+                            <% if (locals.selectedTools) { %>
+                                <% selectedTools.forEach(tool => { %>
+                                    <% if (tool.validMethods[0] === 'git') { %>
+                                        <div class="badge badge-info text-base p-4 tool-tag mb-2" 
+                                             data-tool-id="<%= tool.id %>" 
+                                             data-valid-methods='<%= JSON.stringify(tool.validMethods) %>'>
+                                            <%= tool.name %>
+                                        </div>
+                                    <% } %>
+                                <% }) %>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-actions justify-end mt-6">
+                <form id="install-form" action="/admin/installing" method="POST">
+                    <input type="hidden" name="installationConfig" id="installationConfig">
+                    <button type="submit" class="btn btn-custom-blue text-base px-8">Install All</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const dropContainers = document.querySelectorAll('.drop-container');
+    
+    // 从 localStorage 恢复搜索状态
+    const savedSearchTerm = localStorage.getItem('optionSearchTerm');
+    if (savedSearchTerm) {
+        searchInput.value = savedSearchTerm;
+        searchBtn.click(); // 触发搜索
+    }
+
+    // 从 localStorage 恢复拖拽状态
+    const savedToolPositions = JSON.parse(localStorage.getItem('toolPositions') || '{}');
+    Object.entries(savedToolPositions).forEach(([toolId, method]) => {
+        const toolElement = document.querySelector(`.tool-tag[data-tool-id="${toolId}"]`);
+        if (toolElement) {
+            const targetZone = document.querySelector(`#${method}-zone .drop-container`);
+            if (targetZone) {
+                targetZone.appendChild(toolElement);
+                // 更新工具标签的样式
+                toolElement.className = 'badge text-base p-4 tool-tag mb-2';
+                if (method === 'anaconda') toolElement.classList.add('badge-success');
+                else if (method === 'pip') toolElement.classList.add('badge-warning');
+                else if (method === 'git') toolElement.classList.add('badge-info');
+            }
+        }
+    });
+
+    // 保存搜索状态
+    searchBtn.addEventListener('click', () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        localStorage.setItem('optionSearchTerm', searchTerm);
+        
+        const toolTags = document.querySelectorAll('.tool-tag');
+        toolTags.forEach(tag => {
+            const toolName = tag.textContent.toLowerCase();
+            tag.style.display = toolName.includes(searchTerm) ? '' : 'none';
+        });
+    });
+
+    // 清除搜索状态
+    clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        localStorage.removeItem('optionSearchTerm');
+        document.querySelectorAll('.tool-tag').forEach(tag => {
+            tag.style.display = '';
+        });
+    });
+
+    // 初始化每个拖拽容器
+    dropContainers.forEach(container => {
+        new Sortable(container, {
+            group: 'shared-tools',
+            animation: 150,
+            filter: '.method-header',
+            draggable: '.tool-tag',
+            onStart: (evt) => {
+                const item = evt.item;
+                const validMethods = JSON.parse(item.dataset.validMethods);
+                
+                document.querySelectorAll('.drop-zone').forEach(zone => {
+                    if (validMethods.includes(zone.dataset.method)) {
+                        zone.classList.add('drag-enter-ok');
+                    } else {
+                        zone.classList.add('drag-enter-fail');
+                    }
+                });
+            },
+            onEnd: (evt) => {
+                const item = evt.item;
+                const parentZone = item.closest('.drop-zone');
+                
+                document.querySelectorAll('.drop-zone').forEach(z => {
+                    z.classList.remove('drag-enter-ok', 'drag-enter-fail');
+                });
+
+                if (!JSON.parse(item.dataset.validMethods).includes(parentZone.dataset.method)) {
+                    evt.from.appendChild(item);
+                    return;
+                }
+                
+                // 更新拖拽项的样式
+                const method = parentZone.dataset.method;
+                item.className = 'badge text-base p-4 tool-tag mb-2';
+                if (method === 'anaconda') item.classList.add('badge-success');
+                else if (method === 'pip') item.classList.add('badge-warning');
+                else if (method === 'git') item.classList.add('badge-info');
+
+                // 保存新的位置到 localStorage
+                const toolPositions = JSON.parse(localStorage.getItem('toolPositions') || '{}');
+                toolPositions[item.dataset.toolId] = method;
+                localStorage.setItem('toolPositions', JSON.stringify(toolPositions));
+            }
+        });
+    });
+
+    // 为 "Install All" 按钮添加点击事件监听
+    const installForm = document.getElementById('install-form');
+    const installationConfigInput = document.getElementById('installationConfig');
+    
+    installForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const config = {
+            anaconda: [],
+            pip: [],
+            git: []
+        };
+
+        ['anaconda', 'pip', 'git'].forEach(method => {
+            const zone = document.getElementById(`${method}-zone`);
+            const toolsInZone = Array.from(zone.querySelectorAll('.tool-tag')).map(tag => ({
+                id: tag.dataset.toolId,
+                method: method
+            }));
+            config[method] = toolsInZone;
+        });
+
+        console.log('Submitting installation config:', config);
+        const configJson = JSON.stringify(config);
+        console.log('JSON string:', configJson);
+        installationConfigInput.value = configJson;
+        
+        // 提交后清除搜索状态，但保留拖拽状态
+        localStorage.removeItem('optionSearchTerm');
+        installForm.submit();
+    });
+});
+</script>
+
+<%- include('../../public/views/partials/footer') %>

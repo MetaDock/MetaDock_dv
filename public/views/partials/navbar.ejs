@@ -1,0 +1,70 @@
+<!-- Navigation Bar -->
+<nav class="navbar bg-base-100 fixed top-0 left-0 right-0 z-50 shadow-md">
+    <div class="flex-1">
+        <a href="/dashboard" class="btn btn-ghost text-xl">
+            <i class="ti ti-dna-2 text-primary mr-2"></i>
+            MetaScope
+        </a>
+    </div>
+    <div class="flex-none">
+        <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-ghost">
+                <i class="fas fa-user mr-2"></i>
+                <% if (locals.connectionDetails) { %>
+                    <span>
+                        <%= connectionDetails.username %>@<%= connectionDetails.host %>
+                        <% if (locals.isAdmin) { %>
+                            <span class="badge badge-primary ml-2">Admin</span>
+                        <% } else { %>
+                            <span class="badge badge-ghost ml-2">User</span>
+                        <% } %>
+                    </span>
+                <% } else { %>
+                    <span>Login</span>
+                <% } %>
+            </div>
+            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-72">
+                <% if (locals.connectionDetails) { %>
+                    <li class="menu-title text-sm text-gray-500 px-4 py-2">Connection Details</li>
+                    <li class="px-4 py-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold">Host:</span>
+                            <span class="text-gray-600"><%= connectionDetails.host %></span>
+                        </div>
+                    </li>
+                    <li class="px-4 py-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold">Port:</span>
+                            <span class="text-gray-600"><%= connectionDetails.port %></span>
+                        </div>
+                    </li>
+                    <li class="px-4 py-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold">Username:</span>
+                            <span class="text-gray-600"><%= connectionDetails.username %></span>
+                        </div>
+                    </li>
+                    <li class="px-4 py-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold">Role:</span>
+                            <% if (locals.isAdmin) { %>
+                                <span class="badge badge-primary">Administrator</span>
+                            <% } else { %>
+                                <span class="badge badge-ghost">Regular User</span>
+                            <% } %>
+                        </div>
+                    </li>
+                    <li><hr class="my-2"></li>
+                    <li><a href="/logout" class="text-error px-4 py-2">Logout</a></li>
+                <% } else { %>
+                    <li><a href="/login" class="px-4 py-2">Login</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Add padding to the top of the main content to account for the fixed navbar -->
+<div class="pt-16">
+    <!-- Main content will be inserted here -->
+</div>

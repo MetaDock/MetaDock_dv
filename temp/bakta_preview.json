@@ -1,0 +1,9 @@
+[
+  {
+    "category": "1",
+    "short_option": "1",
+    "long_option": "1",
+    "needs_input": true,
+    "description": "1"
+  }
+]

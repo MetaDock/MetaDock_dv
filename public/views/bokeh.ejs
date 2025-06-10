@@ -1,0 +1,20 @@
+<%- include('partials/header', { title: 'Bokeh Visualization' }) %>
+<%- include('partials/navbar') %>
+
+<main class="container mx-auto p-6">
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-2xl mb-4">
+        <i class="ti ti-chart-dots mr-2"></i>
+        Bokeh 可视化
+      </h2>
+      
+      <div id="bokeh-content">
+        <!-- Bokeh content will be loaded here -->
+        <%- include('../visualization/bokeh_prototype.html') %>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

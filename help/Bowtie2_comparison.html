@@ -119,7 +119,7 @@
     <div class="container">
         <div class="header">
             <h1>Help Comparison Report</h1>
-            <div class="timestamp">Generated on: 2025-05-04 01:55:22</div>
+            <div class="timestamp">Generated on: 2025-06-10 17:25:40</div>
         </div>
 <div class="comparison" data-section-id="section_0">
 <div class="original">
@@ -128,9 +128,12 @@
 </div>
 <div class="generated">
 <div class="diff-header">Generated</div>
-<div class="nomatch">  --nofw
-                        do not align forward (original)
-                        version of read (off)</div>
+<div class="nomatch">  --ignore-quals
+                        treat all quality values as 30
+                        on Phred scale (off)
+                        Bowtie 2 version 2.5.4 by Ben
+                        Langmead (langmea@cs.jhu.edu,
+                        www.cs.jhu.edu/~langmea)</div>
 </div>
 </div>
 <div class="comparison" data-section-id="section_1">
@@ -423,13 +426,13 @@
 <div class="comparison" data-section-id="section_25">
 <div class="original">
 <div class="diff-header">Original</div>
-<div class="match">  --ignore-quals     treat all quality values as 30 on Phred scale (off)</div>
+<div class="nomatch">  --ignore-quals     treat all quality values as 30 on Phred scale (off)</div>
 </div>
 <div class="generated">
 <div class="diff-header">Generated</div>
-<div class="match">  --ignore-quals
-                        treat all quality values as 30
-                        on Phred scale (off)</div>
+<div class="nomatch">  --norc
+                        do not align reverse-complement
+                        version of read (off)</div>
 </div>
 </div>
 <div class="comparison" data-section-id="section_26">
@@ -439,9 +442,9 @@
 </div>
 <div class="generated">
 <div class="diff-header">Generated</div>
-<div class="nomatch">  --norc
-                        do not align reverse-complement
-                        version of read (off)</div>
+<div class="nomatch">  --local
+                        local alignment; ends might be
+                        soft clipped (off)</div>
 </div>
 </div>
 <div class="comparison" data-section-id="section_27">
@@ -451,9 +454,9 @@
 </div>
 <div class="generated">
 <div class="diff-header">Generated</div>
-<div class="nomatch">  --local
-                        local alignment; ends might be
-                        soft clipped (off)</div>
+<div class="nomatch">  --version
+                        print version information and
+                        quit</div>
 </div>
 </div>
 <div class="comparison" data-section-id="section_28">
@@ -1053,9 +1056,8 @@
 </div>
 <div class="generated">
 <div class="diff-header">Generated</div>
-<div class="nomatch">  --version
-                        print version information and
-                        quit</div>
+<div class="nomatch">  -h, --help
+                        print this usage message</div>
 </div>
 </div>
 <div class="comparison" data-section-id="section_76">
@@ -1078,8 +1080,7 @@
 </div>
 <div class="generated">
 <div class="diff-header">Generated</div>
-<div class="nomatch">  -h, --help
-                        print this usage message</div>
+<div class="nomatch">  -i S,1,0.50, --very-sensitive-local</div>
 </div>
 </div>
 <div class="comparison" data-section-id="section_78">
@@ -1172,16 +1173,6 @@
 <div class="nomatch">  -i S,1,1.75, --fast-local</div>
 </div>
 </div>
-<div class="comparison" data-section-id="section_new_27">
-<div class="original">
-<div class="diff-header">Original</div>
-<div class="empty">(Empty)</div>
-</div>
-<div class="generated">
-<div class="diff-header">Generated</div>
-<div class="nomatch">  -i S,1,0.50, --very-sensitive-local</div>
-</div>
-</div>
 <div class="comparison" data-section-id="section_new_28">
 <div class="original">
 <div class="diff-header">Original</div>
@@ -1192,7 +1183,7 @@
 <div class="nomatch">Alignment:</div>
 </div>
 </div>
-<div class="comparison" data-section-id="section_new_41">
+<div class="comparison" data-section-id="section_new_40">
 <div class="original">
 <div class="diff-header">Original</div>
 <div class="empty">(Empty)</div>
@@ -1202,7 +1193,7 @@
 <div class="nomatch">Scoring:</div>
 </div>
 </div>
-<div class="comparison" data-section-id="section_new_50">
+<div class="comparison" data-section-id="section_new_49">
 <div class="original">
 <div class="diff-header">Original</div>
 <div class="empty">(Empty)</div>
@@ -1212,7 +1203,7 @@
 <div class="nomatch">Effort:</div>
 </div>
 </div>
-<div class="comparison" data-section-id="section_new_53">
+<div class="comparison" data-section-id="section_new_52">
 <div class="original">
 <div class="diff-header">Original</div>
 <div class="empty">(Empty)</div>
@@ -1222,7 +1213,7 @@
 <div class="nomatch">Paired-end:</div>
 </div>
 </div>
-<div class="comparison" data-section-id="section_new_62">
+<div class="comparison" data-section-id="section_new_61">
 <div class="original">
 <div class="diff-header">Original</div>
 <div class="empty">(Empty)</div>
@@ -1232,7 +1223,7 @@
 <div class="nomatch">BAM:</div>
 </div>
 </div>
-<div class="comparison" data-section-id="section_new_65">
+<div class="comparison" data-section-id="section_new_64">
 <div class="original">
 <div class="diff-header">Original</div>
 <div class="empty">(Empty)</div>
@@ -1242,7 +1233,7 @@
 <div class="nomatch">Output:</div>
 </div>
 </div>
-<div class="comparison" data-section-id="section_new_71">
+<div class="comparison" data-section-id="section_new_70">
 <div class="original">
 <div class="diff-header">Original</div>
 <div class="empty">(Empty)</div>
@@ -1252,7 +1243,7 @@
 <div class="nomatch">  --un-gz <path>, to gzip compress output, or add '-bz2' to bzip2 compress output.)</div>
 </div>
 </div>
-<div class="comparison" data-section-id="section_new_87">
+<div class="comparison" data-section-id="section_new_86">
 <div class="original">
 <div class="diff-header">Original</div>
 <div class="empty">(Empty)</div>
@@ -1262,7 +1253,7 @@
 <div class="nomatch">Performance:</div>
 </div>
 </div>
-<div class="comparison" data-section-id="section_new_91">
+<div class="comparison" data-section-id="section_new_90">
 <div class="original">
 <div class="diff-header">Original</div>
 <div class="empty">(Empty)</div>

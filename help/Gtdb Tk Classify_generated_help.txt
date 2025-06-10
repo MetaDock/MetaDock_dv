@@ -1,0 +1,41 @@
+usage: gtdbtk classify (--genome_dir GENOME_DIR | --batchfile BATCHFILE) --align_dir ALIGN_DIR --out_dir OUT_DIR [-x EXTENSION] [--prefix PREFIX] [--cpus CPUS] [--scratch_dir SCRATCH_DIR] [-r] [-d] [-h]
+
+mutually exclusive required arguments:
+  --genome_dir GENOME_DIR
+                        directory containing genome
+                        files in FASTA format
+  --batchfile BATCHFILE
+                        file describing genomes - tab
+                        separated in 2 columns (FASTA
+                        file, genome ID)
+
+required named arguments:
+  --align_dir ALIGN_DIR
+                        output directory of 'align'
+                        command
+  --out_dir OUT_DIR
+                        directory to output files
+
+optional arguments:
+  -x, --extension EXTENSION
+                        extension of files to process,
+                        gz = gzipped (default: fna)
+  --prefix PREFIX
+                        desired prefix for output files
+                        (default: gtdbtk)
+  --cpus CPUS
+                        number of CPUs to use (default:
+                        1)
+  --scratch_dir SCRATCH_DIR
+                        reduce memory usage by writing
+                        to disk (slower)
+  -r, --recalculate_red
+                        recalculate RED values based on
+                        the reference tree and all added
+                        user genomes (default: False)
+  -d, --debug
+                        create intermediate files for
+                        debugging purposes (default:
+                        False)
+  -h, --help
+                        show help message

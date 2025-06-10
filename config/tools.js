@@ -166,5 +166,29 @@ module.exports = {
     "env": "",
     "hasStderr": true,
     "icon": "ti-chart-dots"
+  },
+  "Gtdb Tk Classify": {
+    "title": "Gtdb Tk Classify Parameters",
+    "toolName": "Gtdb Tk Classify",
+    "route": "Gtdb Tk Classify",
+    "commandRoute": "/run-command-Gtdb Tk Classify",
+    "usagePath": "parameters/Gtdb Tk Classify_usage.json",
+    "paraPath": "parameters/Gtdb Tk Classify_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-Gtdb Tk Classify",
+    "env": "",
+    "hasStderr": true
+  },
+  "gtdb_tk_classify_wf": {
+    "title": "gtdb_tk_classify_wf Parameters",
+    "toolName": "gtdb_tk_classify_wf",
+    "route": "gtdb_tk_classify_wf",
+    "commandRoute": "/run-command-gtdb_tk_classify_wf",
+    "usagePath": "parameters/gtdb_tk_classify_wf_usage.json",
+    "paraPath": "parameters/gtdb_tk_classify_wf_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-gtdb_tk_classify_wf",
+    "env": "",
+    "hasStderr": true
   }
 };

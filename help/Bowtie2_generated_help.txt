@@ -83,9 +83,9 @@ Alignment:
   --ignore-quals
                         treat all quality values as 30
                         on Phred scale (off)
-  --nofw
-                        do not align forward (original)
-                        version of read (off)
+                        Bowtie 2 version 2.5.4 by Ben
+                        Langmead (langmea@cs.jhu.edu,
+                        www.cs.jhu.edu/~langmea)
   --norc
                         do not align reverse-complement
                         version of read (off)

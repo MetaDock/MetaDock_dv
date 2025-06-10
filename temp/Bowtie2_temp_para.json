@@ -1,0 +1,9 @@
+[
+    {
+        "category": "Alignment",
+        "short": "",
+        "long": "--ignore-quals",
+        "needs_input": false,
+        "description": "treat all quality values as 30 on Phred scale (off)"
+    }
+]

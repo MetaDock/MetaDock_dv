@@ -1,0 +1,5 @@
+{
+    "usage": [
+        "usage: gtdbtk classify_wf (--genome_dir GENOME_DIR | --batchfile BATCHFILE) --out_dir OUT_DIR [-x EXTENSION] [--min_perc_aa MIN_PERC_AA] [--prefix PREFIX] [--cpus CPUS] [--force] [--scratch_dir SCRATCH_DIR] [-r] [-d] [-h]"
+    ]
+}

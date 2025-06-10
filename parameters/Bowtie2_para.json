@@ -1,597 +1,597 @@
 [
-    {
-        "category": "Input",
-        "short": "-q",
-        "long": null,
-        "needs_input": false,
-        "description": "query input files are FASTQ .fq/.fastq (default)"
-    },
-    {
-        "category": "Input",
-        "short": null,
-        "long": "--tab5",
-        "needs_input": false,
-        "description": "query input files are TAB5 .tab5"
-    },
-    {
-        "category": "Input",
-        "short": null,
-        "long": "--tab6",
-        "needs_input": false,
-        "description": "query input files are TAB6 .tab6"
-    },
-    {
-        "category": "Input",
-        "short": null,
-        "long": "--qseq",
-        "needs_input": false,
-        "description": "query input files are in Illumina's qseq format"
-    },
-    {
-        "category": "Input",
-        "short": "-f",
-        "long": null,
-        "needs_input": false,
-        "description": "query input files are (multi-)FASTA .fa/.mfa"
-    },
-    {
-        "category": "Input",
-        "short": "-r",
-        "long": null,
-        "needs_input": false,
-        "description": "query input files are raw one-sequence-per-line"
-    },
-    {
-        "category": "Input",
-        "short": "-F k:<int>,i:<int> query input files are continuous FASTA where reads",
-        "long": null,
-        "needs_input": true,
-        "description": "are substrings (k-mers) extracted from the FASTA file\nand aligned at offsets 1, 1+i, 1+2i ... end of reference"
-    },
-    {
-        "category": "Input",
-        "short": "-c",
-        "long": null,
-        "needs_input": false,
-        "description": "<m1>, <m2>, <r> are sequences themselves, not files"
-    },
-    {
-        "category": "Input",
-        "short": "-s",
-        "long": "--skip <int>",
-        "needs_input": true,
-        "description": "skip the first <int> reads/pairs in the input (none)"
-    },
-    {
-        "category": "Input",
-        "short": "-u",
-        "long": "--upto <int>",
-        "needs_input": true,
-        "description": "stop after first <int> reads/pairs (no limit)"
-    },
-    {
-        "category": "Input",
-        "short": "-5",
-        "long": "--trim5 <int>",
-        "needs_input": true,
-        "description": "trim <int> bases from 5'/left end of reads (0)"
-    },
-    {
-        "category": "Input",
-        "short": "-3",
-        "long": "--trim3 <int>",
-        "needs_input": true,
-        "description": "trim <int> bases from 3'/right end of reads (0)"
-    },
-    {
-        "category": "Input",
-        "short": null,
-        "long": "--trim-to [3:|5:]<int> trim reads exceeding <int> bases from either 3' or 5' end",
-        "needs_input": true,
-        "description": "If the read end is not specified then it defaults to 3 (0)"
-    },
-    {
-        "category": "Input",
-        "short": null,
-        "long": "--phred33",
-        "needs_input": false,
-        "description": "qualities are Phred+33 (default)"
-    },
-    {
-        "category": "Input",
-        "short": null,
-        "long": "--phred64",
-        "needs_input": false,
-        "description": "qualities are Phred+64"
-    },
-    {
-        "category": "Input",
-        "short": null,
-        "long": "--int-quals",
-        "needs_input": false,
-        "description": "qualities encoded as space-delimited integers \nPresets:                 Same as:"
-    },
-    {
-        "category": "For --end-to-end",
-        "short": "-i S,0,2.50",
-        "long": "--very-fast",
-        "needs_input": true,
-        "description": ""
-    },
-    {
-        "category": "For --end-to-end",
-        "short": "-i S,0,2.50",
-        "long": "--fast",
-        "needs_input": true,
-        "description": ""
-    },
-    {
-        "category": "For --end-to-end",
-        "short": "-i S,1,1.15 (default)",
-        "long": "--sensitive",
-        "needs_input": true,
-        "description": ""
-    },
-    {
-        "category": "For --end-to-end",
-        "short": "-i S,1,0.50",
-        "long": "--very-sensitive",
-        "needs_input": true,
-        "description": ""
-    },
-    {
-        "category": "For --local",
-        "short": "-i S,1,2.00",
-        "long": "--very-fast-local",
-        "needs_input": true,
-        "description": ""
-    },
-    {
-        "category": "For --local",
-        "short": "-i S,1,1.75",
-        "long": "--fast-local",
-        "needs_input": true,
-        "description": ""
-    },
-    {
-        "category": "For --local",
-        "short": "-i S,1,0.75 (default)",
-        "long": "--sensitive-local",
-        "needs_input": true,
-        "description": ""
-    },
-    {
-        "category": "For --local",
-        "short": "-i S,1,0.50",
-        "long": "--very-sensitive-local",
-        "needs_input": true,
-        "description": ""
-    },
-    {
-        "category": "Alignment",
-        "short": "-N <int>",
-        "long": null,
-        "needs_input": true,
-        "description": "max # mismatches in seed alignment; can be 0 or 1 (0)"
-    },
-    {
-        "category": "Alignment",
-        "short": "-L <int>",
-        "long": null,
-        "needs_input": true,
-        "description": "length of seed substrings; must be >3, <32 (22)"
-    },
-    {
-        "category": "Alignment",
-        "short": "-i <func>",
-        "long": null,
-        "needs_input": true,
-        "description": "interval between seed substrings w/r/t read len (S,1,1.15)"
-    },
-    {
-        "category": "Alignment",
-        "short": null,
-        "long": "--n-ceil <func>",
-        "needs_input": true,
-        "description": "func for max # non-A/C/G/Ts permitted in aln (L,0,0.15)"
-    },
-    {
-        "category": "Alignment",
-        "short": null,
-        "long": "--dpad <int>",
-        "needs_input": true,
-        "description": "include <int> extra ref chars on sides of DP table (15)"
-    },
-    {
-        "category": "Alignment",
-        "short": null,
-        "long": "--gbar <int>",
-        "needs_input": true,
-        "description": "disallow gaps within <int> nucs of read extremes (4)"
-    },
-    {
-        "category": "Alignment",
-        "short": null,
-        "long": "--ignore-quals",
-        "needs_input": false,
-        "description": "treat all quality values as 30 on Phred scale (off)"
-    },
-    {
-        "category": "Alignment",
-        "short": null,
-        "long": "--nofw",
-        "needs_input": false,
-        "description": "do not align forward (original) version of read (off)"
-    },
-    {
-        "category": "Alignment",
-        "short": null,
-        "long": "--norc",
-        "needs_input": false,
-        "description": "do not align reverse-complement version of read (off)"
-    },
-    {
-        "category": "Alignment",
-        "short": null,
-        "long": "--no-1mm-upfront",
-        "needs_input": false,
-        "description": "do not allow 1 mismatch alignments before attempting to scan for the optimal seeded alignments"
-    },
-    {
-        "category": "Alignment",
-        "short": null,
-        "long": "--end-to-end",
-        "needs_input": false,
-        "description": "entire read must align; no clipping (on) OR"
-    },
-    {
-        "category": "Alignment",
-        "short": null,
-        "long": "--local",
-        "needs_input": false,
-        "description": "local alignment; ends might be soft clipped (off)"
-    },
-    {
-        "category": "Scoring",
-        "short": null,
-        "long": "--ma <int>",
-        "needs_input": true,
-        "description": "match bonus (0 for --end-to-end, 2 for --local)"
-    },
-    {
-        "category": "Scoring",
-        "short": null,
-        "long": "--mp <int>",
-        "needs_input": true,
-        "description": "max penalty for mismatch; lower qual = lower penalty (6)"
-    },
-    {
-        "category": "Scoring",
-        "short": null,
-        "long": "--np <int>",
-        "needs_input": true,
-        "description": "penalty for non-A/C/G/Ts in read/ref (1)"
-    },
-    {
-        "category": "Scoring",
-        "short": null,
-        "long": "--rdg <int>,<int>",
-        "needs_input": true,
-        "description": "read gap open, extend penalties (5,3)"
-    },
-    {
-        "category": "Scoring",
-        "short": null,
-        "long": "--rfg <int>,<int>",
-        "needs_input": true,
-        "description": "reference gap open, extend penalties (5,3)"
-    },
-    {
-        "category": "Scoring",
-        "short": null,
-        "long": "--score-min <func> min acceptable alignment score w/r/t read length",
-        "needs_input": true,
-        "description": "(G,20,8 for local, L,-0.6,-0.6 for end-to-end)\n\nReporting:\n(default)          look for multiple alignments, report best, with MAPQ\nOR"
-    },
-    {
-        "category": "Scoring",
-        "short": "-k <int>",
-        "long": null,
-        "needs_input": true,
-        "description": "report up to <int> alns per read; MAPQ not meaningful OR"
-    },
-    {
-        "category": "Scoring",
-        "short": "-a/--all",
-        "long": null,
-        "needs_input": false,
-        "description": "report all alignments; very slow, MAPQ not meaningful"
-    },
-    {
-        "category": "Effort",
-        "short": "-D <int>",
-        "long": null,
-        "needs_input": true,
-        "description": "give up extending after <int> failed extends in a row (15)"
-    },
-    {
-        "category": "Effort",
-        "short": "-R <int>",
-        "long": null,
-        "needs_input": true,
-        "description": "for reads w/ repetitive seeds, try <int> sets of seeds (2)"
-    },
-    {
-        "category": "Paired-end",
-        "short": "-I",
-        "long": "--minins <int>",
-        "needs_input": true,
-        "description": "minimum fragment length (0)"
-    },
-    {
-        "category": "Paired-end",
-        "short": "-X",
-        "long": "--maxins <int>",
-        "needs_input": true,
-        "description": "maximum fragment length (500)"
-    },
-    {
-        "category": "Paired-end",
-        "short": "-2 mates align fw/rev, rev/fw, fw/fw (--fr)",
-        "long": "--fr/--rf/--ff",
-        "needs_input": true,
-        "description": "-1"
-    },
-    {
-        "category": "Paired-end",
-        "short": null,
-        "long": "--no-mixed",
-        "needs_input": false,
-        "description": "suppress unpaired alignments for paired reads"
-    },
-    {
-        "category": "Paired-end",
-        "short": null,
-        "long": "--no-discordant",
-        "needs_input": false,
-        "description": "suppress discordant alignments for paired reads"
-    },
-    {
-        "category": "Paired-end",
-        "short": null,
-        "long": "--dovetail",
-        "needs_input": false,
-        "description": "concordant when mates extend past each other"
-    },
-    {
-        "category": "Paired-end",
-        "short": null,
-        "long": "--no-contain",
-        "needs_input": false,
-        "description": "not concordant when one mate alignment contains other"
-    },
-    {
-        "category": "Paired-end",
-        "short": null,
-        "long": "--no-overlap",
-        "needs_input": false,
-        "description": "not concordant when mates overlap at all"
-    },
-    {
-        "category": "BAM",
-        "short": null,
-        "long": "--align-paired-reads",
-        "needs_input": false,
-        "description": "Bowtie2 will, by default, attempt to align unpaired BAM reads.\nUse this option to align paired-end reads instead."
-    },
-    {
-        "category": "BAM",
-        "short": null,
-        "long": "--preserve-tags",
-        "needs_input": false,
-        "description": "Preserve tags from the original BAM record by appending them to the end of the corresponding SAM output.\n"
-    },
-    {
-        "category": "Output",
-        "short": "-t",
-        "long": "--time",
-        "needs_input": false,
-        "description": "print wall-clock time taken by search phases"
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--un <path>",
-        "needs_input": true,
-        "description": "write unpaired reads that didn't align to <path>"
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--al <path>",
-        "needs_input": true,
-        "description": "write unpaired reads that aligned at least once to <path>"
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--un-conc <path>",
-        "needs_input": true,
-        "description": "write pairs that didn't align concordantly to <path>"
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--al-conc <path>",
-        "needs_input": true,
-        "description": "write pairs that aligned concordantly at least once to <path> (Note: for --un, --al, --un-conc, or --al-conc, add '-gz' to the option name, e.g."
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--un-gz <path>, to gzip compress output, or add '-bz2' to bzip2 compress output.)",
-        "needs_input": true,
-        "description": ""
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--quiet",
-        "needs_input": false,
-        "description": "print nothing to stderr except serious errors"
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--met-file <path>",
-        "needs_input": true,
-        "description": "send metrics to file at <path> (off)"
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--met-stderr",
-        "needs_input": false,
-        "description": "send metrics to stderr (off)"
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--met <int>",
-        "needs_input": true,
-        "description": "report internal counters & metrics every <int> secs (1)"
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--no-unal",
-        "needs_input": false,
-        "description": "suppress SAM records for unaligned reads"
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--no-head",
-        "needs_input": false,
-        "description": "suppress header lines, i.e. lines starting with @"
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--no-sq",
-        "needs_input": false,
-        "description": "suppress @SQ header lines"
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--rg-id <text>",
-        "needs_input": true,
-        "description": "set read group id, reflected in @RG line and RG:Z: opt field"
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--rg <text>",
-        "needs_input": true,
-        "description": "add <text> (\"lab:value\") to @RG line of SAM header. Note: @RG line only printed when --rg-id is set."
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--omit-sec-seq",
-        "needs_input": false,
-        "description": "put '*' in SEQ and QUAL fields for secondary alignments."
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--sam-no-qname-trunc",
-        "needs_input": false,
-        "description": "Suppress standard behavior of truncating readname at first whitespace\nat the expense of generating non-standard SAM."
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--xeq",
-        "needs_input": false,
-        "description": "Use '='/'X', instead of 'M,' to specify matches/mismatches in SAM record."
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--soft-clipped-unmapped-tlen",
-        "needs_input": false,
-        "description": "Exclude soft-clipped bases when reporting TLEN."
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--sam-append-comment",
-        "needs_input": false,
-        "description": "Append FASTA/FASTQ comment to SAM record."
-    },
-    {
-        "category": "Output",
-        "short": null,
-        "long": "--sam-opt-config <config>",
-        "needs_input": true,
-        "description": "Use <config>, example '-MD,YP,-AS', to toggle SAM Optional fields.\n"
-    },
-    {
-        "category": "Performance",
-        "short": "-p",
-        "long": "--threads <int> number of alignment threads to launch (1)",
-        "needs_input": true,
-        "description": ""
-    },
-    {
-        "category": "Performance",
-        "short": null,
-        "long": "--reorder",
-        "needs_input": false,
-        "description": "force SAM output order to match order of input reads"
-    },
-    {
-        "category": "Performance",
-        "short": null,
-        "long": "--mm",
-        "needs_input": false,
-        "description": "use memory-mapped I/O for index; many 'bowtie's can share"
-    },
-    {
-        "category": "Other",
-        "short": null,
-        "long": "--qc-filter",
-        "needs_input": false,
-        "description": "filter out reads that are bad according to QSEQ filter"
-    },
-    {
-        "category": "Other",
-        "short": null,
-        "long": "--seed <int>",
-        "needs_input": true,
-        "description": "seed for random number generator (0)"
-    },
-    {
-        "category": "Other",
-        "short": null,
-        "long": "--non-deterministic",
-        "needs_input": false,
-        "description": "seed rand. gen. arbitrarily instead of using read attributes"
-    },
-    {
-        "category": "Other",
-        "short": null,
-        "long": "--version",
-        "needs_input": false,
-        "description": "print version information and quit"
-    },
-    {
-        "category": "Other",
-        "short": "-h",
-        "long": "--help",
-        "needs_input": false,
-        "description": "print this usage message"
-    }
+  {
+    "category": "Input",
+    "short": "-q",
+    "long": null,
+    "needs_input": false,
+    "description": "query input files are FASTQ .fq/.fastq (default)"
+  },
+  {
+    "category": "Input",
+    "short": null,
+    "long": "--tab5",
+    "needs_input": false,
+    "description": "query input files are TAB5 .tab5"
+  },
+  {
+    "category": "Input",
+    "short": null,
+    "long": "--tab6",
+    "needs_input": false,
+    "description": "query input files are TAB6 .tab6"
+  },
+  {
+    "category": "Input",
+    "short": null,
+    "long": "--qseq",
+    "needs_input": false,
+    "description": "query input files are in Illumina's qseq format"
+  },
+  {
+    "category": "Input",
+    "short": "-f",
+    "long": null,
+    "needs_input": false,
+    "description": "query input files are (multi-)FASTA .fa/.mfa"
+  },
+  {
+    "category": "Input",
+    "short": "-r",
+    "long": null,
+    "needs_input": false,
+    "description": "query input files are raw one-sequence-per-line"
+  },
+  {
+    "category": "Input",
+    "short": "-F k:<int>,i:<int> query input files are continuous FASTA where reads",
+    "long": null,
+    "needs_input": true,
+    "description": "are substrings (k-mers) extracted from the FASTA file\nand aligned at offsets 1, 1+i, 1+2i ... end of reference"
+  },
+  {
+    "category": "Input",
+    "short": "-c",
+    "long": null,
+    "needs_input": false,
+    "description": "<m1>, <m2>, <r> are sequences themselves, not files"
+  },
+  {
+    "category": "Input",
+    "short": "-s",
+    "long": "--skip <int>",
+    "needs_input": true,
+    "description": "skip the first <int> reads/pairs in the input (none)"
+  },
+  {
+    "category": "Input",
+    "short": "-u",
+    "long": "--upto <int>",
+    "needs_input": true,
+    "description": "stop after first <int> reads/pairs (no limit)"
+  },
+  {
+    "category": "Input",
+    "short": "-5",
+    "long": "--trim5 <int>",
+    "needs_input": true,
+    "description": "trim <int> bases from 5'/left end of reads (0)"
+  },
+  {
+    "category": "Input",
+    "short": "-3",
+    "long": "--trim3 <int>",
+    "needs_input": true,
+    "description": "trim <int> bases from 3'/right end of reads (0)"
+  },
+  {
+    "category": "Input",
+    "short": null,
+    "long": "--trim-to [3:|5:]<int> trim reads exceeding <int> bases from either 3' or 5' end",
+    "needs_input": true,
+    "description": "If the read end is not specified then it defaults to 3 (0)"
+  },
+  {
+    "category": "Input",
+    "short": null,
+    "long": "--phred33",
+    "needs_input": false,
+    "description": "qualities are Phred+33 (default)"
+  },
+  {
+    "category": "Input",
+    "short": null,
+    "long": "--phred64",
+    "needs_input": false,
+    "description": "qualities are Phred+64"
+  },
+  {
+    "category": "Input",
+    "short": null,
+    "long": "--int-quals",
+    "needs_input": false,
+    "description": "qualities encoded as space-delimited integers \nPresets:                 Same as:"
+  },
+  {
+    "category": "For --end-to-end",
+    "short": "-i S,0,2.50",
+    "long": "--very-fast",
+    "needs_input": true,
+    "description": ""
+  },
+  {
+    "category": "For --end-to-end",
+    "short": "-i S,0,2.50",
+    "long": "--fast",
+    "needs_input": true,
+    "description": ""
+  },
+  {
+    "category": "For --end-to-end",
+    "short": "-i S,1,1.15 (default)",
+    "long": "--sensitive",
+    "needs_input": true,
+    "description": ""
+  },
+  {
+    "category": "For --end-to-end",
+    "short": "-i S,1,0.50",
+    "long": "--very-sensitive",
+    "needs_input": true,
+    "description": ""
+  },
+  {
+    "category": "For --local",
+    "short": "-i S,1,2.00",
+    "long": "--very-fast-local",
+    "needs_input": true,
+    "description": ""
+  },
+  {
+    "category": "For --local",
+    "short": "-i S,1,1.75",
+    "long": "--fast-local",
+    "needs_input": true,
+    "description": ""
+  },
+  {
+    "category": "For --local",
+    "short": "-i S,1,0.75 (default)",
+    "long": "--sensitive-local",
+    "needs_input": true,
+    "description": ""
+  },
+  {
+    "category": "For --local",
+    "short": "-i S,1,0.50",
+    "long": "--very-sensitive-local",
+    "needs_input": true,
+    "description": ""
+  },
+  {
+    "category": "Alignment",
+    "short": "-N <int>",
+    "long": null,
+    "needs_input": true,
+    "description": "max # mismatches in seed alignment; can be 0 or 1 (0)"
+  },
+  {
+    "category": "Alignment",
+    "short": "-L <int>",
+    "long": null,
+    "needs_input": true,
+    "description": "length of seed substrings; must be >3, <32 (22)"
+  },
+  {
+    "category": "Alignment",
+    "short": "-i <func>",
+    "long": null,
+    "needs_input": true,
+    "description": "interval between seed substrings w/r/t read len (S,1,1.15)"
+  },
+  {
+    "category": "Alignment",
+    "short": null,
+    "long": "--n-ceil <func>",
+    "needs_input": true,
+    "description": "func for max # non-A/C/G/Ts permitted in aln (L,0,0.15)"
+  },
+  {
+    "category": "Alignment",
+    "short": null,
+    "long": "--dpad <int>",
+    "needs_input": true,
+    "description": "include <int> extra ref chars on sides of DP table (15)"
+  },
+  {
+    "category": "Alignment",
+    "short": null,
+    "long": "--gbar <int>",
+    "needs_input": true,
+    "description": "disallow gaps within <int> nucs of read extremes (4)"
+  },
+  {
+    "category": "Alignment",
+    "short": "",
+    "long": "--ignore-quals",
+    "needs_input": false,
+    "description": "treat all quality values as 30 on Phred scale (off)"
+  },
+  {
+    "category": "Alignment",
+    "short": "",
+    "long": "",
+    "needs_input": false,
+    "description": "Bowtie 2 version 2.5.4 by Ben Langmead (langmea@cs.jhu.edu, www.cs.jhu.edu/~langmea)"
+  },
+  {
+    "category": "Alignment",
+    "short": null,
+    "long": "--norc",
+    "needs_input": false,
+    "description": "do not align reverse-complement version of read (off)"
+  },
+  {
+    "category": "Alignment",
+    "short": null,
+    "long": "--no-1mm-upfront",
+    "needs_input": false,
+    "description": "do not allow 1 mismatch alignments before attempting to scan for the optimal seeded alignments"
+  },
+  {
+    "category": "Alignment",
+    "short": null,
+    "long": "--end-to-end",
+    "needs_input": false,
+    "description": "entire read must align; no clipping (on) OR"
+  },
+  {
+    "category": "Alignment",
+    "short": null,
+    "long": "--local",
+    "needs_input": false,
+    "description": "local alignment; ends might be soft clipped (off)"
+  },
+  {
+    "category": "Scoring",
+    "short": null,
+    "long": "--ma <int>",
+    "needs_input": true,
+    "description": "match bonus (0 for --end-to-end, 2 for --local)"
+  },
+  {
+    "category": "Scoring",
+    "short": null,
+    "long": "--mp <int>",
+    "needs_input": true,
+    "description": "max penalty for mismatch; lower qual = lower penalty (6)"
+  },
+  {
+    "category": "Scoring",
+    "short": null,
+    "long": "--np <int>",
+    "needs_input": true,
+    "description": "penalty for non-A/C/G/Ts in read/ref (1)"
+  },
+  {
+    "category": "Scoring",
+    "short": null,
+    "long": "--rdg <int>,<int>",
+    "needs_input": true,
+    "description": "read gap open, extend penalties (5,3)"
+  },
+  {
+    "category": "Scoring",
+    "short": null,
+    "long": "--rfg <int>,<int>",
+    "needs_input": true,
+    "description": "reference gap open, extend penalties (5,3)"
+  },
+  {
+    "category": "Scoring",
+    "short": null,
+    "long": "--score-min <func> min acceptable alignment score w/r/t read length",
+    "needs_input": true,
+    "description": "(G,20,8 for local, L,-0.6,-0.6 for end-to-end)\n\nReporting:\n(default)          look for multiple alignments, report best, with MAPQ\nOR"
+  },
+  {
+    "category": "Scoring",
+    "short": "-k <int>",
+    "long": null,
+    "needs_input": true,
+    "description": "report up to <int> alns per read; MAPQ not meaningful OR"
+  },
+  {
+    "category": "Scoring",
+    "short": "-a/--all",
+    "long": null,
+    "needs_input": false,
+    "description": "report all alignments; very slow, MAPQ not meaningful"
+  },
+  {
+    "category": "Effort",
+    "short": "-D <int>",
+    "long": null,
+    "needs_input": true,
+    "description": "give up extending after <int> failed extends in a row (15)"
+  },
+  {
+    "category": "Effort",
+    "short": "-R <int>",
+    "long": null,
+    "needs_input": true,
+    "description": "for reads w/ repetitive seeds, try <int> sets of seeds (2)"
+  },
+  {
+    "category": "Paired-end",
+    "short": "-I",
+    "long": "--minins <int>",
+    "needs_input": true,
+    "description": "minimum fragment length (0)"
+  },
+  {
+    "category": "Paired-end",
+    "short": "-X",
+    "long": "--maxins <int>",
+    "needs_input": true,
+    "description": "maximum fragment length (500)"
+  },
+  {
+    "category": "Paired-end",
+    "short": "-2 mates align fw/rev, rev/fw, fw/fw (--fr)",
+    "long": "--fr/--rf/--ff",
+    "needs_input": true,
+    "description": "-1"
+  },
+  {
+    "category": "Paired-end",
+    "short": null,
+    "long": "--no-mixed",
+    "needs_input": false,
+    "description": "suppress unpaired alignments for paired reads"
+  },
+  {
+    "category": "Paired-end",
+    "short": null,
+    "long": "--no-discordant",
+    "needs_input": false,
+    "description": "suppress discordant alignments for paired reads"
+  },
+  {
+    "category": "Paired-end",
+    "short": null,
+    "long": "--dovetail",
+    "needs_input": false,
+    "description": "concordant when mates extend past each other"
+  },
+  {
+    "category": "Paired-end",
+    "short": null,
+    "long": "--no-contain",
+    "needs_input": false,
+    "description": "not concordant when one mate alignment contains other"
+  },
+  {
+    "category": "Paired-end",
+    "short": null,
+    "long": "--no-overlap",
+    "needs_input": false,
+    "description": "not concordant when mates overlap at all"
+  },
+  {
+    "category": "BAM",
+    "short": null,
+    "long": "--align-paired-reads",
+    "needs_input": false,
+    "description": "Bowtie2 will, by default, attempt to align unpaired BAM reads.\nUse this option to align paired-end reads instead."
+  },
+  {
+    "category": "BAM",
+    "short": null,
+    "long": "--preserve-tags",
+    "needs_input": false,
+    "description": "Preserve tags from the original BAM record by appending them to the end of the corresponding SAM output.\n"
+  },
+  {
+    "category": "Output",
+    "short": "-t",
+    "long": "--time",
+    "needs_input": false,
+    "description": "print wall-clock time taken by search phases"
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--un <path>",
+    "needs_input": true,
+    "description": "write unpaired reads that didn't align to <path>"
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--al <path>",
+    "needs_input": true,
+    "description": "write unpaired reads that aligned at least once to <path>"
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--un-conc <path>",
+    "needs_input": true,
+    "description": "write pairs that didn't align concordantly to <path>"
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--al-conc <path>",
+    "needs_input": true,
+    "description": "write pairs that aligned concordantly at least once to <path> (Note: for --un, --al, --un-conc, or --al-conc, add '-gz' to the option name, e.g."
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--un-gz <path>, to gzip compress output, or add '-bz2' to bzip2 compress output.)",
+    "needs_input": true,
+    "description": ""
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--quiet",
+    "needs_input": false,
+    "description": "print nothing to stderr except serious errors"
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--met-file <path>",
+    "needs_input": true,
+    "description": "send metrics to file at <path> (off)"
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--met-stderr",
+    "needs_input": false,
+    "description": "send metrics to stderr (off)"
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--met <int>",
+    "needs_input": true,
+    "description": "report internal counters & metrics every <int> secs (1)"
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--no-unal",
+    "needs_input": false,
+    "description": "suppress SAM records for unaligned reads"
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--no-head",
+    "needs_input": false,
+    "description": "suppress header lines, i.e. lines starting with @"
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--no-sq",
+    "needs_input": false,
+    "description": "suppress @SQ header lines"
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--rg-id <text>",
+    "needs_input": true,
+    "description": "set read group id, reflected in @RG line and RG:Z: opt field"
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--rg <text>",
+    "needs_input": true,
+    "description": "add <text> (\"lab:value\") to @RG line of SAM header. Note: @RG line only printed when --rg-id is set."
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--omit-sec-seq",
+    "needs_input": false,
+    "description": "put '*' in SEQ and QUAL fields for secondary alignments."
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--sam-no-qname-trunc",
+    "needs_input": false,
+    "description": "Suppress standard behavior of truncating readname at first whitespace\nat the expense of generating non-standard SAM."
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--xeq",
+    "needs_input": false,
+    "description": "Use '='/'X', instead of 'M,' to specify matches/mismatches in SAM record."
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--soft-clipped-unmapped-tlen",
+    "needs_input": false,
+    "description": "Exclude soft-clipped bases when reporting TLEN."
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--sam-append-comment",
+    "needs_input": false,
+    "description": "Append FASTA/FASTQ comment to SAM record."
+  },
+  {
+    "category": "Output",
+    "short": null,
+    "long": "--sam-opt-config <config>",
+    "needs_input": true,
+    "description": "Use <config>, example '-MD,YP,-AS', to toggle SAM Optional fields.\n"
+  },
+  {
+    "category": "Performance",
+    "short": "-p",
+    "long": "--threads <int> number of alignment threads to launch (1)",
+    "needs_input": true,
+    "description": ""
+  },
+  {
+    "category": "Performance",
+    "short": null,
+    "long": "--reorder",
+    "needs_input": false,
+    "description": "force SAM output order to match order of input reads"
+  },
+  {
+    "category": "Performance",
+    "short": null,
+    "long": "--mm",
+    "needs_input": false,
+    "description": "use memory-mapped I/O for index; many 'bowtie's can share"
+  },
+  {
+    "category": "Other",
+    "short": null,
+    "long": "--qc-filter",
+    "needs_input": false,
+    "description": "filter out reads that are bad according to QSEQ filter"
+  },
+  {
+    "category": "Other",
+    "short": null,
+    "long": "--seed <int>",
+    "needs_input": true,
+    "description": "seed for random number generator (0)"
+  },
+  {
+    "category": "Other",
+    "short": null,
+    "long": "--non-deterministic",
+    "needs_input": false,
+    "description": "seed rand. gen. arbitrarily instead of using read attributes"
+  },
+  {
+    "category": "Other",
+    "short": null,
+    "long": "--version",
+    "needs_input": false,
+    "description": "print version information and quit"
+  },
+  {
+    "category": "Other",
+    "short": "-h",
+    "long": "--help",
+    "needs_input": false,
+    "description": "print this usage message"
+  }
 ]

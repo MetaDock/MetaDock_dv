@@ -1,0 +1,93 @@
+[
+  {
+    "category": null,
+    "short": null,
+    "long": "--out_dir OUT_DIR [-x EXTENSION]",
+    "needs_input": true,
+    "description": "[--min_perc_aa MIN_PERC_AA] [--prefix PREFIX]\n[--cpus CPUS] [--force] [--scratch_dir SCRATCH_DIR]\n[-r] [-d] [-h]\n"
+  },
+  {
+    "category": "mutually exclusive required arguments",
+    "short": null,
+    "long": "--genome_dir GENOME_DIR",
+    "needs_input": true,
+    "description": "directory containing genome files in FASTA format"
+  },
+  {
+    "category": "mutually exclusive required arguments",
+    "short": "",
+    "long": "--batchfile BATCHFILE",
+    "needs_input": true,
+    "description": "file describing genomes - tab separated in 2 columns\n(FASTA file, genome ID)"
+  },
+  {
+    "category": "required named arguments",
+    "short": null,
+    "long": "--out_dir OUT_DIR",
+    "needs_input": true,
+    "description": "directory to output files"
+  },
+  {
+    "category": "optional arguments",
+    "short": "-x",
+    "long": "--extension EXTENSION",
+    "needs_input": true,
+    "description": "extension of files to process, gz = gzipped (default:\nfna)"
+  },
+  {
+    "category": "optional arguments",
+    "short": null,
+    "long": "--min_perc_aa MIN_PERC_AA",
+    "needs_input": true,
+    "description": "filter genomes with an insufficient percentage of AA\nin the MSA (default: 10)"
+  },
+  {
+    "category": "optional arguments",
+    "short": null,
+    "long": "--prefix PREFIX",
+    "needs_input": true,
+    "description": "desired prefix for output files (default: gtdbtk)"
+  },
+  {
+    "category": "optional arguments",
+    "short": null,
+    "long": "--cpus CPUS",
+    "needs_input": true,
+    "description": "number of CPUs to use (default: 1)"
+  },
+  {
+    "category": "optional arguments",
+    "short": null,
+    "long": "--force",
+    "needs_input": false,
+    "description": "continue processing if an error occurrs on a single genome (default: False)"
+  },
+  {
+    "category": "optional arguments",
+    "short": null,
+    "long": "--scratch_dir SCRATCH_DIR",
+    "needs_input": true,
+    "description": "Reduce memory usage by writing to disk (slower)."
+  },
+  {
+    "category": "optional arguments",
+    "short": "-r",
+    "long": "--recalculate_red",
+    "needs_input": false,
+    "description": "recalculate RED values based on the reference tree and\nall added user genomes (default: False)"
+  },
+  {
+    "category": "optional arguments",
+    "short": "-d",
+    "long": "--debug",
+    "needs_input": false,
+    "description": "create intermediate files for debugging purposes (default: False)"
+  },
+  {
+    "category": "optional arguments",
+    "short": "-h",
+    "long": "--help",
+    "needs_input": false,
+    "description": "show help message"
+  }
+]

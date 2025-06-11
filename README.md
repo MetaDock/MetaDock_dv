@@ -7,7 +7,7 @@ Microbiome research increasingly relies on computational tools that require HPC 
 
 ## Manual for admin 
 
-- [Installation]()
+- [Installation](./docs/installation.md)
 - [Brower initialization]()
 - [Tool creation]()
 - [Configuration]()

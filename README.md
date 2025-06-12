@@ -10,7 +10,7 @@ Microbiome research increasingly depends on computational tools that often requi
 
 - **Admin Panel:** Simplifies tool setup, configuration, and management.
 - **User-Friendly GUI:** Allows point-and-click analysis without coding.
-
+   ![MetaDock Demo](./images/login.gif)
 ## Roles in MetaDock
 
 ### Admin

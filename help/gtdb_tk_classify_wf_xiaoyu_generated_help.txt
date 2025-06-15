@@ -1,0 +1,46 @@
+usage: gtdbtk classify_wf (--genome_dir GENOME_DIR | --batchfile BATCHFILE) --out_dir OUT_DIR [-x EXTENSION] [--min_perc_aa MIN_PERC_AA] [--prefix PREFIX] [--cpus CPUS] [--force] [--scratch_dir SCRATCH_DIR] [-r] [-d] [-h]
+
+mutually exclusive required arguments:
+  --genome_dir GENOME_DIR
+                        directory containing genome
+                        files in FASTA format
+  --batchfile BATCHFILE
+                        file describing genomes - tab
+                        separated in 2 columns (FASTA
+                        file, genome ID)
+
+required named arguments:
+  --out_dir OUT_DIR
+                        directory to output files
+
+optional arguments:
+  -x, --extension EXTENSION
+                        extension of files to process,
+                        gz = gzipped (default: fna)
+  --min_perc_aa MIN_PERC_AA
+                        filter genomes with an
+                        insufficient percentage of AA in
+                        the MSA (default: 10)
+  --prefix PREFIX
+                        desired prefix for output files
+                        (default: gtdbtk)
+  --cpus CPUS
+                        number of CPUs to use (default:
+                        1)
+  --force
+                        continue processing if an error
+                        occurrs on a single genome
+                        (default: False)
+  --scratch_dir SCRATCH_DIR
+                        Reduce memory usage by writing
+                        to disk (slower).
+  -r, --recalculate_red
+                        recalculate RED values based on
+                        the reference tree and all added
+                        user genomes (default: False)
+  -d, --debug
+                        create intermediate files for
+                        debugging purposes (default:
+                        False)
+  -h, --help
+                        show help message

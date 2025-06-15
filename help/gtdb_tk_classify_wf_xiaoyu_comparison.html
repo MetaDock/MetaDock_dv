@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Help Comparison Report</title>
+    <style>
+        body {
+            font-family: 'Consolas', monospace;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+        .issues {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 5px solid #ffeeba;
+        }
+        .comparison {
+            display: flex;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            position: relative;
+        }
+        .original, .generated {
+            flex: 1;
+            padding: 10px;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .original {
+            background: #fff8f8;
+            border-right: 1px solid #eee;
+        }
+        .generated {
+            background: #f8fff8;
+        }
+        .diff-header {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: -10px -10px 10px -10px;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+        }
+        .timestamp {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .empty {
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+        }
+        .match {
+            background: #e8f5e9;
+        }
+        .nomatch {
+            background: #ffebee;
+        }
+        .section-actions {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .comparison:hover .section-actions {
+            opacity: 1;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .btn-add {
+            background: #28a745;
+        }
+        .btn-modify {
+            background: #17a2b8;
+        }
+        .btn-delete {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Help Comparison Report</h1>
+            <div class="timestamp">Generated on: 2025-06-14 17:35:34</div>
+        </div>
+<div class="issues">
+<h2>Content Issues</h2>
+<ul>
+<li>Warning: D:\file\MetaDock_dv\parameters\gtdb_tk_classify_wf_xiaoyu_para.json - --out_dir OUT_DIR [-x EXTENSION] has null category</li>
+</ul>
+</div>
+<div class="comparison" data-section-id="section_0">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">usage: gtdbtk classify_wf (--genome_dir GENOME_DIR | --batchfile BATCHFILE)
+                          --out_dir OUT_DIR [-x EXTENSION]
+                          [--min_perc_aa MIN_PERC_AA] [--prefix PREFIX]
+                          [--cpus CPUS] [--force] [--scratch_dir SCRATCH_DIR]
+                          [-r] [-d] [-h]</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">usage: gtdbtk classify_wf (--genome_dir GENOME_DIR | --batchfile BATCHFILE) --out_dir OUT_DIR [-x EXTENSION] [--min_perc_aa MIN_PERC_AA] [--prefix PREFIX] [--cpus CPUS] [--force] [--scratch_dir SCRATCH_DIR] [-r] [-d] [-h]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_1">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">mutually exclusive required arguments:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">mutually exclusive required arguments:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_2">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --genome_dir GENOME_DIR
+                        directory containing genome files in FASTA format</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --genome_dir GENOME_DIR
+                        directory containing genome
+                        files in FASTA format</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_3">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --batchfile BATCHFILE
+                        file describing genomes - tab separated in 2 columns
+                        (FASTA file, genome ID)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --batchfile BATCHFILE
+                        file describing genomes - tab
+                        separated in 2 columns (FASTA
+                        file, genome ID)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_4">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">required named arguments:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">required named arguments:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_5">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --out_dir OUT_DIR     directory to output files</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --out_dir OUT_DIR
+                        directory to output files</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_6">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">optional arguments:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">optional arguments:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_7">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -x, --extension EXTENSION
+                        extension of files to process, gz = gzipped (default:
+                        fna)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -x, --extension EXTENSION
+                        extension of files to process,
+                        gz = gzipped (default: fna)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_8">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --min_perc_aa MIN_PERC_AA
+                        filter genomes with an insufficient percentage of AA
+                        in the MSA (default: 10)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --min_perc_aa MIN_PERC_AA
+                        filter genomes with an
+                        insufficient percentage of AA in
+                        the MSA (default: 10)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_9">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --prefix PREFIX       desired prefix for output files (default: gtdbtk)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --prefix PREFIX
+                        desired prefix for output files
+                        (default: gtdbtk)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_10">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --cpus CPUS           number of CPUs to use (default: 1)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --cpus CPUS
+                        number of CPUs to use (default:
+                        1)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_11">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --force               continue processing if an error occurrs on a single
+                        genome (default: False)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --force
+                        continue processing if an error
+                        occurrs on a single genome
+                        (default: False)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_12">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --scratch_dir SCRATCH_DIR
+                        Reduce memory usage by writing to disk (slower).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --scratch_dir SCRATCH_DIR
+                        Reduce memory usage by writing
+                        to disk (slower).</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_13">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -r, --recalculate_red
+                        recalculate RED values based on the reference tree and
+                        all added user genomes (default: False)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -r, --recalculate_red
+                        recalculate RED values based on
+                        the reference tree and all added
+                        user genomes (default: False)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_14">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -d, --debug           create intermediate files for debugging purposes
+                        (default: False)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -d, --debug
+                        create intermediate files for
+                        debugging purposes (default:
+                        False)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_15">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -h, --help            show help message</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -h, --help
+                        show help message</div>
+</div>
+</div>
+    </div>
+</body>
+</html>

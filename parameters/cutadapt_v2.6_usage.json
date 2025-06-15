@@ -1,0 +1,5 @@
+{
+    "usage": [
+        "Usage: cutadapt -a ADAPTER [options] [-o output.fastq] input.fastq"
+    ]
+}

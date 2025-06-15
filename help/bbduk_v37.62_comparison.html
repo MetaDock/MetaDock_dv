@@ -1,0 +1,2321 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Help Comparison Report</title>
+    <style>
+        body {
+            font-family: 'Consolas', monospace;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+        .issues {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 5px solid #ffeeba;
+        }
+        .comparison {
+            display: flex;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            position: relative;
+        }
+        .original, .generated {
+            flex: 1;
+            padding: 10px;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .original {
+            background: #fff8f8;
+            border-right: 1px solid #eee;
+        }
+        .generated {
+            background: #f8fff8;
+        }
+        .diff-header {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: -10px -10px 10px -10px;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+        }
+        .timestamp {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .empty {
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+        }
+        .match {
+            background: #e8f5e9;
+        }
+        .nomatch {
+            background: #ffebee;
+        }
+        .section-actions {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .comparison:hover .section-actions {
+            opacity: 1;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .btn-add {
+            background: #28a745;
+        }
+        .btn-modify {
+            background: #17a2b8;
+        }
+        .btn-delete {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Help Comparison Report</h1>
+            <div class="timestamp">Generated on: 2025-06-14 17:29:54</div>
+        </div>
+<div class="issues">
+<h2>Content Issues</h2>
+<ul>
+<li>Warning: D:\file\MetaDock_dv\parameters\bbduk_v37.62_para.json - -Xmx has null category</li>
+<li>Warning: D:\file\MetaDock_dv\parameters\bbduk_v37.62_para.json - -eoom has null category</li>
+<li>Warning: D:\file\MetaDock_dv\parameters\bbduk_v37.62_para.json - -da has null category</li>
+</ul>
+</div>
+<div class="comparison" data-section-id="section_0">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Written by Brian Bushnell</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_1">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Last modified October 17, 2017</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_2">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Description:  Compares reads to the kmers in a reference dataset, optionally</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_3">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">allowing an edit distance. Splits the reads into two outputs - those that</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_4">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">match the reference, and those that don't. Can also trim (remove) the matching</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_5">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">parts of the reads rather than binning the reads.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_6">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Please read bbmap/docs/guides/BBDukGuide.txt for more information.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_7">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">Usage:  bbduk.sh in=<input file> out=<output file> ref=<contaminant files></div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">Usage:  bbduk.sh in=<input file> out=<output file> ref=<contaminant files></div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_8">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Input may be stdin or a fasta or fastq file, compressed or uncompressed.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -eoom
+                        This flag will cause the process
+                        to exit if an out-of-memory
+                        exception occurs.  Requires Java
+                        8u92+.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_9">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">If you pipe via stdin/stdout, please include the file type; e.g. for gzipped</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Trimming/Filtering/Masking parameters:
+  ktrim=, f
+                        Trim reads to remove bases
+                        matching reference kmers.
+                        Values: f (don't trim), r (trim
+                        to the right), l (trim to the
+                        left)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_10">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">fasta input, set in=stdin.fa.gz</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -da
+                        Disable assertions.  Please
+                        contact Brian Bushnell at
+                        bbushnell@lbl.gov if you
+                        encounter any problems.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_11">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Input parameters:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Histogram output parameters:
+  bhist=, <file>
+                        Base composition histogram by
+                        position.
+  qhist=, <file>
+                        Quality histogram by position.
+  qchist=, <file>
+                        Count of bases with each quality
+                        value.
+  aqhist=, <file>
+                        Histogram of average read
+                        quality.
+  bqhist=, <file>
+                        Quality histogram designed for
+                        box plots.
+  lhist=, <file>
+                        Read length histogram.
+  gchist=, <file>
+                        Read GC content histogram.
+  gcbins=, 100
+                        Number gchist bins.  Set to
+                        'auto' to use read length.
+  maxhistlen=, 6000
+                        Set an upper bound for histogram
+                        lengths; higher uses more
+                        memory.  The default is 6000 for
+                        some histograms and 80000 for
+                        others.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_12">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">in=<file>           Main input. in=stdin.fq will pipe from stdin.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -Xmx
+                        This will be passed to Java to
+                        set memory usage, overriding the
+                        program's automatic memory
+                        detection. -Xmx20g will specify
+                        20 gigs of RAM, and -Xmx200m
+                        will specify 200 megs. The max
+                        is typically 85% of physical
+                        memory.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_13">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">in2=<file>          Input for 2nd read of pairs in a different file.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Input parameters:
+  in=, <file>
+                        Main input. in=stdin.fq will
+                        pipe from stdin.
+  in2=, <file>
+                        Input for 2nd read of pairs in a
+                        different file.
+  ref=, <file,file>
+                        Comma-delimited list of
+                        reference files. You can also
+                        use ref=phix, ref=adapters, or
+                        ref=artifacts.
+  literal=, <seq,seq>
+                        Comma-delimited list of literal
+                        reference sequences.
+  touppercase=, f
+                        (tuc) Change all bases upper-
+                        case.
+  interleaved=, auto
+                        (int) t/f overrides interleaved
+                        autodetection.
+  qin=, auto
+                        Input quality offset: 33
+                        (Sanger), 64, or auto.
+  reads=, -1
+                        If positive, quit after
+                        processing X reads or pairs.
+  copyundefined=, f
+                        (cu) Process non-AGCT IUPAC
+                        reference bases by making all
+                        possible unambiguous copies.
+                        Intended for short motifs or
+                        adapter barcodes, as time/memory
+                        use is exponential.
+  samplerate=, 1
+                        Set lower to only process a
+                        fraction of input reads.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_14">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">ref=<file,file>     Comma-delimited list of reference files.
+                    You can also use ref=phix, ref=adapters, or ref=artifacts.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Cardinality estimation:
+  cardinality=, f
+                        (loglog) Count unique kmers
+                        using the LogLog algorithm.
+  loglogk=, 31
+                        Use this kmer length for
+                        counting.
+  loglogbuckets=, 1999
+                        Use this many buckets for
+                        counting.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_15">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">literal=<seq,seq>   Comma-delimited list of literal reference sequences.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Entropy/Complexity parameters:
+  entropy=, -1
+                        Set between 0 and 1 to filter
+                        reads with entropy below that
+                        value.  Higher is more
+                        stringent.
+  entropywindow=, 50
+                        Calculate entropy using a
+                        sliding window of this length.
+  entropyk=, 5
+                        Calculate entropy using kmers of
+                        this length.
+  minbasefrequency=, 0
+                        Discard reads with a minimum
+                        base frequency below this.
+  entropymask=, f
+                        Values: f:  Discard low-entropy
+                        sequences. t:  Mask low-entropy
+                        parts of sequences with N. lc:
+                        Change low-entropy parts of
+                        sequences to lowercase.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_16">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">touppercase=f       (tuc) Change all bases upper-case.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Header-parsing parameters - these require Illumina headers:
+  chastityfilter=, f
+                        (cf) Discard reads with id
+                        containing ' 1:Y:' or ' 2:Y:'.
+  barcodefilter=, f
+                        Remove reads with unexpected
+                        barcodes if barcodes is set, or
+                        barcodes containing 'N'
+                        otherwise.  A barcode must be
+                        the last part of the read
+                        header. Values: t:     Remove
+                        reads with bad barcodes. f:
+                        Ignore barcodes. crash: Crash
+                        upon encountering bad barcodes.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_17">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">interleaved=auto    (int) t/f overrides interleaved autodetection.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Histograms for mapped sam/bam files only:
+  histbefore=, t
+                        Calculate histograms from reads
+                        before processing.
+  ehist=, <file>
+                        Errors-per-read histogram.
+  qahist=, <file>
+                        Quality accuracy histogram of
+                        error rates versus quality
+                        score.
+  indelhist=, <file>
+                        Indel length histogram.
+  mhist=, <file>
+                        Histogram of match, sub, del,
+                        and ins rates by position.
+  idhist=, <file>
+                        Histogram of read count versus
+                        percent identity.
+  idbins=, 100
+                        Number idhist bins.  Set to
+                        'auto' to use read length.
+  varfile=, <file>
+                        Ignore substitution errors
+                        listed in this file when
+                        calculating error rates.  Can be
+                        generated with CallVariants.
+  vcf=, <file>
+                        Ignore substitution errors
+                        listed in this VCF file when
+                        calculating error rates.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_18">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">qin=auto            Input quality offset: 33 (Sanger), 64, or auto.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Output parameters:
+  out=, <file>
+                        (outnonmatch) Write reads here
+                        that do not contain kmers
+                        matching the database.
+                        'out=stdout.fq' will pipe to
+                        standard out.
+  out2=, <file>
+                        (outnonmatch2) Use this to write
+                        2nd read of pairs to a different
+                        file.
+  outm=, <file>
+                        (outmatch) Write reads here that
+                        fail filters.  In default
+                        kfilter mode, this means any
+                        read with a matching kmer. In
+                        any mode, it also includes reads
+                        that fail filters such as
+                        minlength, mingc, maxgc,
+                        entropy, etc.  In other words,
+                        it includes all reads that do
+                        not go to 'out'.
+  outm2=, <file>
+                        (outmatch2) Use this to write
+                        2nd read of pairs to a different
+                        file.
+  outs=, <file>
+                        (outsingle) Use this to write
+                        singleton reads whose mate was
+                        trimmed shorter than minlen.
+  stats=, <file>
+                        Write statistics about which
+                        contamininants were detected.
+  refstats=, <file>
+                        Write statistics on a per-
+                        reference-file basis.
+  rpkm=, <file>
+                        Write RPKM for each reference
+                        sequence (for RNA-seq).
+  dump=, <file>
+                        Dump kmer tables to a file, in
+                        fasta format.
+  duk=, <file>
+                        Write statistics in duk's
+                        format. *DEPRECATED*
+  nzo=, t
+                        Only write statistics about ref
+                        sequences with nonzero hits.
+  overwrite=, t
+                        (ow) Grant permission to
+                        overwrite files.
+  showspeed=, t
+                        (ss) 'f' suppresses display of
+                        processing speed.
+  ziplevel=, 2
+                        (zl) Compression level; 1 (min)
+                        through 9 (max).
+  fastawrap=, 70
+                        Length of lines in fasta output.
+  qout=, auto
+                        Output quality offset: 33
+                        (Sanger), 64, or auto.
+  statscolumns=, 3
+                        (cols) Number of columns for
+                        stats output, 3 or 5. 5 includes
+                        base counts.
+  rename=, f
+                        Rename reads to indicate which
+                        sequences they matched.
+  refnames=, f
+                        Use names of reference files
+                        rather than scaffold IDs.
+  trd=, f
+                        Truncate read and ref names at
+                        the first whitespace.
+  ordered=, f
+                        Set to true to output reads in
+                        same order as input.
+  maxbasesout=, -1
+                        If positive, quit after writing
+                        approximately this many bases to
+                        out (outu/outnonmatch).
+  maxbasesoutm=, -1
+                        If positive, quit after writing
+                        approximately this many bases to
+                        outm (outmatch).</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_19">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">reads=-1            If positive, quit after processing X reads or pairs.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Speed and Memory parameters:
+  threads=, auto
+                        (t) Set number of threads to
+                        use; default is number of
+                        logical processors.
+  prealloc=, f
+                        Preallocate memory in table.
+                        Allows faster table loading and
+                        more efficient memory usage, for
+                        a large reference.
+  monitor=, f
+                        Kill this process if it crashes.
+                        monitor=600,0.01 would kill
+                        after 600 seconds under 1%
+                        usage.
+  minrskip=, 1
+                        (mns) Force minimal skip
+                        interval when indexing reference
+                        kmers.  1 means use all, 2 means
+                        use every other kmer, etc.
+  maxrskip=, 1
+                        (mxs) Restrict maximal skip
+                        interval when indexing reference
+                        kmers. Normally all are used for
+                        scaffolds<100kb, but with longer
+                        scaffolds, up to maxrskip-1 are
+                        skipped.
+  rskip=, null
+                        Set both minrskip and maxrskip
+                        to the same value. If not set,
+                        rskip will vary based on
+                        sequence length.
+  qskip=, 1
+                        Skip query kmers to increase
+                        speed.  1 means use all.
+  speed=, 0
+                        Ignore this fraction of kmer
+                        space (0-15 out of 16) in both
+                        reads and reference.  Increases
+                        speed and reduces memory.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_20">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">copyundefined=f     (cu) Process non-AGCT IUPAC reference bases by making all
+                    possible unambiguous copies.  Intended for short motifs
+                    or adapter barcodes, as time/memory use is exponential.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Processing parameters:
+  k=, 27
+                        Kmer length used for finding
+                        contaminants.  Contaminants
+                        shorter than k will not be
+                        found.  k must be at least 1.
+  rcomp=, t
+                        Look for reverse-complements of
+                        kmers in addition to forward
+                        kmers.
+  maskmiddle=, t
+                        (mm) Treat the middle base of a
+                        kmer as a wildcard, to increase
+                        sensitivity in the presence of
+                        errors.
+  minkmerhits=, 1
+                        (mkh) Reads need at least this
+                        many matching kmers to be
+                        considered as matching the
+                        reference.
+  minkmerfraction=, 0.0
+                        (mkf) A reads needs at least
+                        this fraction of its total kmers
+                        to hit a ref, in order to be
+                        considered a match. If this and
+                        minkmerhits are set, the greater
+                        is used.
+  mincovfraction=, 0.0
+                        (mcf) A reads needs at least
+                        this fraction of its total bases
+                        to be covered by ref kmers to be
+                        considered a match. If
+                        specified, mcf overrides mkh and
+                        mkf.
+  hammingdistance=, 0
+                        (hdist) Maximum Hamming distance
+                        for ref kmers (subs only).
+                        Memory use is proportional to
+                        (3*K)^hdist.
+  qhdist=, 0
+                        Hamming distance for query
+                        kmers; impacts speed, not
+                        memory.
+  editdistance=, 0
+                        (edist) Maximum edit distance
+                        from ref kmers (subs and
+                        indels).  Memory use is
+                        proportional to (8*K)^edist.
+  hammingdistance2=, 0
+                        (hdist2) Sets hdist for short
+                        kmers, when using mink.
+  qhdist2=, 0
+                        Sets qhdist for short kmers,
+                        when using mink.
+  editdistance2=, 0
+                        (edist2) Sets edist for short
+                        kmers, when using mink.
+  forbidn=, f
+                        (fn) Forbids matching of read
+                        kmers containing N. By default,
+                        these will match a reference 'A'
+                        if hdist>0 or edist>0, to
+                        increase sensitivity.
+  removeifeitherbad=, t
+                        (rieb) Paired reads get sent to
+                        'outmatch' if either is match
+                        (or either is trimmed shorter
+                        than minlen). Set to false to
+                        require both.
+  findbestmatch=, f
+                        (fbm) If multiple matches,
+                        associate read with sequence
+                        sharing most kmers.  Reduces
+                        speed.
+  skipr1=, f
+                        Don't do kmer-based operations
+                        on read 1.
+  skipr2=, f
+                        Don't do kmer-based operations
+                        on read 2.
+  ecco=, f
+                        For overlapping paired reads
+                        only.  Performs error-
+                        correction with BBMerge prior to
+                        kmer operations.
+  recalibrate=, f
+                        (recal) Recalibrate quality
+                        scores.  Requires calibration
+                        matrices generated by
+                        CalcTrueQuality.
+  sam=, <file,file>
+                        If recalibration is desired, and
+                        matrices have not already been
+                        generated, BBDuk will create
+                        them from the sam file.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_21">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">samplerate=1        Set lower to only process a fraction of input reads.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Values:
+  kmask=, f
+                        Replace bases matching ref kmers
+                        with another symbol. Allows any
+                        non-whitespace character other
+                        than t or f, and processes short
+                        kmers on both ends.  'kmask=lc'
+                        will convert masked bases to
+                        lowercase.
+  maskfullycovered=, f
+                        (mfc) Only mask bases that are
+                        fully covered by kmers.
+  mink=, 0
+                        Look for shorter kmers at read
+                        tips down to this length, when
+                        k-trimming or masking.  0 means
+                        disabled.  Enabling this will
+                        disable maskmiddle.
+  qtrim=, f
+                        Trim read ends to remove bases
+                        with quality below trimq.
+                        Performed AFTER looking for
+                        kmers. Values: rl (trim both
+                        ends), f (neither end), r (right
+                        end only), l (left end only), w
+                        (sliding window).
+  trimq=, 6
+                        Regions with average quality
+                        BELOW this will be trimmed, if
+                        qtrim is set to something other
+                        than f.
+  trimclip=, f
+                        Trim soft-clipped bases from sam
+                        files.
+  trimpolya=, 0
+                        If greater than 0, trim poly-A
+                        or poly-T tails of at least this
+                        length on either end of reads.
+  minlength=, 10
+                        (ml) Reads shorter than this
+                        after trimming will be
+                        discarded.  Pairs will be
+                        discarded if both are shorter.
+  mlf=, 0
+                        (minlengthfraction) Reads
+                        shorter than this fraction of
+                        original length after trimming
+                        will be discarded.
+  maxlength=, null
+                        Reads longer than this after
+                        trimming will be discarded.
+                        Pairs will be discarded only if
+                        both are longer.
+  minavgquality=, 0
+                        (maq) Reads with average quality
+                        (after trimming) below this will
+                        be discarded.
+  maqb=, 0
+                        If positive, calculate maq from
+                        this many initial bases.
+  minbasequality=, 0
+                        (mbq) Reads with any base below
+                        this quality (after trimming)
+                        will be discarded.
+  maxns=, -1
+                        If non-negative, reads with more
+                        Ns than this (after trimming)
+                        will be discarded.
+  mcb=, 0
+                        (minconsecutivebases) Discard
+                        reads without at least this many
+                        consecutive called bases.
+  ottm=, f
+                        (outputtrimmedtomatch) Output
+                        reads trimmed to shorter than
+                        minlength to outm rather than
+                        discarding.
+  tp=, 0
+                        (trimpad) Trim this much extra
+                        around matching kmers.
+  tbo=, f
+                        (trimbyoverlap) Trim adapters
+                        based on where paired reads
+                        overlap.
+  strictoverlap=, t
+                        Adjust sensitivity for
+                        trimbyoverlap mode.
+  minoverlap=, 14
+                        Require this many bases of
+                        overlap for detection.
+  mininsert=, 40
+                        Require insert size of at least
+                        this for overlap. Should be
+                        reduced to 16 for small RNA
+                        sequencing.
+  tpe=, f
+                        (trimpairsevenly) When kmer
+                        right-trimming, trim both reads
+                        to the minimum length of either.
+  forcetrimleft=, 0
+                        (ftl) If positive, trim bases to
+                        the left of this position
+                        (exclusive, 0-based).
+  forcetrimright=, 0
+                        (ftr) If positive, trim bases to
+                        the right of this position
+                        (exclusive, 0-based).
+  forcetrimright2=, 0
+                        (ftr2) If positive, trim this
+                        many bases on the right end.
+  forcetrimmod=, 0
+                        (ftm) If positive, right-trim
+                        length to be equal to zero,
+                        modulo this number.
+  restrictleft=, 0
+                        If positive, only look for kmer
+                        matches in the leftmost X bases.
+  restrictright=, 0
+                        If positive, only look for kmer
+                        matches in the rightmost X
+                        bases.
+  mingc=, 0
+                        Discard reads with GC content
+                        below this.
+  maxgc=, 1
+                        Discard reads with GC content
+                        above this.
+  gcpairs=, t
+                        Use average GC of paired reads.
+                        Also affects gchist.
+  tossjunk=, f
+                        Discard reads with invalid
+                        characters as bases.
+  barcodes=, null
+                        Comma-delimited list of barcodes
+                        or files of barcodes.
+  xmin=, -1
+                        If positive, discard reads with
+                        a lesser X coordinate.
+  ymin=, -1
+                        If positive, discard reads with
+                        a lesser Y coordinate.
+  xmax=, -1
+                        If positive, discard reads with
+                        a greater X coordinate.
+  ymax=, -1
+                        If positive, discard reads with
+                        a greater Y coordinate.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_22">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Output parameters:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_23">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">out=<file>          (outnonmatch) Write reads here that do not contain
+                    kmers matching the database.  'out=stdout.fq' will pipe
+                    to standard out.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_24">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">out2=<file>         (outnonmatch2) Use this to write 2nd read of pairs to a
+                    different file.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_25">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">outm=<file>         (outmatch) Write reads here that fail filters.  In default
+                    kfilter mode, this means any read with a matching kmer.
+                    In any mode, it also includes reads that fail filters such
+                    as minlength, mingc, maxgc, entropy, etc.  In other words,
+                    it includes all reads that do not go to 'out'.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_26">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">outm2=<file>        (outmatch2) Use this to write 2nd read of pairs to a
+                    different file.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_27">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">outs=<file>         (outsingle) Use this to write singleton reads whose mate
+                    was trimmed shorter than minlen.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_28">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">stats=<file>        Write statistics about which contamininants were detected.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_29">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">refstats=<file>     Write statistics on a per-reference-file basis.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_30">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">rpkm=<file>         Write RPKM for each reference sequence (for RNA-seq).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_31">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">dump=<file>         Dump kmer tables to a file, in fasta format.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_32">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">duk=<file>          Write statistics in duk's format. *DEPRECATED*</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_33">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">nzo=t               Only write statistics about ref sequences with nonzero hits.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_34">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">overwrite=t         (ow) Grant permission to overwrite files.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_35">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">showspeed=t         (ss) 'f' suppresses display of processing speed.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_36">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">ziplevel=2          (zl) Compression level; 1 (min) through 9 (max).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_37">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">fastawrap=70        Length of lines in fasta output.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_38">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">qout=auto           Output quality offset: 33 (Sanger), 64, or auto.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_39">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">statscolumns=3      (cols) Number of columns for stats output, 3 or 5.
+                    5 includes base counts.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_40">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">rename=f            Rename reads to indicate which sequences they matched.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_41">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">refnames=f          Use names of reference files rather than scaffold IDs.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_42">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">trd=f               Truncate read and ref names at the first whitespace.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_43">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">ordered=f           Set to true to output reads in same order as input.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_44">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">maxbasesout=-1      If positive, quit after writing approximately this many
+                    bases to out (outu/outnonmatch).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_45">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">maxbasesoutm=-1     If positive, quit after writing approximately this many
+                    bases to outm (outmatch).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_46">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Histogram output parameters:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_47">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">bhist=<file>        Base composition histogram by position.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_48">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">qhist=<file>        Quality histogram by position.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_49">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">qchist=<file>       Count of bases with each quality value.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_50">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">aqhist=<file>       Histogram of average read quality.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_51">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">bqhist=<file>       Quality histogram designed for box plots.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_52">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">lhist=<file>        Read length histogram.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_53">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">gchist=<file>       Read GC content histogram.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_54">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">gcbins=100          Number gchist bins.  Set to 'auto' to use read length.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_55">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">maxhistlen=6000     Set an upper bound for histogram lengths; higher uses
+                    more memory.  The default is 6000 for some histograms
+                    and 80000 for others.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_56">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Histograms for mapped sam/bam files only:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_57">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">histbefore=t        Calculate histograms from reads before processing.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_58">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">ehist=<file>        Errors-per-read histogram.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_59">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">qahist=<file>       Quality accuracy histogram of error rates versus quality
+                    score.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_60">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">indelhist=<file>    Indel length histogram.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_61">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">mhist=<file>        Histogram of match, sub, del, and ins rates by position.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_62">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">idhist=<file>       Histogram of read count versus percent identity.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_63">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">idbins=100          Number idhist bins.  Set to 'auto' to use read length.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_64">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">varfile=<file>      Ignore substitution errors listed in this file when
+                    calculating error rates.  Can be generated with
+                    CallVariants.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_65">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">vcf=<file>          Ignore substitution errors listed in this VCF file
+                    when calculating error rates.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_66">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Processing parameters:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_67">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">k=27                Kmer length used for finding contaminants.  Contaminants
+                    shorter than k will not be found.  k must be at least 1.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_68">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">rcomp=t             Look for reverse-complements of kmers in addition to
+                    forward kmers.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_69">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">maskmiddle=t        (mm) Treat the middle base of a kmer as a wildcard, to
+                    increase sensitivity in the presence of errors.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_70">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">minkmerhits=1       (mkh) Reads need at least this many matching kmers
+                    to be considered as matching the reference.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_71">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">minkmerfraction=0.0 (mkf) A reads needs at least this fraction of its total
+                    kmers to hit a ref, in order to be considered a match.
+                    If this and minkmerhits are set, the greater is used.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_72">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">mincovfraction=0.0  (mcf) A reads needs at least this fraction of its total
+                    bases to be covered by ref kmers to be considered a match.
+                    If specified, mcf overrides mkh and mkf.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_73">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">hammingdistance=0   (hdist) Maximum Hamming distance for ref kmers (subs only).
+                    Memory use is proportional to (3*K)^hdist.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_74">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">qhdist=0            Hamming distance for query kmers; impacts speed, not memory.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_75">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">editdistance=0      (edist) Maximum edit distance from ref kmers (subs
+                    and indels).  Memory use is proportional to (8*K)^edist.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_76">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">hammingdistance2=0  (hdist2) Sets hdist for short kmers, when using mink.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_77">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">qhdist2=0           Sets qhdist for short kmers, when using mink.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_78">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">editdistance2=0     (edist2) Sets edist for short kmers, when using mink.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_79">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">forbidn=f           (fn) Forbids matching of read kmers containing N.
+                    By default, these will match a reference 'A' if
+                    hdist>0 or edist>0, to increase sensitivity.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_80">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">removeifeitherbad=t (rieb) Paired reads get sent to 'outmatch' if either is
+                    match (or either is trimmed shorter than minlen).
+                    Set to false to require both.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_81">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">findbestmatch=f     (fbm) If multiple matches, associate read with sequence
+                    sharing most kmers.  Reduces speed.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_82">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">skipr1=f            Don't do kmer-based operations on read 1.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_83">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">skipr2=f            Don't do kmer-based operations on read 2.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_84">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">ecco=f              For overlapping paired reads only.  Performs error-
+                    correction with BBMerge prior to kmer operations.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_85">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">recalibrate=f       (recal) Recalibrate quality scores.  Requires calibration
+                    matrices generated by CalcTrueQuality.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_86">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">sam=<file,file>     If recalibration is desired, and matrices have not already
+                    been generated, BBDuk will create them from the sam file.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_87">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Speed and Memory parameters:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_88">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">threads=auto        (t) Set number of threads to use; default is number of
+                    logical processors.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_89">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">prealloc=f          Preallocate memory in table.  Allows faster table loading
+                    and more efficient memory usage, for a large reference.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_90">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">monitor=f           Kill this process if it crashes.  monitor=600,0.01 would
+                    kill after 600 seconds under 1% usage.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_91">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">minrskip=1          (mns) Force minimal skip interval when indexing reference
+                    kmers.  1 means use all, 2 means use every other kmer, etc.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_92">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">maxrskip=1          (mxs) Restrict maximal skip interval when indexing
+                    reference kmers. Normally all are used for scaffolds<100kb,
+                    but with longer scaffolds, up to maxrskip-1 are skipped.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_93">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">rskip=              Set both minrskip and maxrskip to the same value.
+                    If not set, rskip will vary based on sequence length.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_94">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">qskip=1             Skip query kmers to increase speed.  1 means use all.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_95">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">speed=0             Ignore this fraction of kmer space (0-15 out of 16) in both
+                    reads and reference.  Increases speed and reduces memory.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_96">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Note: Do not use more than one of 'speed', 'qskip', and 'rskip'.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_97">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Trimming/Filtering/Masking parameters:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_98">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Note - if neither ktrim nor kmask is set, the default behavior is kfilter.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_99">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">All three are mutually exclusive.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_100">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Reads only get sent to 'outm' purely based on kmer matches in kfilter mode.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_101">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">ktrim=f             Trim reads to remove bases matching reference kmers.
+                    Values:
+                            f (don't trim),
+                            r (trim to the right),
+                            l (trim to the left)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_102">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">kmask=f             Replace bases matching ref kmers with another symbol.
+                    Allows any non-whitespace character other than t or f,
+                    and processes short kmers on both ends.  'kmask=lc' will
+                    convert masked bases to lowercase.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_103">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">maskfullycovered=f  (mfc) Only mask bases that are fully covered by kmers.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_104">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">mink=0              Look for shorter kmers at read tips down to this length,
+                    when k-trimming or masking.  0 means disabled.  Enabling
+                    this will disable maskmiddle.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_105">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">qtrim=f             Trim read ends to remove bases with quality below trimq.
+                    Performed AFTER looking for kmers.
+                    Values:
+                            rl (trim both ends),
+                            f (neither end),
+                            r (right end only),
+                            l (left end only),
+                            w (sliding window).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_106">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">trimq=6             Regions with average quality BELOW this will be trimmed,
+                    if qtrim is set to something other than f.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_107">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">trimclip=f          Trim soft-clipped bases from sam files.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_108">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">trimpolya=0         If greater than 0, trim poly-A or poly-T tails of
+                    at least this length on either end of reads.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_109">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">minlength=10        (ml) Reads shorter than this after trimming will be
+                    discarded.  Pairs will be discarded if both are shorter.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_110">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">mlf=0               (minlengthfraction) Reads shorter than this fraction of
+                    original length after trimming will be discarded.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_111">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">maxlength=          Reads longer than this after trimming will be discarded.
+                    Pairs will be discarded only if both are longer.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_112">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">minavgquality=0     (maq) Reads with average quality (after trimming) below
+                    this will be discarded.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_113">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">maqb=0              If positive, calculate maq from this many initial bases.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_114">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">minbasequality=0    (mbq) Reads with any base below this quality (after
+                    trimming) will be discarded.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_115">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">maxns=-1            If non-negative, reads with more Ns than this
+                    (after trimming) will be discarded.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_116">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">mcb=0               (minconsecutivebases) Discard reads without at least
+                    this many consecutive called bases.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_117">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">ottm=f              (outputtrimmedtomatch) Output reads trimmed to shorter
+                    than minlength to outm rather than discarding.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_118">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">tp=0                (trimpad) Trim this much extra around matching kmers.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_119">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">tbo=f               (trimbyoverlap) Trim adapters based on where paired
+                    reads overlap.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_120">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">strictoverlap=t     Adjust sensitivity for trimbyoverlap mode.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_121">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">minoverlap=14       Require this many bases of overlap for detection.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_122">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">mininsert=40        Require insert size of at least this for overlap.
+                    Should be reduced to 16 for small RNA sequencing.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_123">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">tpe=f               (trimpairsevenly) When kmer right-trimming, trim both
+                    reads to the minimum length of either.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_124">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">forcetrimleft=0     (ftl) If positive, trim bases to the left of this position
+                    (exclusive, 0-based).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_125">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">forcetrimright=0    (ftr) If positive, trim bases to the right of this position
+                    (exclusive, 0-based).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_126">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">forcetrimright2=0   (ftr2) If positive, trim this many bases on the right end.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_127">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">forcetrimmod=0      (ftm) If positive, right-trim length to be equal to zero,
+                    modulo this number.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_128">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">restrictleft=0      If positive, only look for kmer matches in the
+                    leftmost X bases.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_129">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">restrictright=0     If positive, only look for kmer matches in the
+                    rightmost X bases.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_130">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">mingc=0             Discard reads with GC content below this.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_131">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">maxgc=1             Discard reads with GC content above this.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_132">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">gcpairs=t           Use average GC of paired reads.
+                    Also affects gchist.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_133">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">tossjunk=f          Discard reads with invalid characters as bases.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_134">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Header-parsing parameters - these require Illumina headers:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_135">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">chastityfilter=f    (cf) Discard reads with id containing ' 1:Y:' or ' 2:Y:'.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_136">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">barcodefilter=f     Remove reads with unexpected barcodes if barcodes is set,
+                    or barcodes containing 'N' otherwise.  A barcode must be
+                    the last part of the read header.
+                    Values:
+                      t:     Remove reads with bad barcodes.
+                      f:     Ignore barcodes.
+                      crash: Crash upon encountering bad barcodes.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_137">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">barcodes=           Comma-delimited list of barcodes or files of barcodes.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_138">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">xmin=-1             If positive, discard reads with a lesser X coordinate.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_139">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">ymin=-1             If positive, discard reads with a lesser Y coordinate.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_140">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">xmax=-1             If positive, discard reads with a greater X coordinate.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_141">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">ymax=-1             If positive, discard reads with a greater Y coordinate.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_142">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Entropy/Complexity parameters:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_143">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">entropy=-1          Set between 0 and 1 to filter reads with entropy below
+                    that value.  Higher is more stringent.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_144">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">entropywindow=50    Calculate entropy using a sliding window of this length.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_145">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">entropyk=5          Calculate entropy using kmers of this length.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_146">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">minbasefrequency=0  Discard reads with a minimum base frequency below this.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_147">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">entropymask=f       Values:
+                      f:  Discard low-entropy sequences.
+                      t:  Mask low-entropy parts of sequences with N.
+                      lc: Change low-entropy parts of sequences to lowercase.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_148">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Cardinality estimation:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_149">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">cardinality=f       (loglog) Count unique kmers using the LogLog algorithm.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_150">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">loglogk=31          Use this kmer length for counting.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_151">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">loglogbuckets=1999  Use this many buckets for counting.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_152">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Java Parameters:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_153">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">-Xmx                This will be passed to Java to set memory usage, overriding
+                    the program's automatic memory detection. -Xmx20g will
+                    specify 20 gigs of RAM, and -Xmx200m will specify 200 megs.
+                    The max is typically 85% of physical memory.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_154">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">-eoom               This flag will cause the process to exit if an
+                    out-of-memory exception occurs.  Requires Java 8u92+.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_155">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">-da                 Disable assertions.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_156">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Please contact Brian Bushnell at bbushnell@lbl.gov if you encounter any problems.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+    </div>
+</body>
+</html>

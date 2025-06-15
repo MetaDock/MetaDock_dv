@@ -1,0 +1,78 @@
+usage: gtdbtk classify_wf (--genome_dir GENOME_DIR | --batchfile BATCHFILE)
+                          --out_dir OUT_DIR
+                          (--skip_ani_screen | --mash_db MASH_DB) [--no_mash]
+                          [--mash_k MASH_K] [--mash_s MASH_S]
+                          [--mash_v MASH_V]
+                          [--mash_max_distance MASH_MAX_DISTANCE] [-f]
+                          [-x EXTENSION] [--min_perc_aa MIN_PERC_AA]
+                          [--prefix PREFIX] [--genes] [--cpus CPUS]
+                          [--pplacer_cpus PPLACER_CPUS] [--force]
+                          [--scratch_dir SCRATCH_DIR]
+                          [--write_single_copy_genes] [--keep_intermediates]
+                          [--min_af MIN_AF] [--tmpdir TMPDIR] [--debug] [-h]
+
+mutually exclusive required arguments:
+  --genome_dir GENOME_DIR
+                        directory containing genome files in FASTA format
+  --batchfile BATCHFILE
+                        path to file describing genomes - tab separated in 2
+                        or 3 columns (FASTA file, genome ID, translation table
+                        [optional])
+
+required named arguments:
+  --out_dir OUT_DIR     directory to output files
+
+mutually exclusive required arguments:
+  --skip_ani_screen     Skip the ani_screening step to classify genomes using
+                        mash and skani. (default: False)
+  --mash_db MASH_DB     path to save/read (if exists) the Mash reference
+                        sketch database (.msh)
+
+optional Mash arguments:
+  --no_mash             skip pre-filtering of genomes using Mash (default:
+                        False)
+  --mash_k MASH_K       k-mer size [1-32] (default: 16)
+  --mash_s MASH_S       maximum number of non-redundant hashes (default: 5000)
+  --mash_v MASH_V       maximum p-value to keep [0-1] (default: 1.0)
+  --mash_max_distance MASH_MAX_DISTANCE
+                        Maximum Mash distance to select a potential GTDB
+                        genome as representative of a user genome. (default:
+                        0.15)
+
+optional arguments:
+  -f, --full_tree       use the unsplit bacterial tree for the classify step;
+                        this is the original GTDB-Tk approach (version < 2)
+                        and requires more than 320 GB of RAM to load the
+                        reference tree (default: False)
+  -x, --extension EXTENSION
+                        extension of files to process, gz = gzipped (default:
+                        fna)
+  --min_perc_aa MIN_PERC_AA
+                        exclude genomes that do not have at least this
+                        percentage of AA in the MSA (inclusive bound)
+                        (default: 10)
+  --prefix PREFIX       prefix for all output files (default: gtdbtk)
+  --genes               indicates input files contain predicted proteins as
+                        amino acids (skip gene calling).Warning: This flag
+                        will skip the ANI comparison steps (ani_screen and
+                        classification). (default: False)
+  --cpus CPUS           number of CPUs to use (default: 1)
+  --pplacer_cpus PPLACER_CPUS
+                        number of CPUs to use during pplacer placement
+  --force               continue processing if an error occurs on a single
+                        genome (default: False)
+  --scratch_dir SCRATCH_DIR
+                        reduce pplacer memory usage by writing to disk
+                        (slower).
+  --write_single_copy_genes
+                        output unaligned single-copy marker genes (default:
+                        False)
+  --keep_intermediates  keep intermediate files in the final directory
+                        (default: False)
+  --min_af MIN_AF       minimum alignment fraction to assign genome to a
+                        species cluster (default: 0.5)
+  --tmpdir TMPDIR       specify alternative directory for temporary files
+                        (default: /vol/tmp/users/khuang)
+  --debug               create intermediate files for debugging purposes
+                        (default: False)
+  -h, --help            show help message

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Help Comparison Report</title>
+    <style>
+        body {
+            font-family: 'Consolas', monospace;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+        .issues {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 5px solid #ffeeba;
+        }
+        .comparison {
+            display: flex;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            position: relative;
+        }
+        .original, .generated {
+            flex: 1;
+            padding: 10px;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .original {
+            background: #fff8f8;
+            border-right: 1px solid #eee;
+        }
+        .generated {
+            background: #f8fff8;
+        }
+        .diff-header {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: -10px -10px 10px -10px;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+        }
+        .timestamp {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .empty {
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+        }
+        .match {
+            background: #e8f5e9;
+        }
+        .nomatch {
+            background: #ffebee;
+        }
+        .section-actions {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .comparison:hover .section-actions {
+            opacity: 1;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .btn-add {
+            background: #28a745;
+        }
+        .btn-modify {
+            background: #17a2b8;
+        }
+        .btn-delete {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Help Comparison Report</h1>
+            <div class="timestamp">Generated on: 2025-06-14 17:36:39</div>
+        </div>
+<div class="comparison" data-section-id="section_0">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">usage: average_nucleotide_identity.py [-h] [--version] -o OUTDIRNAME -i
+                                      INDIRNAME [-v] [-f] [-s FRAGSIZE]
+                                      [-l LOGFILE] [--skip_nucmer]
+                                      [--skip_blastn] [--noclobber]
+                                      [--nocompress] [-g] [--gformat GFORMAT]
+                                      [--gmethod {mpl,seaborn}]
+                                      [--labels LABELS] [--classes CLASSES]
+                                      [-m {ANIm,ANIb,ANIblastall,TETRA}]
+                                      [--scheduler {multiprocessing,SGE}]
+                                      [--workers WORKERS]
+                                      [--SGEgroupsize SGEGROUPSIZE]
+                                      [--SGEargs SGEARGS] [--maxmatch]
+                                      [--nucmer_exe NUCMER_EXE]
+                                      [--filter_exe FILTER_EXE]
+                                      [--blastn_exe BLASTN_EXE]
+                                      [--makeblastdb_exe MAKEBLASTDB_EXE]
+                                      [--blastall_exe BLASTALL_EXE]
+                                      [--formatdb_exe FORMATDB_EXE]
+                                      [--write_excel] [--rerender]
+                                      [--subsample SUBSAMPLE] [--seed SEED]
+                                      [--jobprefix JOBPREFIX]</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">usage: average_nucleotide_identity.py [-h] [--version] -o OUTDIRNAME -i INDIRNAME [-v] [-f] [-s FRAGSIZE] [-l LOGFILE] [--skip_nucmer] [--skip_blastn] [--noclobber] [--nocompress] [-g] [--gformat GFORMAT] [--gmethod {mpl,seaborn}] [--labels LABELS] [--classes CLASSES] [-m {ANIm,ANIb,ANIblastall,TETRA}] [--scheduler {multiprocessing,SGE}] [--workers WORKERS] [--SGEgroupsize SGEGROUPSIZE] [--SGEargs SGEARGS] [--maxmatch] [--nucmer_exe NUCMER_EXE] [--filter_exe FILTER_EXE] [--blastn_exe BLASTN_EXE] [--makeblastdb_exe MAKEBLASTDB_EXE] [--blastall_exe BLASTALL_EXE] [--formatdb_exe FORMATDB_EXE] [--write_excel] [--rerender] [--subsample SUBSAMPLE] [--seed SEED] [--jobprefix JOBPREFIX]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_1">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">optional arguments:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">optional arguments:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_2">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -h, --help            show this help message and exit</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -h, --help
+                        show this help message and exit</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_3">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --version             show program's version number and exit</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --version
+                        show program's version number
+                        and exit</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_4">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -o OUTDIRNAME, --outdir OUTDIRNAME
+                        Output directory (required)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -o OUTDIRNAME, --outdir OUTDIRNAME
+                        Output directory (required)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_5">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -i INDIRNAME, --indir INDIRNAME
+                        Input directory name (required)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -i INDIRNAME, --indir INDIRNAME
+                        Input directory name (required)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_6">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -v, --verbose         Give verbose output</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -v, --verbose
+                        Give verbose output</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_7">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -f, --force           Force file overwriting</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -f, --force
+                        Force file overwriting</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_8">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -s FRAGSIZE, --fragsize FRAGSIZE
+                        Sequence fragment size for ANIb (default 1020)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -s FRAGSIZE, --fragsize FRAGSIZE
+                        Sequence fragment size for ANIb
+                        (default 1020)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_9">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -l LOGFILE, --logfile LOGFILE
+                        Logfile location</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -l LOGFILE, --logfile LOGFILE
+                        Logfile location</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_10">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --skip_nucmer         Skip NUCmer runs, for testing (e.g. if output already
+                        present)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --skip_nucmer
+                        Skip NUCmer runs, for testing
+                        (e.g. if output already present)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_11">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --skip_blastn         Skip BLASTN runs, for testing (e.g. if output already
+                        present)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --skip_blastn
+                        Skip BLASTN runs, for testing
+                        (e.g. if output already present)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_12">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --noclobber           Don't nuke existing files</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --noclobber
+                        Don't nuke existing files</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_13">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --nocompress          Don't compress/delete the comparison output</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --nocompress
+                        Don't compress/delete the
+                        comparison output</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_14">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -g, --graphics        Generate heatmap of ANI</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -g, --graphics
+                        Generate heatmap of ANI</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_15">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --gformat GFORMAT     Graphics output format(s) [pdf|png|jpg|svg] (default
+                        pdf,png,eps meaning three file formats)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --gformat GFORMAT
+                        Graphics output format(s)
+                        [pdf|png|jpg|svg] (default
+                        pdf,png,eps meaning three file
+                        formats)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_16">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --gmethod {mpl,seaborn}
+                        Graphics output method (default mpl)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --gmethod {mpl,seaborn}
+                        Graphics output method (default
+                        mpl)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_17">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --labels LABELS       Path to file containing sequence labels</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --labels LABELS
+                        Path to file containing sequence
+                        labels</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_18">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --classes CLASSES     Path to file containing sequence classes</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --classes CLASSES
+                        Path to file containing sequence
+                        classes</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_19">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -m {ANIm,ANIb,ANIblastall,TETRA}, --method {ANIm,ANIb,ANIblastall,TETRA}
+                        ANI method (default ANIm)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -m {ANIm,ANIb,ANIblastall,TETRA}, --method {ANIm,ANIb,ANIblastall,TETRA}
+                        ANI method (default ANIm)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_20">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --scheduler {multiprocessing,SGE}
+                        Job scheduler (default multiprocessing, i.e. locally)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --scheduler {multiprocessing,SGE}
+                        Job scheduler (default
+                        multiprocessing, i.e. locally)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_21">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --workers WORKERS     Number of worker processes for multiprocessing
+                        (default zero, meaning use all available cores)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --workers WORKERS
+                        Number of worker processes for
+                        multiprocessing (default zero,
+                        meaning use all available cores)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_22">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --SGEgroupsize SGEGROUPSIZE
+                        Number of jobs to place in an SGE array group (default
+                        10000)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --SGEgroupsize SGEGROUPSIZE
+                        Number of jobs to place in an
+                        SGE array group (default 10000)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_23">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --SGEargs SGEARGS     Additional arguments for qsub</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --SGEargs SGEARGS
+                        Additional arguments for qsub</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_24">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --maxmatch            Override MUMmer to allow all NUCmer matches</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --maxmatch
+                        Override MUMmer to allow all
+                        NUCmer matches</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_25">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --nucmer_exe NUCMER_EXE
+                        Path to NUCmer executable</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --nucmer_exe NUCMER_EXE
+                        Path to NUCmer executable</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_26">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --filter_exe FILTER_EXE
+                        Path to delta-filter executable</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --filter_exe FILTER_EXE
+                        Path to delta-filter executable</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_27">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --blastn_exe BLASTN_EXE
+                        Path to BLASTN+ executable</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --blastn_exe BLASTN_EXE
+                        Path to BLASTN+ executable</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_28">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --makeblastdb_exe MAKEBLASTDB_EXE
+                        Path to BLAST+ makeblastdb executable</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --makeblastdb_exe MAKEBLASTDB_EXE
+                        Path to BLAST+ makeblastdb
+                        executable</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_29">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --blastall_exe BLASTALL_EXE
+                        Path to BLASTALL executable</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --blastall_exe BLASTALL_EXE
+                        Path to BLASTALL executable</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_30">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --formatdb_exe FORMATDB_EXE
+                        Path to BLAST formatdb executable</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --formatdb_exe FORMATDB_EXE
+                        Path to BLAST formatdb
+                        executable</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_31">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --write_excel         Write Excel format output tables</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --write_excel
+                        Write Excel format output tables</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_32">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --rerender            Rerender graphics output without recalculation</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --rerender
+                        Rerender graphics output without
+                        recalculation</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_33">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --subsample SUBSAMPLE
+                        Subsample a percentage [0-1] or specific number (1-n)
+                        of input sequences</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --subsample SUBSAMPLE
+                        Subsample a percentage [0-1] or
+                        specific number (1-n) of input
+                        sequences</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_34">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --seed SEED           Set random seed for reproducible subsampling.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --seed SEED
+                        Set random seed for reproducible
+                        subsampling.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_35">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --jobprefix JOBPREFIX
+                        Prefix for SGE jobs (default ANI).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --jobprefix JOBPREFIX
+                        Prefix for SGE jobs (default
+                        ANI).</div>
+</div>
+</div>
+    </div>
+</body>
+</html>

@@ -6,6 +6,103 @@
     .btn-custom-blue:hover { background-color: #5a67d8; border-color: #5a67d8; }
     .btn-custom-red { background-color: #FF5861; color: black; border-color: #FF5861; }
     .btn-custom-red:hover { background-color: #e04851; border-color: #e04851; }
+    
+    /* File browser styles */
+    .file-browser-item {
+        transition: all 0.2s ease;
+    }
+    
+    .file-browser-item:hover {
+        transform: translateX(2px);
+    }
+    
+    .folder-item {
+        border-left: 3px solid #fbbf24;
+    }
+    
+    .txt-file-item {
+        border-left: 3px solid #10b981;
+    }
+    
+    .other-file-item {
+        border-left: 3px solid #6b7280;
+    }
+    
+    
+    /* Breadcrumb styles */
+    .breadcrumb-item {
+        transition: all 0.2s ease;
+    }
+    
+    .breadcrumb-item:hover {
+        transform: translateY(-1px);
+    }
+    
+    .breadcrumb-separator {
+        color: #9ca3af;
+        font-size: 0.75rem;
+    }
+    
+
+    .manual-path-container .text-gray-600 {
+        color: #d1d5db !important;
+    }
+    
+    .manual-path-container input {
+        background-color: #1f2937;
+        border-color: #6b7280;
+        color: #f3f4f6;
+    }
+    
+    .manual-path-container input::placeholder {
+        color: #9ca3af;
+    }
+    
+    /* Path info styling */
+    .path-info-text {
+        color: #d1d5db !important;
+    }
+    
+    .section-header .text-gray-600 {
+        color: #d1d5db !important;
+    }
+    
+    /* Additional improvements */
+    .file-browser-container {
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .file-browser-item {
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+    
+    .file-browser-item:hover {
+        transform: translateX(2px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Button improvements for dark theme */
+    .btn-outline {
+        border-color: #6b7280;
+        color: #d1d5db;
+    }
+    
+    .btn-outline:hover {
+        background-color: #374151;
+        border-color: #9ca3af;
+        color: #f3f4f6;
+    }
+    
+    /* Input improvements */
+    .input-bordered {
+        border-color: #6b7280;
+    }
+    
+    .input-bordered:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
 </style>
 
 <main class="container mx-auto p-6 space-y-8">
@@ -102,7 +199,25 @@ Annotation:
           >
         </div>
         
+        <!-- File Source Selection -->
         <div class="form-control">
+          <label class="label">
+            <span class="label-text">Help File Source</span>
+          </label>
+          <div class="flex gap-4">
+            <label class="label cursor-pointer">
+              <input type="radio" name="fileSource" value="local" class="radio radio-primary" checked>
+              <span class="label-text ml-2">Upload from Local PC</span>
+            </label>
+            <label class="label cursor-pointer">
+              <input type="radio" name="fileSource" value="remote" class="radio radio-primary">
+              <span class="label-text ml-2">Select from Remote Server</span>
+            </label>
+          </div>
+        </div>
+        
+        <!-- Local File Upload -->
+        <div id="localFileSection" class="form-control">
           <label class="label">
             <span class="label-text">Help File</span>
           </label>
@@ -111,8 +226,91 @@ Annotation:
             name="helpFile" 
             class="file-input file-input-bordered w-full" 
             accept=".txt"
-            required
           >
+        </div>
+        
+        <!-- Remote File Selection -->
+        <div id="remoteFileSection" class="form-control hidden">
+          <label class="label">
+            <span class="label-text">Remote File Browser</span>
+          </label>
+          
+          <!-- Current Path Display -->
+          <div class="bg-base-300 p-3 rounded-lg border mb-4 current-path">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <i class="ti ti-folder text-lg"></i>
+                <span class="font-mono text-sm" id="currentPath">/</span>
+              </div>
+              <div class="text-xs text-gray-500" id="pathInfo">
+                <!-- Path info will be populated here -->
+              </div>
+            </div>
+          </div>
+          
+          <!-- Breadcrumb Navigation -->
+          <div class="bg-base-300 p-3 rounded-lg border mb-4 section-header">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-sm font-medium text-gray-600">Path:</span>
+              <div id="breadcrumb" class="flex items-center gap-1 flex-wrap">
+                <!-- Breadcrumb items will be populated here -->
+              </div>
+            </div>
+          </div>
+          
+          <!-- Manual Path Input -->
+          <div class="bg-base-300 p-3 rounded-lg border mb-4 manual-path-container">
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium text-gray-600">Manual Path:</span>
+              <input 
+                type="text" 
+                id="manualPath" 
+                class="input input-bordered input-sm flex-1 font-mono text-sm" 
+                value="/"
+                placeholder="Enter path manually (e.g., /home/user/documents)"
+              >
+              <button type="button" onclick="navigateToManualPath()" class="btn btn-sm btn-primary">
+                <i class="ti ti-arrow-right mr-1"></i>
+                Go
+              </button>
+            </div>
+          </div>
+          
+          <!-- Navigation Buttons -->
+          <div class="flex gap-2 mb-4">
+            <button type="button" onclick="navigateToParent()" class="btn btn-sm btn-outline">
+              <i class="ti ti-arrow-up mr-1"></i>
+              Up
+            </button>
+            <button type="button" onclick="refreshCurrentDirectory()" class="btn btn-sm btn-outline">
+              <i class="ti ti-refresh mr-1"></i>
+              Refresh
+            </button>
+            <button type="button" onclick="navigateToRoot()" class="btn btn-sm btn-outline">
+              <i class="ti ti-home mr-1"></i>
+              Root
+            </button>
+          </div>
+          
+          <!-- File Browser -->
+          <div class="bg-base-300 p-4 rounded-lg max-h-80 overflow-y-auto file-browser-container">
+            <div id="fileBrowserContent">
+              <!-- Files and folders will be populated here -->
+            </div>
+          </div>
+          
+          <!-- Selected Remote File -->
+          <div id="selectedRemoteFile" class="mt-4 hidden">
+            <label class="label">
+              <span class="label-text">Selected File</span>
+            </label>
+            <div class="bg-base-300 p-3 rounded-lg border manual-path-container">
+              <span id="selectedFileName" class="font-mono text-gray-100"></span>
+              <button type="button" onclick="clearRemoteSelection()" class="btn btn-sm btn-ghost ml-2">
+                <i class="ti ti-x"></i>
+              </button>
+            </div>
+          </div>
         </div>
         
         <button type="submit" class="btn btn-primary">
@@ -172,11 +370,330 @@ Annotation:
 <%- include('../../public/views/partials/footer') %>
 
 <script>
+  let selectedRemotePath = null;
+  let currentDirectory = '/';
+  let manualInputPath = ''; // 保存手动输入的路径
+  
+  // Handle file source selection
+  document.querySelectorAll('input[name="fileSource"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+      const localSection = document.getElementById('localFileSection');
+      const remoteSection = document.getElementById('remoteFileSection');
+      
+      if (this.value === 'local') {
+        localSection.classList.remove('hidden');
+        remoteSection.classList.add('hidden');
+        document.querySelector('input[name="helpFile"]').required = true;
+      } else {
+        localSection.classList.add('hidden');
+        remoteSection.classList.remove('hidden');
+        document.querySelector('input[name="helpFile"]').required = false;
+        // Load initial directory when switching to remote
+        loadRemoteDirectory(currentDirectory);
+      }
+    });
+  });
+
+  // Sync all path displays
+  function syncPathDisplays(path, updateManualInput = true) {
+    document.getElementById('currentPath').textContent = path;
+    if (updateManualInput) {
+      // If we have a saved manual input path, restore it; otherwise use current path
+      if (manualInputPath && manualInputPath !== path) {
+        document.getElementById('manualPath').value = manualInputPath;
+      } else {
+        document.getElementById('manualPath').value = path;
+      }
+    }
+    updateBreadcrumb(path);
+  }
+
+  // Load remote directory
+  async function loadRemoteDirectory(dir) {
+    try {
+      const response = await fetch(`/admin/browse-remote-help?dir=${encodeURIComponent(dir)}`);
+      const result = await response.json();
+      
+      if (result.error) {
+        showToast('❌ ' + result.error, 'error');
+        return;
+      }
+      
+      currentDirectory = dir;
+      syncPathDisplays(dir);
+      displayRemoteFiles(result.files, result.currentDir);
+    } catch (error) {
+      showToast('❌ Error loading directory: ' + error.message, 'error');
+    }
+  }
+
+  // Load remote directory for manual navigation (doesn't update input field)
+  async function loadRemoteDirectoryManual(dir) {
+    try {
+      const response = await fetch(`/admin/browse-remote-help?dir=${encodeURIComponent(dir)}`);
+      const result = await response.json();
+      
+      if (result.error) {
+        showToast('❌ ' + result.error, 'error');
+        return;
+      }
+      
+      currentDirectory = dir;
+      syncPathDisplays(dir, false); // Don't update manual input
+      displayRemoteFiles(result.files, result.currentDir);
+    } catch (error) {
+      showToast('❌ Error loading directory: ' + error.message, 'error');
+    }
+  }
+
+  // Update breadcrumb navigation
+  function updateBreadcrumb(path) {
+    const breadcrumb = document.getElementById('breadcrumb');
+    
+    // Split path into segments
+    const segments = path.split('/').filter(segment => segment !== '');
+    
+    let html = '';
+    
+    // Add root
+    html += `
+      <button onclick="navigateToPath('/')" class="btn btn-xs btn-ghost hover:btn-primary breadcrumb-item">
+        <i class="ti ti-home mr-1"></i>
+        root
+      </button>
+    `;
+    
+    // Add path segments
+    let currentPath = '';
+    segments.forEach((segment, index) => {
+      currentPath += '/' + segment;
+      const isLast = index === segments.length - 1;
+      
+      html += `
+        <i class="ti ti-chevron-right breadcrumb-separator"></i>
+        <button onclick="navigateToPath('${currentPath}')" 
+                class="btn btn-xs ${isLast ? 'btn-primary' : 'btn-ghost hover:btn-primary'} breadcrumb-item">
+          ${segment}
+        </button>
+      `;
+    });
+    
+    breadcrumb.innerHTML = html;
+  }
+
+  // Navigate to specific path
+  function navigateToPath(path) {
+    loadRemoteDirectory(path);
+  }
+
+  // Navigate to manually entered path
+  function navigateToManualPath() {
+    const manualPath = document.getElementById('manualPath').value.trim();
+    
+    if (!manualPath) {
+      showToast('❌ Please enter a path', 'error');
+      return;
+    }
+    
+    // Save the manual input path
+    manualInputPath = manualPath;
+    
+    // Normalize path
+    let normalizedPath = manualPath;
+    if (!normalizedPath.startsWith('/')) {
+      normalizedPath = '/' + normalizedPath;
+    }
+    
+    // Remove trailing slash if not root
+    if (normalizedPath !== '/' && normalizedPath.endsWith('/')) {
+      normalizedPath = normalizedPath.slice(0, -1);
+    }
+    
+    // Load directory without updating the manual input field
+    loadRemoteDirectoryManual(normalizedPath);
+  }
+
+  // Handle Enter key in manual path input
+  document.addEventListener('DOMContentLoaded', function() {
+    const manualPathInput = document.getElementById('manualPath');
+    if (manualPathInput) {
+      manualPathInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          navigateToManualPath();
+        }
+      });
+    }
+  });
+
+  // Navigate to parent directory
+  function navigateToParent() {
+    if (currentDirectory === '/') {
+      showToast('Already at root directory', 'info');
+      return;
+    }
+    
+    const parentDir = currentDirectory.split('/').slice(0, -1).join('/') || '/';
+    loadRemoteDirectory(parentDir);
+  }
+
+  // Navigate to root directory
+  function navigateToRoot() {
+    loadRemoteDirectory('/');
+  }
+
+  // Refresh current directory
+  function refreshCurrentDirectory() {
+    loadRemoteDirectory(currentDirectory);
+  }
+
+  // Navigate to subdirectory
+  function navigateToFolder(folderPath) {
+    loadRemoteDirectory(folderPath);
+  }
+
+  // Display remote files and folders
+  function displayRemoteFiles(fileList, currentDir) {
+    const content = document.getElementById('fileBrowserContent');
+    const pathInfo = document.getElementById('pathInfo');
+    
+    // Update path info
+    const folders = fileList.filter(item => item.isDirectory);
+    const files = fileList.filter(item => !item.isDirectory);
+    const txtFiles = files.filter(file => file.filename.toLowerCase().endsWith('.txt'));
+    
+    pathInfo.innerHTML = `
+      <span class="mr-2 path-info-text">📁 ${folders.length} folders</span>
+      <span class="mr-2 path-info-text">📄 ${files.length} files</span>
+      <span class="text-green-400 path-info-text">📝 ${txtFiles.length} .txt files</span>
+    `;
+    
+    if (fileList.length === 0) {
+      content.innerHTML = '<p class="text-gray-300 text-center py-4">No files or folders found in this directory</p>';
+      return;
+    }
+    
+    let html = '';
+    
+    // Display folders first
+    if (folders.length > 0) {
+      html += '<div class="mb-4">';
+      html += '<h4 class="font-semibold text-sm text-gray-300 mb-2">📁 Folders</h4>';
+      folders.forEach(folder => {
+        html += `
+          <div class="flex items-center justify-between p-2 hover:bg-gray-700 rounded cursor-pointer mb-1 file-browser-item folder-item" 
+               onclick="navigateToFolder('${folder.fullPath}')">
+            <div class="flex items-center gap-3">
+              <i class="ti ti-folder text-yellow-400 text-lg"></i>
+              <div>
+                <div class="font-medium text-gray-100">${folder.filename}</div>
+                <div class="text-xs text-gray-400">${folder.date}</div>
+              </div>
+            </div>
+            <button class="btn btn-sm btn-ghost">
+              <i class="ti ti-arrow-right"></i>
+            </button>
+          </div>
+        `;
+      });
+      html += '</div>';
+    }
+    
+    // Display files
+    if (files.length > 0) {
+      html += '<div>';
+      html += '<h4 class="font-semibold text-sm text-gray-300 mb-2">📄 Files</h4>';
+      
+      // Display .txt files first
+      if (txtFiles.length > 0) {
+        html += '<div class="mb-3">';
+        html += '<h5 class="font-medium text-xs text-green-400 mb-1">📝 Help Files (.txt)</h5>';
+        txtFiles.forEach(file => {
+          html += `
+            <div class="flex items-center justify-between p-2 hover:bg-gray-700 rounded mb-1 file-browser-item txt-file-item">
+              <div class="flex items-center gap-3">
+                <i class="ti ti-file-text text-green-400 text-lg"></i>
+                <div>
+                  <div class="font-medium text-gray-100">${file.filename}</div>
+                  <div class="text-xs text-gray-400">${file.size} • ${file.date}</div>
+                </div>
+              </div>
+              <button class="btn btn-sm btn-primary" onclick="selectRemoteFile('${file.fullPath}', '${file.filename}')">
+                Select
+              </button>
+            </div>
+          `;
+        });
+        html += '</div>';
+      }
+      
+      // Display other files (grayed out)
+      const otherFiles = files.filter(file => !file.filename.toLowerCase().endsWith('.txt'));
+      if (otherFiles.length > 0) {
+        html += '<div>';
+        html += '<h5 class="font-medium text-xs text-gray-500 mb-1">📄 Other Files</h5>';
+        otherFiles.forEach(file => {
+          html += `
+            <div class="flex items-center justify-between p-2 opacity-50 file-browser-item other-file-item">
+              <div class="flex items-center gap-3">
+                <i class="ti ti-file text-gray-500 text-lg"></i>
+                <div>
+                  <div class="font-medium text-gray-400">${file.filename}</div>
+                  <div class="text-xs text-gray-500">${file.size} • ${file.date}</div>
+                </div>
+              </div>
+              <span class="text-xs text-gray-500">Not selectable</span>
+            </div>
+          `;
+        });
+        html += '</div>';
+      }
+      
+      html += '</div>';
+    }
+    
+    content.innerHTML = html;
+  }
+
+  // Select remote file
+  function selectRemoteFile(fullPath, filename) {
+    selectedRemotePath = fullPath;
+    
+    document.getElementById('selectedFileName').textContent = filename;
+    document.getElementById('selectedRemoteFile').classList.remove('hidden');
+    
+    showToast('✅ File selected: ' + filename);
+  }
+
+  // Clear remote selection
+  function clearRemoteSelection() {
+    selectedRemotePath = null;
+    manualInputPath = ''; // Clear saved manual input path
+    document.getElementById('selectedRemoteFile').classList.add('hidden');
+    document.getElementById('selectedFileName').textContent = '';
+  }
+
   // Handle form submission
   document.getElementById('addToolForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const formData = new FormData(e.target);
+    const fileSource = formData.get('fileSource');
+    
+    // Validate form based on file source
+    if (fileSource === 'local') {
+      const helpFile = formData.get('helpFile');
+      if (!helpFile || helpFile.size === 0) {
+        showToast('❌ Please select a help file to upload', 'error');
+        return;
+      }
+    } else if (fileSource === 'remote') {
+      if (!selectedRemotePath) {
+        showToast('❌ Please select a help file from the remote server', 'error');
+        return;
+      }
+      // Add remote path to form data
+      formData.append('remoteHelpPath', selectedRemotePath);
+    }
     
     try {
       const response = await fetch('/admin/upload-help', {

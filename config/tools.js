@@ -322,5 +322,89 @@ module.exports = {
     "selectionRoute": "/complete-selection-pyani_v0.2.12",
     "env": "",
     "hasStderr": true
+  },
+  "net": {
+    "title": "net Parameters",
+    "toolName": "net",
+    "route": "net",
+    "commandRoute": "/run-command-net",
+    "usagePath": "parameters/net_usage.json",
+    "paraPath": "parameters/net_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-net",
+    "env": "",
+    "hasStderr": true
+  },
+  "FastQC-1": {
+    "title": "FastQC-1 Parameters",
+    "toolName": "FastQC-1",
+    "route": "FastQC-1",
+    "commandRoute": "/run-command-FastQC-1",
+    "usagePath": "parameters/FastQC-1_usage.json",
+    "paraPath": "parameters/FastQC-1_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-FastQC-1",
+    "env": "",
+    "hasStderr": true
+  },
+  "net-1": {
+    "title": "net-1 Parameters",
+    "toolName": "net-1",
+    "route": "net-1",
+    "commandRoute": "/run-command-net-1",
+    "usagePath": "parameters/net-1_usage.json",
+    "paraPath": "parameters/net-1_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-net-1",
+    "env": "",
+    "hasStderr": true
+  },
+  "eula.1042": {
+    "title": "eula.1042 Parameters",
+    "toolName": "eula.1042",
+    "route": "eula.1042",
+    "commandRoute": "/run-command-eula.1042",
+    "usagePath": "parameters/eula.1042_usage.json",
+    "paraPath": "parameters/eula.1042_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-eula.1042",
+    "env": "",
+    "hasStderr": true
+  },
+  "test_2": {
+    "title": "test_2 Parameters",
+    "toolName": "test_2",
+    "route": "test_2",
+    "commandRoute": "/run-command-test_2",
+    "usagePath": "parameters/test_2_usage.json",
+    "paraPath": "parameters/test_2_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-test_2",
+    "env": "",
+    "hasStderr": true
+  },
+  "net_test": {
+    "title": "net_test Parameters",
+    "toolName": "net_test",
+    "route": "net_test",
+    "commandRoute": "/run-command-net_test",
+    "usagePath": "parameters/net_test_usage.json",
+    "paraPath": "parameters/net_test_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-net_test",
+    "env": "",
+    "hasStderr": true
+  },
+  "dbcan_test": {
+    "title": "dbcan_test Parameters",
+    "toolName": "dbcan_test",
+    "route": "dbcan_test",
+    "commandRoute": "/run-command-dbcan_test",
+    "usagePath": "parameters/dbcan_test_usage.json",
+    "paraPath": "parameters/dbcan_test_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-dbcan_test",
+    "env": "",
+    "hasStderr": true
   }
 };

@@ -1,5 +1,5 @@
 {
     "usage": [
-        "usage: Bowtie2 [--ignore-quals] "
+        "usage: Bowtie2 [] "
     ]
 }

@@ -1,0 +1,146 @@
+usage: run_dbcan [-h] [--verbose] [--dbCANFile DBCANFILE] [--dia_eval DIA_EVAL] [--dia_cpu DIA_CPU] [--hmm_eval HMM_EVAL] [--hmm_cov HMM_COV] [--hmm_cpu HMM_CPU] [--out_pre OUT_PRE] [--out_dir OUT_DIR] [--db_dir DB_DIR] [--tools {hmmer,diamond,dbcansub,all} [{hmmer,diamond,dbcansub,all} ...]] [--use_signalP USE_SIGNALP] [--signalP_path SIGNALP_PATH] [--gram {p,n,all}] [-v VERSION] [--dbcan_thread DBCAN_THREAD] [--tf_eval TF_EVAL] [--tf_cov TF_COV] [--tf_cpu TF_CPU] [--stp_eval STP_EVAL] [--stp_cov STP_COV] [--stp_cpu STP_CPU] [--cluster CLUSTER] [--cgc_dis CGC_DIS] [--cgc_sig_genes {tf,tp,stp,tp+tf,tp+stp,tf+stp,all}] [--only_sub] [--cgc_substrate] [--pul PUL] [-o OUT] [-w WORKDIR] [-env ENV] [-odbcan_sub] [-odbcanpul] [-upghn UNIQ_PUL_GENE_HIT_NUM] [-uqcgn UNIQ_QUERY_CGC_GENE_NUM] [-cpn CAZYME_PAIR_NUM] [-tpn TOTAL_PAIR_NUM] [-ept EXTRA_PAIR_TYPE] [-eptn EXTRA_PAIR_TYPE_NUM] [-iden IDENTITY_CUTOFF] [-cov COVERAGE_CUTOFF] [-bsc BITSCORE_CUTOFF] [-evalue EVALUE_CUTOFF] [-hmmcov HMMCOV] [-hmmevalue HMMEVALUE] [-ndsc NUM_OF_DOMAINS_SUBSTRATE_CUTOFF] [-npsc NUM_OF_PROTEIN_SUBSTRATE_CUTOFF] [-subs SUBSTRATE_SCORS] inputFile {protein,prok,meta}
+
+options:
+  -h, --help
+                        show this help message and exit
+  --verbose
+                        Print out detailed procedure for
+                        each step.
+  --dbCANFile DBCANFILE
+                        Indicate the file name of HMM
+                        database such as dbCAN.txt,
+                        please use the newest one from
+                        dbCAN2 website.
+  --dia_eval DIA_EVAL
+                        DIAMOND E Value
+  --dia_cpu DIA_CPU
+                        Number of CPU cores that DIAMOND
+                        is allowed to use
+  --hmm_eval HMM_EVAL
+                        HMMER E Value
+  --hmm_cov HMM_COV
+                        HMMER Coverage val
+  --hmm_cpu HMM_CPU
+                        Number of CPU cores that HMMER
+                        is allowed to use
+  --out_pre OUT_PRE
+                        Output files prefix
+  --out_dir OUT_DIR
+                        Output directory
+  --db_dir DB_DIR
+                        Database directory
+  -t {hmmer,diamond,dbcansub,all} [{hmmer,diamond,dbcansub,all} ...], --tools {hmmer,diamond,dbcansub,all} [{hmmer,diamond,dbcansub,all} ...]
+                        Choose a combination of tools to
+                        run
+  --use_signalP USE_SIGNALP
+                        Use signalP or not, remember,
+                        you need to setup signalP tool
+                        first. Because of signalP
+                        license, Docker version does not
+                        have signalP.
+  -sp SIGNALP_PATH, --signalP_path SIGNALP_PATH
+                        The path for signalp. Default
+                        location is signalp
+  -g {p,n,all}, --gram {p,n,all}
+                        Choose gram+(p) or gram-(n) for
+                        proteome/prokaryote nucleotide,
+                        which are params of SingalP,
+                        only if user use singalP
+  -v VERSION, --version VERSION
+
+dbCAN-sub parameters:
+  -dt DBCAN_THREAD, --dbcan_thread DBCAN_THREAD
+  --tf_eval TF_EVAL
+                        tf.hmm HMMER E Value
+  --tf_cov TF_COV
+                        tf.hmm HMMER Coverage val
+  --tf_cpu TF_CPU
+                        tf.hmm Number of CPU cores that
+                        HMMER is allowed to use
+  --stp_eval STP_EVAL
+                        stp.hmm HMMER E Value
+  --stp_cov STP_COV
+                        stp.hmm HMMER Coverage val
+  --stp_cpu STP_CPU
+                        stp.hmm Number of CPU cores that
+                        HMMER is allowed to use
+
+CGC_Finder parameters:
+  -c CLUSTER, --cluster CLUSTER
+                        Predict CGCs via CGCFinder. This
+                        argument requires an auxillary
+                        locations file if a protein
+                        input is being used
+  --cgc_dis CGC_DIS
+                        CGCFinder Distance value
+  --cgc_sig_genes {tf,tp,stp,tp+tf,tp+stp,tf+stp,all}
+                        CGCFinder Signature Genes value
+
+CGC_Substrate parameters:
+  --only_sub
+                        Only run substrate prediction
+                        for PUL. If this parameter is
+                        presented, dbcan will skip the
+                        CAZyme annotation and CGC
+                        prediction.
+  --cgc_substrate
+                        run cgc substrate prediction?
+  --pul PUL
+                        dbCAN-PUL PUL.faa
+  -o OUT, --out OUT
+  -w WORKDIR, --workdir WORKDIR
+  -env ENV, --env ENV
+  -odbcan_sub, --odbcan_sub
+                        Output dbCAN-sub prediction
+                        intermediate result? for debug
+  -odbcanpul, --odbcanpul
+                        Output dbCAN-PUL prediction
+                        intermediate result? for debug.
+                        dbCAN-PUL homologous searching
+                        parameters: how to define
+                        homologous gene hits and PUL
+                        hits
+  -upghn UNIQ_PUL_GENE_HIT_NUM, --uniq_pul_gene_hit_num UNIQ_PUL_GENE_HIT_NUM
+  -uqcgn UNIQ_QUERY_CGC_GENE_NUM, --uniq_query_cgc_gene_num UNIQ_QUERY_CGC_GENE_NUM
+  -cpn CAZYME_PAIR_NUM, --CAZyme_pair_num CAZYME_PAIR_NUM
+  -tpn TOTAL_PAIR_NUM, --total_pair_num TOTAL_PAIR_NUM
+  -ept EXTRA_PAIR_TYPE, --extra_pair_type EXTRA_PAIR_TYPE
+                        None[TC-TC,STP-STP]. Some like
+                        sigunature hits
+  -eptn EXTRA_PAIR_TYPE_NUM, --extra_pair_type_num EXTRA_PAIR_TYPE_NUM
+                        specify signature pair
+                        cutoff.1,2
+  -iden IDENTITY_CUTOFF, --identity_cutoff IDENTITY_CUTOFF
+                        identity to identify a
+                        homologous hit
+  -cov COVERAGE_CUTOFF, --coverage_cutoff COVERAGE_CUTOFF
+                        query coverage cutoff to
+                        identify a homologous hit
+  -bsc BITSCORE_CUTOFF, --bitscore_cutoff BITSCORE_CUTOFF
+                        bitscore cutoff to identify a
+                        homologous hit
+  -evalue EVALUE_CUTOFF, --evalue_cutoff EVALUE_CUTOFF
+                        evalue cutoff to identify a
+                        homologous hit  dbCAN-sub major
+                        voting parameters: how to define
+                        dbsub hits and dbCAN-sub
+                        subfamily substrate
+  -hmmcov HMMCOV, --hmmcov HMMCOV
+  -hmmevalue HMMEVALUE, --hmmevalue HMMEVALUE
+  -ndsc NUM_OF_DOMAINS_SUBSTRATE_CUTOFF, --num_of_domains_substrate_cutoff NUM_OF_DOMAINS_SUBSTRATE_CUTOFF
+                        define how many domains share
+                        substrates in a CGC, one protein
+                        may include several subfamily
+                        domains.
+  -npsc NUM_OF_PROTEIN_SUBSTRATE_CUTOFF, --num_of_protein_substrate_cutoff NUM_OF_PROTEIN_SUBSTRATE_CUTOFF
+                        define how many sequences share
+                        substrates in a CGC, one protein
+                        may include several subfamily
+                        domains.
+  -subs SUBSTRATE_SCORS, --substrate_scors SUBSTRATE_SCORS
+                        each cgc contains with substrate
+                        must more than this value
+
+positional arguments:
+  prok=, prokaryote;
+                        meta=metagenome

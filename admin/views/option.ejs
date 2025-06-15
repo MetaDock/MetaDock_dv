@@ -34,6 +34,47 @@
     .method-header * {
         pointer-events: none; /* 防止标题内的元素被拖动 */
     }
+    
+    .validation-error {
+        background-color: rgba(255, 88, 97, 0.1);
+        border: 1px solid #FF5861;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+    
+    .validation-warning {
+        background-color: rgba(255, 193, 7, 0.1);
+        border: 1px solid #FFC107;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+    
+    .environment-status {
+        padding: 8px 12px;
+        border-radius: 6px;
+        margin: 4px 0;
+        font-size: 14px;
+    }
+    
+    .status-success {
+        background-color: rgba(76, 175, 80, 0.1);
+        color: #4CAF50;
+        border: 1px solid #4CAF50;
+    }
+    
+    .status-error {
+        background-color: rgba(244, 67, 54, 0.1);
+        color: #F44336;
+        border: 1px solid #F44336;
+    }
+    
+    .status-warning {
+        background-color: rgba(255, 193, 7, 0.1);
+        color: #FF9800;
+        border: 1px solid #FF9800;
+    }
 </style>
 
 <main class="container mx-auto p-4 md:p-8 space-y-8">
@@ -44,6 +85,37 @@
             Back to Search
         </a>
     </div>
+
+    <!-- Validation Errors -->
+    <% if (locals.validationErrors && validationErrors.length > 0) { %>
+        <div class="validation-error">
+            <h3 class="text-lg font-semibold text-red-600 mb-2">
+                <i class="ti ti-alert-circle mr-2"></i>
+                Installation Validation Failed
+            </h3>
+            <ul class="list-disc list-inside space-y-1">
+                <% validationErrors.forEach(error => { %>
+                    <li class="text-red-700"><%= error %></li>
+                <% }) %>
+            </ul>
+        </div>
+    <% } %>
+
+    <!-- Validation Warnings -->
+    <% if (locals.validationWarnings && validationWarnings.length > 0) { %>
+        <div class="validation-warning">
+            <h3 class="text-lg font-semibold text-yellow-600 mb-2">
+                <i class="ti ti-alert-triangle mr-2"></i>
+                Installation Warnings
+            </h3>
+            <ul class="list-disc list-inside space-y-1">
+                <% validationWarnings.forEach(warning => { %>
+                    <li class="text-yellow-700"><%= warning %></li>
+                <% }) %>
+            </ul>
+        </div>
+    <% } %>
+
 
     <!-- Search Bar -->
     <div class="card bg-base-200 shadow-xl">
@@ -135,9 +207,85 @@
                 </div>
             </div>
 
+            <!-- Installation Path Configuration -->
+            <div class="card bg-base-200 shadow-lg mt-6">
+                <div class="card-body">
+                    <h3 class="card-title text-xl mb-4">
+                        <i class="ti ti-settings text-xl"></i>
+                        Installation Path Configuration
+                    </h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Conda Environment Path -->
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">Conda Environment Path</span>
+                                <span class="label-text-alt text-gray-500">(Optional - will use system default if empty)</span>
+                            </label>
+                            <input type="text" id="condaEnvPath" name="condaEnvPath" 
+                                   placeholder="/path/to/conda/environment" 
+                                   class="input input-bordered" />
+                            <label class="label">
+                                <span class="label-text-alt">Leave empty to use system conda environment</span>
+                                <span class="label-text-alt text-blue-600" id="current-conda-path">Current: waiting to check...</span>
+                            </label>
+                        </div>
+
+                        <!-- Git Installation Path -->
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">Git Installation Path</span>
+                                <span class="label-text-alt text-gray-500">(Optional - defaults to /home)</span>
+                            </label>
+                            <input type="text" id="gitInstallPath" name="gitInstallPath" 
+                                   placeholder="/path/to/git/installation" 
+                                   class="input input-bordered" />
+                            <label class="label">
+                                <span class="label-text-alt">Leave empty to use /home directory</span>
+                                <span class="label-text-alt text-blue-600" id="current-git-path">Current: /home</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Path Information Summary -->
+                    <div class="mt-4">
+                        <div class="flex items-center mb-2">
+                            <h4 class="font-semibold text-base-content mr-2">Path Information Summary</h4>
+                            <button id="toggle-path-info" type="button" class="btn btn-xs btn-ghost"><i class="ti ti-info-circle"></i></button>
+                        </div>
+                        <div id="path-info-summary" class="p-4 bg-base-300 rounded-lg" style="display:none;">
+                            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <strong>Conda Environment:</strong>
+                                    <ul class="list-disc list-inside mt-1 text-base-content/70">
+                                        <li>If provided: Tools will be installed in the specified conda environment</li>
+                                        <li>If empty: MetaDock will use the system's active conda environment</li>
+                                        <li>If no conda: Installation will fail for conda/pip tools</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong>Git Installation:</strong>
+                                    <ul class="list-disc list-inside mt-1 text-base-content/70">
+                                        <li>If provided: Git tools will be cloned to the specified path</li>
+                                        <li>If empty: Git tools will be installed in /home directory</li>
+                                        <li>Path must be writable by the current user</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="card-actions justify-end mt-6">
+                <button id="checkEnvironmentBtn" class="btn btn-custom-blue text-base px-6">
+                    <i class="ti ti-refresh mr-2"></i>
+                    Check Environment
+                </button>
                 <form id="install-form" action="/admin/installing" method="POST">
                     <input type="hidden" name="installationConfig" id="installationConfig">
+                    <input type="hidden" name="condaEnvPath" id="condaEnvPathHidden">
+                    <input type="hidden" name="gitInstallPath" id="gitInstallPathHidden">
                     <button type="submit" class="btn btn-custom-blue text-base px-8">Install All</button>
                 </form>
             </div>
@@ -151,12 +299,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchBtn = document.getElementById('searchBtn');
     const clearBtn = document.getElementById('clearBtn');
     const dropContainers = document.querySelectorAll('.drop-container');
+    const checkEnvironmentBtn = document.getElementById('checkEnvironmentBtn');
+    const condaEnvPathInput = document.getElementById('condaEnvPath');
+    const gitInstallPathInput = document.getElementById('gitInstallPath');
+    const condaEnvPathHidden = document.getElementById('condaEnvPathHidden');
+    const gitInstallPathHidden = document.getElementById('gitInstallPathHidden');
     
     // 从 localStorage 恢复搜索状态
     const savedSearchTerm = localStorage.getItem('optionSearchTerm');
     if (savedSearchTerm) {
         searchInput.value = savedSearchTerm;
         searchBtn.click(); // 触发搜索
+    }
+
+    // 从 localStorage 恢复路径配置
+    const savedPaths = JSON.parse(localStorage.getItem('installationPaths') || '{}');
+    if (savedPaths.condaEnvPath) {
+        condaEnvPathInput.value = savedPaths.condaEnvPath;
+    }
+    if (savedPaths.gitInstallPath) {
+        gitInstallPathInput.value = savedPaths.gitInstallPath;
     }
 
     // 从 localStorage 恢复拖拽状态
@@ -196,6 +358,112 @@ document.addEventListener('DOMContentLoaded', () => {
             tag.style.display = '';
         });
     });
+
+    // 检查环境状态
+    checkEnvironmentBtn.addEventListener('click', async () => {
+        console.log('Check environment button clicked');
+        checkEnvironmentBtn.disabled = true;
+        checkEnvironmentBtn.innerHTML = '<i class="ti ti-loader ti-spin mr-2"></i>Checking...';
+        
+        try {
+            console.log('Making request to /admin/check-environment');
+            const response = await fetch('/admin/check-environment', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers);
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Environment check result:', data);
+                
+                // 更新页面显示
+                updateEnvironmentDisplay(data);
+                
+                // 显示结果通知
+                showNotification('Environment check completed successfully!', 'success');
+            } else {
+                const errorText = await response.text();
+                console.error('Response not ok:', response.status, errorText);
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error checking environment:', error);
+            showNotification('Failed to check environment: ' + error.message, 'error');
+        } finally {
+            checkEnvironmentBtn.disabled = false;
+            checkEnvironmentBtn.innerHTML = '<i class="ti ti-refresh mr-2"></i>Check Environment';
+        }
+    });
+
+    // 更新环境显示
+    function updateEnvironmentDisplay(data) {
+        // 更新conda路径
+        const currentCondaPathElement = document.getElementById('current-conda-path');
+        if (data.environment && data.environment.valid) {
+            if (currentCondaPathElement) {
+                currentCondaPathElement.textContent = `Current: ${data.environment.path}`;
+                currentCondaPathElement.className = 'label-text-alt text-blue-600';
+            }
+        } else {
+            if (currentCondaPathElement) {
+                currentCondaPathElement.textContent = 'Current: No active environment';
+                currentCondaPathElement.className = 'label-text-alt text-red-600';
+            }
+        }
+
+        // 更新Git路径
+        const currentGitPathElement = document.getElementById('current-git-path');
+        if (data.paths && data.paths.git && data.paths.git.valid) {
+            if (currentGitPathElement) {
+                currentGitPathElement.textContent = `Current: ${data.paths.git.path}`;
+                currentGitPathElement.className = 'label-text-alt text-blue-600';
+            }
+        } else {
+            if (currentGitPathElement) {
+                currentGitPathElement.textContent = 'Current: /home (default)';
+                currentGitPathElement.className = 'label-text-alt text-blue-600';
+            }
+        }
+    }
+
+    // 显示通知
+    function showNotification(message, type = 'info') {
+        // 创建通知元素
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'error' : 'info'} fixed top-4 right-4 z-50 max-w-sm`;
+        notification.innerHTML = `
+            <div class="flex items-center">
+                <i class="ti ${type === 'success' ? 'ti-check' : type === 'error' ? 'ti-x' : 'ti-info'} mr-2"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // 3秒后自动移除
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 3000);
+    }
+
+    // 保存路径配置到 localStorage
+    function savePaths() {
+        const paths = {
+            condaEnvPath: condaEnvPathInput.value,
+            gitInstallPath: gitInstallPathInput.value
+        };
+        localStorage.setItem('installationPaths', JSON.stringify(paths));
+    }
+
+    condaEnvPathInput.addEventListener('input', savePaths);
+    gitInstallPathInput.addEventListener('input', savePaths);
 
     // 初始化每个拖拽容器
     dropContainers.forEach(container => {
@@ -271,9 +539,25 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('JSON string:', configJson);
         installationConfigInput.value = configJson;
         
+        // 设置隐藏的路径字段
+        condaEnvPathHidden.value = condaEnvPathInput.value;
+        gitInstallPathHidden.value = gitInstallPathInput.value;
+        
         // 提交后清除搜索状态，但保留拖拽状态
         localStorage.removeItem('optionSearchTerm');
         installForm.submit();
+    });
+
+    // 添加路径信息展开和隐藏功能
+    const togglePathInfoBtn = document.getElementById('toggle-path-info');
+    const pathInfoSummary = document.getElementById('path-info-summary');
+    
+    togglePathInfoBtn.addEventListener('click', () => {
+        if (pathInfoSummary.style.display === 'none') {
+            pathInfoSummary.style.display = 'block';
+        } else {
+            pathInfoSummary.style.display = 'none';
+        }
     });
 });
 </script>

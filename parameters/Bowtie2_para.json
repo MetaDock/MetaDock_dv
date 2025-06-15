@@ -210,11 +210,11 @@
     "description": "disallow gaps within <int> nucs of read extremes (4)"
   },
   {
-    "category": "Alignment",
+    "category": "null",
     "short": "",
-    "long": "--ignore-quals",
+    "long": "",
     "needs_input": false,
-    "description": "treat all quality values as 30 on Phred scale (off)"
+    "description": "Bowtie 2 version 2.5.4 by Ben Langmead (langmea@cs.jhu.edu, www.cs.jhu.edu/~langmea)"
   },
   {
     "category": "Alignment",

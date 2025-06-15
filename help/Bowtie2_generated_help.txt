@@ -80,9 +80,6 @@ Alignment:
   --gbar <int>
                         disallow gaps within <int> nucs
                         of read extremes (4)
-  --ignore-quals
-                        treat all quality values as 30
-                        on Phred scale (off)
                         Bowtie 2 version 2.5.4 by Ben
                         Langmead (langmea@cs.jhu.edu,
                         www.cs.jhu.edu/~langmea)
@@ -100,6 +97,11 @@ Alignment:
   --local
                         local alignment; ends might be
                         soft clipped (off)
+
+null:
+                        Bowtie 2 version 2.5.4 by Ben
+                        Langmead (langmea@cs.jhu.edu,
+                        www.cs.jhu.edu/~langmea)
 
 Scoring:
   --ma <int>

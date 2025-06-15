@@ -1,12 +1,225 @@
 <%- include('partials/header', { title: 'Bokeh Visualization' }) %>
 <%- include('partials/navbar') %>
 
-<main class="container mx-auto p-6">
+<style>
+    /* File browser styles */
+    .file-browser-item {
+        transition: all 0.2s ease;
+    }
+    
+    .file-browser-item:hover {
+        transform: translateX(2px);
+    }
+    
+    .folder-item {
+        border-left: 3px solid #fbbf24;
+    }
+    
+    .txt-file-item {
+        border-left: 3px solid #10b981;
+    }
+    
+    .other-file-item {
+        border-left: 3px solid #6b7280;
+    }
+    
+    /* Breadcrumb styles */
+    .breadcrumb-item {
+        transition: all 0.2s ease;
+    }
+    
+    .breadcrumb-item:hover {
+        transform: translateY(-1px);
+    }
+    
+    .breadcrumb-separator {
+        color: #9ca3af;
+        font-size: 0.75rem;
+    }
+    
+    /* Path info styling */
+    .path-info-text {
+        color: #d1d5db !important;
+    }
+    
+    .section-header .text-gray-600 {
+        color: #d1d5db !important;
+    }
+    
+    /* Additional improvements */
+    .file-browser-container {
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .file-browser-item {
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+    
+    .file-browser-item:hover {
+        transform: translateX(2px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Button improvements for dark theme */
+    .btn-outline {
+        border-color: #6b7280;
+        color: #d1d5db;
+    }
+    
+    .btn-outline:hover {
+        background-color: #374151;
+        border-color: #9ca3af;
+        color: #f3f4f6;
+    }
+    
+    /* Input improvements */
+    .input-bordered {
+        border-color: #6b7280;
+    }
+    
+    .input-bordered:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+    
+    /* Content display area */
+    .content-display {
+        background-color: #1f2937;
+        border: 1px solid #6b7280;
+        border-radius: 8px;
+        padding: 16px;
+        max-height: 400px;
+        overflow-y: auto;
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+</style>
+
+<main class="container mx-auto p-6 space-y-8">
+  <!-- Back Button -->
+  <div class="flex justify-start mb-4">
+      <a href="/dashboard" class="btn btn-primary text-lg">
+          <i class="ti ti-arrow-left mr-2"></i>
+          Back to Dashboard
+      </a>
+  </div>
+
+  <!-- File Selection Section -->
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-2xl mb-4">
+        <i class="ti ti-file-search mr-2"></i>
+        Remote File Selection
+      </h2>
+      
+      <!-- Current Path Display -->
+      <div class="bg-base-300 p-3 rounded-lg border mb-4 current-path">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="ti ti-folder text-lg"></i>
+            <span class="font-mono text-sm" id="currentPath">/</span>
+          </div>
+          <div class="text-xs text-gray-500" id="pathInfo">
+            <!-- Path info will be populated here -->
+          </div>
+        </div>
+      </div>
+      
+      <!-- Breadcrumb Navigation -->
+      <div class="bg-base-300 p-3 rounded-lg border mb-4 section-header">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="text-sm font-medium text-gray-600">Path:</span>
+          <div id="breadcrumb" class="flex items-center gap-1 flex-wrap">
+            <!-- Breadcrumb items will be populated here -->
+          </div>
+        </div>
+      </div>
+      
+      <!-- Manual Path Input -->
+      <div class="bg-base-300 p-3 rounded-lg border mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-medium text-gray-600">Manual Path:</span>
+          <input 
+            type="text" 
+            id="manualPath" 
+            class="input input-bordered input-sm flex-1 font-mono text-sm" 
+            value="/"
+            placeholder="Enter path manually (e.g., /home/user/documents)"
+          >
+          <button type="button" onclick="navigateToManualPath()" class="btn btn-sm btn-primary">
+            <i class="ti ti-arrow-right mr-1"></i>
+            Go
+          </button>
+        </div>
+      </div>
+      
+      <!-- Navigation Buttons -->
+      <div class="flex gap-2 mb-4">
+        <button type="button" onclick="navigateToParent()" class="btn btn-sm btn-outline">
+          <i class="ti ti-arrow-up mr-1"></i>
+          Up
+        </button>
+        <button type="button" onclick="refreshCurrentDirectory()" class="btn btn-sm btn-outline">
+          <i class="ti ti-refresh mr-1"></i>
+          Refresh
+        </button>
+        <button type="button" onclick="navigateToRoot()" class="btn btn-sm btn-outline">
+          <i class="ti ti-home mr-1"></i>
+          Root
+        </button>
+      </div>
+      
+      <!-- File Browser -->
+      <div class="bg-base-300 p-4 rounded-lg max-h-80 overflow-y-auto file-browser-container">
+        <div id="fileBrowserContent">
+          <!-- Files and folders will be populated here -->
+        </div>
+      </div>
+      
+      <!-- Selected File Display -->
+      <div id="selectedFileDisplay" class="mt-4 hidden">
+        <label class="label">
+          <span class="label-text">Selected File</span>
+        </label>
+        <div class="bg-base-300 p-3 rounded-lg border">
+          <div class="flex items-center justify-between">
+            <span id="selectedFileName" class="font-mono text-gray-100"></span>
+            <button type="button" onclick="clearFileSelection()" class="btn btn-sm btn-ghost">
+              <i class="ti ti-x"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Display Section -->
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-2xl mb-4">
+        <i class="ti ti-file-text mr-2"></i>
+        File Content
+      </h2>
+      
+      <div id="contentDisplay" class="content-display">
+        <div class="text-center text-gray-500">
+          <i class="ti ti-file-text text-4xl mb-2"></i>
+          <p>Select a file from the remote server to view its content</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Original Bokeh Content -->
   <div class="card bg-base-200 shadow-xl">
     <div class="card-body">
       <h2 class="card-title text-2xl mb-4">
         <i class="ti ti-chart-dots mr-2"></i>
-        Bokeh 可视化
+        Bokeh Visualization
       </h2>
       
       <div id="bokeh-content">
@@ -18,3 +231,342 @@
 </main>
 
 <%- include('partials/footer') %>
+
+<script>
+  let selectedRemotePath = null;
+  let currentDirectory = '/';
+  let manualInputPath = ''; // 保存手动输入的路径
+  
+  // Initialize file browser on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    loadRemoteDirectory(currentDirectory);
+    
+    // Handle Enter key in manual path input
+    const manualPathInput = document.getElementById('manualPath');
+    if (manualPathInput) {
+      manualPathInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          navigateToManualPath();
+        }
+      });
+    }
+  });
+
+  // Sync all path displays
+  function syncPathDisplays(path, updateManualInput = true) {
+    document.getElementById('currentPath').textContent = path;
+    if (updateManualInput) {
+      // If we have a saved manual input path, restore it; otherwise use current path
+      if (manualInputPath && manualInputPath !== path) {
+        document.getElementById('manualPath').value = manualInputPath;
+      } else {
+        document.getElementById('manualPath').value = path;
+      }
+    }
+    updateBreadcrumb(path);
+  }
+
+  // Load remote directory
+  async function loadRemoteDirectory(dir) {
+    try {
+      const response = await fetch(`/admin/browse-remote-help?dir=${encodeURIComponent(dir)}`);
+      const result = await response.json();
+      
+      if (result.error) {
+        showToast('❌ ' + result.error, 'error');
+        return;
+      }
+      
+      currentDirectory = dir;
+      syncPathDisplays(dir);
+      displayRemoteFiles(result.files, result.currentDir);
+    } catch (error) {
+      showToast('❌ Error loading directory: ' + error.message, 'error');
+    }
+  }
+
+  // Load remote directory for manual navigation (doesn't update input field)
+  async function loadRemoteDirectoryManual(dir) {
+    try {
+      const response = await fetch(`/admin/browse-remote-help?dir=${encodeURIComponent(dir)}`);
+      const result = await response.json();
+      
+      if (result.error) {
+        showToast('❌ ' + result.error, 'error');
+        return;
+      }
+      
+      currentDirectory = dir;
+      syncPathDisplays(dir, false); // Don't update manual input
+      displayRemoteFiles(result.files, result.currentDir);
+    } catch (error) {
+      showToast('❌ Error loading directory: ' + error.message, 'error');
+    }
+  }
+
+  // Update breadcrumb navigation
+  function updateBreadcrumb(path) {
+    const breadcrumb = document.getElementById('breadcrumb');
+    
+    // Split path into segments
+    const segments = path.split('/').filter(segment => segment !== '');
+    
+    let html = '';
+    
+    // Add root
+    html += `
+      <button onclick="navigateToPath('/')" class="btn btn-xs btn-ghost hover:btn-primary breadcrumb-item">
+        <i class="ti ti-home mr-1"></i>
+        root
+      </button>
+    `;
+    
+    // Add path segments
+    let currentPath = '';
+    segments.forEach((segment, index) => {
+      currentPath += '/' + segment;
+      const isLast = index === segments.length - 1;
+      
+      html += `
+        <i class="ti ti-chevron-right breadcrumb-separator"></i>
+        <button onclick="navigateToPath('${currentPath}')" 
+                class="btn btn-xs ${isLast ? 'btn-primary' : 'btn-ghost hover:btn-primary'} breadcrumb-item">
+          ${segment}
+        </button>
+      `;
+    });
+    
+    breadcrumb.innerHTML = html;
+  }
+
+  // Navigate to specific path
+  function navigateToPath(path) {
+    loadRemoteDirectory(path);
+  }
+
+  // Navigate to manually entered path
+  function navigateToManualPath() {
+    const manualPath = document.getElementById('manualPath').value.trim();
+    
+    if (!manualPath) {
+      showToast('❌ Please enter a path', 'error');
+      return;
+    }
+    
+    // Save the manual input path
+    manualInputPath = manualPath;
+    
+    // Normalize path
+    let normalizedPath = manualPath;
+    if (!normalizedPath.startsWith('/')) {
+      normalizedPath = '/' + normalizedPath;
+    }
+    
+    // Remove trailing slash if not root
+    if (normalizedPath !== '/' && normalizedPath.endsWith('/')) {
+      normalizedPath = normalizedPath.slice(0, -1);
+    }
+    
+    // Load directory without updating the manual input field
+    loadRemoteDirectoryManual(normalizedPath);
+  }
+
+  // Navigate to parent directory
+  function navigateToParent() {
+    if (currentDirectory === '/') {
+      showToast('Already at root directory', 'info');
+      return;
+    }
+    
+    const parentDir = currentDirectory.split('/').slice(0, -1).join('/') || '/';
+    loadRemoteDirectory(parentDir);
+  }
+
+  // Navigate to root directory
+  function navigateToRoot() {
+    loadRemoteDirectory('/');
+  }
+
+  // Refresh current directory
+  function refreshCurrentDirectory() {
+    loadRemoteDirectory(currentDirectory);
+  }
+
+  // Navigate to subdirectory
+  function navigateToFolder(folderPath) {
+    loadRemoteDirectory(folderPath);
+  }
+
+  // Display remote files and folders
+  function displayRemoteFiles(fileList, currentDir) {
+    const content = document.getElementById('fileBrowserContent');
+    const pathInfo = document.getElementById('pathInfo');
+    
+    // Update path info
+    const folders = fileList.filter(item => item.isDirectory);
+    const files = fileList.filter(item => !item.isDirectory);
+    const txtFiles = files.filter(file => file.filename.toLowerCase().endsWith('.txt'));
+    
+    pathInfo.innerHTML = `
+      <span class="mr-2 path-info-text">📁 ${folders.length} folders</span>
+      <span class="mr-2 path-info-text">📄 ${files.length} files</span>
+      <span class="text-green-400 path-info-text">📝 ${txtFiles.length} .txt files</span>
+    `;
+    
+    if (fileList.length === 0) {
+      content.innerHTML = '<p class="text-gray-300 text-center py-4">No files or folders found in this directory</p>';
+      return;
+    }
+    
+    let html = '';
+    
+    // Display folders first
+    if (folders.length > 0) {
+      html += '<div class="mb-4">';
+      html += '<h4 class="font-semibold text-sm text-gray-300 mb-2">📁 Folders</h4>';
+      folders.forEach(folder => {
+        html += `
+          <div class="flex items-center justify-between p-2 hover:bg-gray-700 rounded cursor-pointer mb-1 file-browser-item folder-item" 
+               onclick="navigateToFolder('${folder.fullPath}')">
+            <div class="flex items-center gap-3">
+              <i class="ti ti-folder text-yellow-400 text-lg"></i>
+              <div>
+                <div class="font-medium text-gray-100">${folder.filename}</div>
+                <div class="text-xs text-gray-400">${folder.date}</div>
+              </div>
+            </div>
+            <button class="btn btn-sm btn-ghost">
+              <i class="ti ti-arrow-right"></i>
+            </button>
+          </div>
+        `;
+      });
+      html += '</div>';
+    }
+    
+    // Display files
+    if (files.length > 0) {
+      html += '<div>';
+      html += '<h4 class="font-semibold text-sm text-gray-300 mb-2">📄 Files</h4>';
+      
+      // Display .txt files first
+      if (txtFiles.length > 0) {
+        html += '<div class="mb-3">';
+        html += '<h5 class="font-medium text-xs text-green-400 mb-1">📝 Text Files (.txt)</h5>';
+        txtFiles.forEach(file => {
+          html += `
+            <div class="flex items-center justify-between p-2 hover:bg-gray-700 rounded mb-1 file-browser-item txt-file-item">
+              <div class="flex items-center gap-3">
+                <i class="ti ti-file-text text-green-400 text-lg"></i>
+                <div>
+                  <div class="font-medium text-gray-100">${file.filename}</div>
+                  <div class="text-xs text-gray-400">${file.size} • ${file.date}</div>
+                </div>
+              </div>
+              <button class="btn btn-sm btn-primary" onclick="selectRemoteFile('${file.fullPath}', '${file.filename}')">
+                Select
+              </button>
+            </div>
+          `;
+        });
+        html += '</div>';
+      }
+      
+      // Display other files (grayed out)
+      const otherFiles = files.filter(file => !file.filename.toLowerCase().endsWith('.txt'));
+      if (otherFiles.length > 0) {
+        html += '<div>';
+        html += '<h5 class="font-medium text-xs text-gray-500 mb-1">📄 Other Files</h5>';
+        otherFiles.forEach(file => {
+          html += `
+            <div class="flex items-center justify-between p-2 opacity-50 file-browser-item other-file-item">
+              <div class="flex items-center gap-3">
+                <i class="ti ti-file text-gray-500 text-lg"></i>
+                <div>
+                  <div class="font-medium text-gray-400">${file.filename}</div>
+                  <div class="text-xs text-gray-500">${file.size} • ${file.date}</div>
+                </div>
+              </div>
+              <span class="text-xs text-gray-500">Not selectable</span>
+            </div>
+          `;
+        });
+        html += '</div>';
+      }
+      
+      html += '</div>';
+    }
+    
+    content.innerHTML = html;
+  }
+
+  // Select remote file and load its content
+  async function selectRemoteFile(fullPath, filename) {
+    selectedRemotePath = fullPath;
+    
+    document.getElementById('selectedFileName').textContent = filename;
+    document.getElementById('selectedFileDisplay').classList.remove('hidden');
+    
+    showToast('✅ File selected: ' + filename);
+    
+    // Load and display file content
+    await loadFileContent(fullPath, filename);
+  }
+
+  // Load file content from remote server
+  async function loadFileContent(fullPath, filename) {
+    try {
+      const response = await fetch(`/admin/read-remote-file?path=${encodeURIComponent(fullPath)}`);
+      const result = await response.json();
+      
+      if (result.error) {
+        showToast('❌ Error reading file: ' + result.error, 'error');
+        return;
+      }
+      
+      // Display the content
+      const contentDisplay = document.getElementById('contentDisplay');
+      contentDisplay.innerHTML = `
+        <div class="mb-2 text-sm text-gray-400">
+          <strong>File:</strong> ${filename}<br>
+          <strong>Path:</strong> ${fullPath}<br>
+          <strong>Size:</strong> ${result.size || 'Unknown'} bytes
+        </div>
+        <hr class="border-gray-600 mb-3">
+        <div class="text-gray-100">${result.content}</div>
+      `;
+      
+    } catch (error) {
+      showToast('❌ Error loading file content: ' + error.message, 'error');
+    }
+  }
+
+  // Clear file selection
+  function clearFileSelection() {
+    selectedRemotePath = null;
+    manualInputPath = ''; // Clear saved manual input path
+    document.getElementById('selectedFileDisplay').classList.add('hidden');
+    document.getElementById('selectedFileName').textContent = '';
+    
+    // Reset content display
+    const contentDisplay = document.getElementById('contentDisplay');
+    contentDisplay.innerHTML = `
+      <div class="text-center text-gray-500">
+        <i class="ti ti-file-text text-4xl mb-2"></i>
+        <p>Select a file from the remote server to view its content</p>
+      </div>
+    `;
+  }
+
+  // Toast notification
+  function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type} fixed bottom-4 right-4`;
+    toast.innerHTML = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.remove();
+    }, 3000);
+  }
+</script>

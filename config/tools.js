@@ -406,5 +406,17 @@ module.exports = {
     "selectionRoute": "/complete-selection-dbcan_test",
     "env": "",
     "hasStderr": true
+  },
+  "pyani_test": {
+    "title": "pyani_test Parameters",
+    "toolName": "pyani_test",
+    "route": "pyani_test",
+    "commandRoute": "/run-command-pyani_test",
+    "usagePath": "parameters/pyani_test_usage.json",
+    "paraPath": "parameters/pyani_test_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-pyani_test",
+    "env": "",
+    "hasStderr": true
   }
 };

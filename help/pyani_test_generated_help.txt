@@ -1,0 +1,94 @@
+usage: average_nucleotide_identity.py [-h] [--version] -o OUTDIRNAME -i INDIRNAME [-v] [-f] [-s FRAGSIZE] [-l LOGFILE] [--skip_nucmer] [--skip_blastn] [--noclobber] [--nocompress] [-g] [--gformat GFORMAT] [--gmethod {mpl,seaborn}] [--labels LABELS] [--classes CLASSES] [-m {ANIm,ANIb,ANIblastall,TETRA}] [--scheduler {multiprocessing,SGE}] [--workers WORKERS] [--SGEgroupsize SGEGROUPSIZE] [--SGEargs SGEARGS] [--maxmatch] [--nucmer_exe NUCMER_EXE] [--filter_exe FILTER_EXE] [--blastn_exe BLASTN_EXE] [--makeblastdb_exe MAKEBLASTDB_EXE] [--blastall_exe BLASTALL_EXE] [--formatdb_exe FORMATDB_EXE] [--write_excel] [--rerender] [--subsample SUBSAMPLE] [--seed SEED] [--jobprefix JOBPREFIX]
+
+optional arguments:
+  -h, --help
+                        show this help message and exit
+  --version
+                        show program's version number
+                        and exit
+  -o OUTDIRNAME, --outdir OUTDIRNAME
+                        Output directory (required)
+  -i INDIRNAME, --indir INDIRNAME
+                        Input directory name (required)
+  -v, --verbose
+                        Give verbose output
+  -f, --force
+                        Force file overwriting
+  -s FRAGSIZE, --fragsize FRAGSIZE
+                        Sequence fragment size for ANIb
+                        (default 1020)
+  -l LOGFILE, --logfile LOGFILE
+                        Logfile location
+  --skip_nucmer
+                        Skip NUCmer runs, for testing
+                        (e.g. if output already present)
+  --skip_blastn
+                        Skip BLASTN runs, for testing
+                        (e.g. if output already present)
+  --noclobber
+                        Don't nuke existing files
+  --nocompress
+                        Don't compress/delete the
+                        comparison output
+  -g, --graphics
+                        Generate heatmap of ANI
+  --gformat GFORMAT
+                        Graphics output format(s)
+                        [pdf|png|jpg|svg] (default
+                        pdf,png,eps meaning three file
+                        formats)
+  --gmethod {mpl,seaborn}
+                        Graphics output method (default
+                        mpl)
+  --labels LABELS
+                        Path to file containing sequence
+                        labels
+  --classes CLASSES
+                        Path to file containing sequence
+                        classes
+  -m {ANIm,ANIb,ANIblastall,TETRA}, --method {ANIm,ANIb,ANIblastall,TETRA}
+                        ANI method (default ANIm)
+  --scheduler {multiprocessing,SGE}
+                        Job scheduler (default
+                        multiprocessing, i.e. locally)
+  --workers WORKERS
+                        Number of worker processes for
+                        multiprocessing (default zero,
+                        meaning use all available cores)
+  --SGEgroupsize SGEGROUPSIZE
+                        Number of jobs to place in an
+                        SGE array group (default 10000)
+  --SGEargs SGEARGS
+                        Additional arguments for qsub
+  --maxmatch
+                        Override MUMmer to allow all
+                        NUCmer matches
+  --nucmer_exe NUCMER_EXE
+                        Path to NUCmer executable
+  --filter_exe FILTER_EXE
+                        Path to delta-filter executable
+  --blastn_exe BLASTN_EXE
+                        Path to BLASTN+ executable
+  --makeblastdb_exe MAKEBLASTDB_EXE
+                        Path to BLAST+ makeblastdb
+                        executable
+  --blastall_exe BLASTALL_EXE
+                        Path to BLASTALL executable
+  --formatdb_exe FORMATDB_EXE
+                        Path to BLAST formatdb
+                        executable
+  --write_excel
+                        Write Excel format output tables
+  --rerender
+                        Rerender graphics output without
+                        recalculation
+  --subsample SUBSAMPLE
+                        Subsample a percentage [0-1] or
+                        specific number (1-n) of input
+                        sequences
+  --seed SEED
+                        Set random seed for reproducible
+                        subsampling.
+  --jobprefix JOBPREFIX
+                        Prefix for SGE jobs (default
+                        ANI).

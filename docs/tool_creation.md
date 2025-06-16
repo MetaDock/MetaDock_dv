@@ -66,3 +66,4 @@ MetaDock also provides automated solution for installing tools we curated and in
    ![Select environment](../images/select_install_env.gif)
 
 4. **Start installation**
+   ![Start installing](../images/start_install.gif)

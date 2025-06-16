@@ -51,4 +51,18 @@ Managing tools with [conda](https://anaconda.org/) environments is common in bio
 
 ### One-Click Creation
 
-<!-- Add details about one-click creation here as needed. -->
+MetaDock also provides automated solution for installing tools we curated and included in this framework.
+
+1. **Login as admin**
+
+   ![Admin login](../images/admin_login.gif)
+
+2. **Choose your tools**
+   
+   ![Select tools](../images/select_tools.gif)
+
+3. **Choose installation environment**
+
+   ![Select environment](../images/select_install_env.gif)
+
+4. **Start installation**

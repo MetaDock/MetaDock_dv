@@ -33,22 +33,6 @@ Managing tools with [conda](https://anaconda.org/) environments is common in bio
     metaphlan --version | grep "4.1.1"
     ```
 
-4. **Register the Tool in MetaDock**
-    Edit `config/tools.js` and add a new entry in the `"env"` section for the tool's environment. Use the following template:
-    ```json
-    "metaphlan-4.1.1": {
-      // ... other configuration fields ...
-      "env": "bash -l -c \"source ${CONDA_PREFIX}/etc/profile.d/conda.sh; conda activate metaphlan-4.1.1; __COMMAND__\""
-      // ... other configuration fields ...
-    }
-    ```
-    Other fields can be left as empty strings (`""`) as placeholders for now.
-
-    To locate your `${CONDA_PREFIX}/etc/profile.d/conda.sh`:
-    ```bash
-    ls $(conda info --base)/etc/profile.d/conda.sh
-    ```
-
 ### One-Click Creation
 
 MetaDock also provides automated solution for installing tools we curated and included in this framework.

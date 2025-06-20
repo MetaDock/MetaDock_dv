@@ -25,14 +25,11 @@ Regular users are typically biologists or clinicians with limited computational 
 
 - [Installation Guide](./docs/installation.md)
 - [Tool Creation](./docs/tool_creation.md)
-- [Configuration]()
-- [Platform Management]()
-- [User Access Distribution]()
+- [Configuration](./docs/tool_configuration.md)
+
 
 ## For Regular Users
 
 - [How to Log In]()
 - [Selecting Tools]()
 - [Running Analyses]()
-- [Choosing Input Data]()
-- [Viewing Results]()

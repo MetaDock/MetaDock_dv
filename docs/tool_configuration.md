@@ -45,4 +45,6 @@ To enable regular users to run tools through MetaDock, an administrator must fir
 
     You should see the results immediately:  
     ![Successful Execution](../images/successful_exe.gif)
--
+
+Congratulations! From this point forward, regular users without coding experience can easily run the tool you configured. You can repeat these steps to add more tools and further enhance your MetaDock environment.
+

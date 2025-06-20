@@ -30,6 +30,4 @@ Regular users are typically biologists or clinicians with limited computational 
 
 ## For Regular Users
 
-- [How to Log In]()
-- [Selecting Tools]()
-- [Running Analyses]()
+- [Performing Metagenomics Analyses by Clicking](./docs/regular_user_guidelines.md)

@@ -222,7 +222,7 @@
                 const actionsDiv = document.createElement('div');
                 actionsDiv.className = 'section-actions';
                 
-                // 检查是否是 usage 部分
+                // check if it is usage section
                 const generatedDiv = section.querySelector('.generated');
                 const text = generatedDiv.textContent.trim();
                 const isUsage = text.toLowerCase().startsWith('usage:');
@@ -256,11 +256,11 @@
 
         async function modifySection(sectionElement) {
             try {
-                // 从生成的帮助文本中提取参数信息
+                // extract parameter information from generated help text
                 const generatedDiv = sectionElement.querySelector('.generated');
-                console.log('Generated div:', generatedDiv); // 调试日志
+                console.log('Generated div:', generatedDiv);
                 
-                // 获取所有文本节点
+                // get all text nodes
                 const textNodes = [];
                 const walk = document.createTreeWalker(
                     generatedDiv,
@@ -274,43 +274,42 @@
                 }
                 const generatedText = textNodes.join('\n');
                 
-                console.log('Generated text:', generatedText); // 调试日志
+                console.log('Generated text:', generatedText);
                 const lines = generatedText.split('\n');
                 let short = '', long = '', description = '';
                 let isDescription = false;
                 let foundParameter = false;
                 
-                // 检查是否是 usage 部分
+                // check if it is usage section
                 const isUsage = lines.some(line => line.trim().toLowerCase().startsWith('usage:'));
                 if (isUsage) {
-                    // 如果是 usage 部分，直接调用 modifyUsage
+                    // if it is usage section, call modifyUsage
                     modifyUsage(sectionElement);
                     return;
                 }
                 
-                // 解析参数行和描述
+                // parse parameter lines and descriptions
                 for (let i = 0; i < lines.length; i++) {
                     const line = lines[i].trim();
                     if (!line) continue;
 
-                    console.log('Processing line:', line); // 调试日志
+                    console.log('Processing line:', line);
 
-                    // 跳过 "Generated" 标题行
+                    // skip "Generated" title line
                     if (line === 'Generated') continue;
 
                     if (!isDescription && !line.startsWith(' ')) {
-                        // 这是参数行
-                        console.log('Found parameter line:', line); // 调试日志
+                        console.log('Found parameter line:', line);
                         
-                        // 分离参数和描述
+                        // separate parameter and description
                         const parts = line.split(/\s{2,}/);
                         if (parts.length > 0) {
                             const paramPart = parts[0].trim();
-                            // 分离短选项和长选项
+                            // separate short option and long option
                             const options = paramPart.split(',').map(opt => opt.trim());
                             for (const opt of options) {
                                 if (opt.startsWith('--')) {
-                                    // 提取长选项名称（不包括值）
+                                    // extract long option name (without value)
                                     const longOpt = opt.split(/\s+/)[0];
                                     long = longOpt;
                                     foundParameter = true;
@@ -319,33 +318,33 @@
                                     foundParameter = true;
                                 }
                             }
-                            // 如果有描述部分
+                            // if there is a description part
                             if (parts.length > 1) {
                                 description = parts[1].trim();
                             }
                         }
                         isDescription = true;
                     } else if (isDescription && line.startsWith(' ')) {
-                        // 这是描述行
+                        // this is description line
                         description += (description ? ' ' : '') + line.trim();
                     } else if (isDescription && !line.startsWith(' ')) {
-                        // 遇到新的参数行，结束当前描述
+                        // when encountering a new parameter line, end the current description
                         break;
                     }
                 }
 
-                console.log('Extracted values:', { short, long, description }); // 调试日志
+                console.log('Extracted values:', { short, long, description });
 
-                // 使用 short 或 long 选项来获取完整的参数数据
+                // use short or long option to get complete parameter data
                 const optionValue = long || short;
                 if (!optionValue || !foundParameter) {
-                    console.log('No option value found in text:', generatedText); // 调试日志
+                    console.log('No option value found in text:', generatedText);
                     throw new Error('Could not find parameter option');
                 }
 
-                console.log('Using option value:', optionValue); // 调试日志
+                console.log('Using option value:', optionValue);
 
-                // 使用 encodeURIComponent 来正确编码参数值
+                // use encodeURIComponent to correctly encode parameter value
                 const encodedOption = encodeURIComponent(optionValue);
                 const response = await fetch(`/admin/tools/<%= toolName %>/parameters/${encodedOption}`);
                 if (!response.ok) {
@@ -383,17 +382,16 @@
                     throw new Error('No content found in section');
                 }
 
-                // 检查是否是 usage 部分
+                // check if it is usage section
                 const isUsage = lines[0].toLowerCase().startsWith('usage:');
                 if (isUsage) {
-                    // 如果是 usage 部分，调用 deleteUsage
+                    // if it is usage section, call deleteUsage
                     await deleteUsage(sectionElement);
                     return;
                 }
 
-                // 检查是否是分类标题（以冒号结尾的单行）
                 if (lines.length === 1 && lines[0].endsWith(':')) {
-                    const category = lines[0].slice(0, -1); // 移除冒号
+                    const category = lines[0].slice(0, -1);
                     console.log('Found category:', category);
 
                     if (confirm(`Are you sure you want to delete the category "${category}"?`)) {
@@ -411,7 +409,7 @@
                     return;
                 }
 
-                // 处理参数行
+                // process parameter lines
                 let short = '', long = '';
                 let foundParameter = false;
                 
@@ -506,7 +504,7 @@
                 const data = Object.fromEntries(formData.entries());
                 data.needs_input = formData.get('needs_input') === 'on';
 
-                // 处理 short 和 long 选项的格式
+                // process short and long option format
                 if (data.short && !data.short.startsWith('-')) {
                     data.short = '-' + data.short;
                 }
@@ -530,9 +528,9 @@
                     if (response.ok) {
                         const result = await response.json();
                         if (result.success) {
-                            // 关闭模态框
+                            // close modal
                             modal.remove();
-                            // 刷新页面
+                            // refresh page
                             window.location.reload();
                         } else {
                             throw new Error(result.error || `Failed to ${mode} section`);
@@ -554,7 +552,7 @@
                 const data = Object.fromEntries(formData.entries());
                 data.needs_input = formData.get('needs_input') === 'on';
 
-                // 处理 short 和 long 选项的格式
+                // process short and long option format
                 if (data.short && !data.short.startsWith('-')) {
                     data.short = '-' + data.short;
                 }
@@ -589,18 +587,18 @@
             try {
                 const generatedDiv = sectionElement.querySelector('.generated');
                 const text = generatedDiv.textContent.trim();
-                // 移除 "Generated" 并获取以 "usage:" 开头的部分
+                // remove "Generated" and get the part starting with "usage:"
                 const usage = text.replace(/^Generated\s*/i, '').trim();
                 
                 console.log('Initial text:', text);
                 console.log('Extracted usage:', usage);
                 
-                // 检查是否包含 usage（不区分大小写）
+                // check if it contains usage (case insensitive)
                 if (!usage.toLowerCase().includes('usage')) {
                     throw new Error('Not a valid usage section');
                 }
 
-                // 获取所有 usage 部分
+                // get all usage sections
                 const response = await fetch(`/admin/tools/<%= toolName %>/usage`);
                 if (!response.ok) {
                     throw new Error('Failed to get usage data');
@@ -609,9 +607,9 @@
                 
                 console.log('Received usage data:', usageData);
                 
-                // 找到当前 usage 的索引
+                // find the index of the current usage
                 const index = usageData.usage.findIndex(u => {
-                    // 首先检查是否包含 usage（不区分大小写）
+                    // first check if it contains usage (case insensitive)
                     const hasUsage = u.toLowerCase().includes('usage');
                     const currentHasUsage = usage.toLowerCase().includes('usage');
                     
@@ -619,7 +617,7 @@
                         return false;
                     }
                     
-                    // 如果都包含 usage，则比较内容
+                    // if both contain usage, compare content
                     const normalizedUsage = u.toLowerCase().trim();
                     const normalizedCurrentUsage = usage.toLowerCase().trim();
                     
@@ -651,7 +649,7 @@
             const modal = document.createElement('div');
             modal.className = 'modal';
             
-            // 确保 usage 以 "usage: " 开头
+            // ensure usage starts with "usage: "
             let usageText = data.usage || '';
             if (mode === 'add' && !usageText.toLowerCase().startsWith('usage:')) {
                 usageText = 'usage: ' + usageText;
@@ -689,7 +687,7 @@
                 const formData = new FormData(e.target);
                 let formUsage = formData.get('usage');
                 
-                // 确保提交的 usage 以 "usage: " 开头
+                // ensure submitted usage starts with "usage: "
                 if (!formUsage.toLowerCase().startsWith('usage:')) {
                     formUsage = 'usage: ' + formUsage;
                 }
@@ -697,28 +695,28 @@
                 const formIndex = formData.get('index');
 
                 try {
-                    // 获取当前的 usage 数据
+                    // get current usage data
                     const response = await fetch(`/admin/tools/<%= toolName %>/usage`);
                     if (!response.ok) {
                         throw new Error('Failed to get usage data');
                     }
                     const usageData = await response.json();
                     
-                    // 准备新的 usage 数据
+                    // prepare new usage data
                     let newUsageData;
                     if (mode === 'add') {
-                        // 添加新的 usage 数组
+                        // add new usage array
                         newUsageData = {
                             usage: [...usageData.usage, formUsage]
                         };
                     } else {
-                        // 修改现有的 usage
+                        // modify existing usage
                         newUsageData = {
                             usage: usageData.usage.map((u, i) => i === parseInt(formIndex) ? formUsage : u)
                         };
                     }
                     
-                    // 发送更新请求
+                    // send update request
                     const updateResponse = await fetch(`/admin/tools/<%= toolName %>/usage`, {
                         method: 'PUT',
                         headers: {
@@ -756,14 +754,14 @@
                     throw new Error('Not a valid usage section');
                 }
 
-                // 获取所有 usage 部分
+                // get all usage sections
                 const response = await fetch(`/admin/tools/<%= toolName %>/usage`);
                 if (!response.ok) {
                     throw new Error('Failed to get usage data');
                 }
                 const usageData = await response.json();
                 
-                // 找到当前 usage 的索引
+                // find the index of the current usage
                 const index = usageData.usage.findIndex(u => u === usage);
                 if (index === -1) {
                     throw new Error('Usage not found');

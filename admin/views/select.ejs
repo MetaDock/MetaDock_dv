@@ -39,7 +39,7 @@
         content: "";
         position: absolute;
         top: 50%;
-        right: 100%; /* 箭头位于tooltip左侧 */
+        right: 100%;
         transform: translateY(-50%);
         border-width: 5px;
         border-style: solid;
@@ -156,20 +156,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedToolIds = document.getElementById('selectedToolIds');
     const toolCheckboxes = document.querySelectorAll('.tool-checkbox');
 
-    // 从 localStorage 恢复搜索状态
+    // restore search state from localStorage
     const savedSearchTerm = localStorage.getItem('toolSearchTerm');
     if (savedSearchTerm) {
         searchInput.value = savedSearchTerm;
-        searchBtn.click(); // 触发搜索
+        searchBtn.click();
     }
 
-    // 从 localStorage 恢复勾选状态
+    // restore checked state from localStorage
     const savedCheckedTools = JSON.parse(localStorage.getItem('checkedTools') || '[]');
     toolCheckboxes.forEach(checkbox => {
         checkbox.checked = savedCheckedTools.includes(checkbox.dataset.toolId);
     });
 
-    // 保存搜索状态
+    // save search state
     searchBtn.addEventListener('click', () => {
         const searchTerm = searchInput.value.toLowerCase();
         localStorage.setItem('toolSearchTerm', searchTerm);
@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 清除搜索状态
+    // clear search state
     clearBtn.addEventListener('click', () => {
         searchInput.value = '';
         localStorage.removeItem('toolSearchTerm');
@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 保存勾选状态
+    // save checked state
     toolCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', () => {
             const checkedTools = Array.from(toolCheckboxes)
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         toolCheckboxes.forEach(checkbox => {
             checkbox.checked = true;
         });
-        // 保存全选状态
+        // save all selected state
         const allToolIds = Array.from(toolCheckboxes).map(cb => cb.dataset.toolId);
         localStorage.setItem('checkedTools', JSON.stringify(allToolIds));
     });
@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
         toolCheckboxes.forEach(checkbox => {
             checkbox.checked = false;
         });
-        // 保存全不选状态
+        // save all deselected state
         localStorage.setItem('checkedTools', JSON.stringify([]));
     });
 
@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         selectedToolIds.value = JSON.stringify(selectedTools);
-        // 提交后清除搜索状态，但保留勾选状态
+        // clear search state after submission, but keep checked state
         localStorage.removeItem('toolSearchTerm');
         confirmForm.submit();
     });

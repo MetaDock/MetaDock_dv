@@ -23,7 +23,16 @@ const isAdmin = (req, res, next) => {
   next();
 };
 
-// GET /data/tools_install.json -> 提供工具安装配置数据
+// SSH connection check middleware (for non-admin routes)
+const isConnected = (req, res, next) => {
+  // Check if SSH connection is established
+  if (!req.app.locals.connectionDetails) {
+    return res.redirect('/login');
+  }
+  next();
+};
+
+// GET /data/tools_install.json -> provide tool installation configuration data
 router.get('/data/tools_install.json', isAdmin, (req, res) => {
     try {
         const toolsPath = path.join(__dirname, '..', 'data', 'tools_install.json');
@@ -43,7 +52,7 @@ router.post('/login', async (req, res) => {
   });
 
   try {
-    // 检查是否已建立SSH连接
+    // check if SSH connection is established
     if (!req.app.locals.connectionDetails) {
       console.log('SSH connection required');
       return res.status(401).json({ error: 'SSH connection required' });
@@ -108,13 +117,13 @@ const upload = multer({
   }
 });
 
-// GET / -> 显示首页 (Rectangle 1)
+// GET / -> show home page
 router.get('/', isAdmin, installerController.showHomePage);
 
-// GET /search -> 显示搜索/推荐工具页 (Rectangle 2)
+// GET /search -> show search/recommend tool page
 router.get('/search', isAdmin, installerController.showSearchPage);
 
-// GET /options -> 显示选项页面
+// GET /options -> show option page
 router.get('/options', isAdmin, (req, res) => {
     const selectedTools = req.session.selectedTools || [];
     res.render('option', {
@@ -125,16 +134,16 @@ router.get('/options', isAdmin, (req, res) => {
     });
 });
 
-// POST /options -> 处理从搜索页提交的表单，进入选项页 (Flow from 2 to 3)
+// POST /options -> process form submission from search page and enter option page
 router.post('/options', isAdmin, installerController.processSelectedTools);
 
-// POST /install -> 处理从选项页提交的安装请求 (Flow from 3 to 8)
+// POST /install -> process form submission from option page and enter installation page
 router.post('/install', isAdmin, installerController.startInstallation);
 
-// GET /installing -> 显示安装过程页面
+// GET /installing -> show installation process page
 router.get('/installing', isAdmin, installerController.startInstallation);
 
-// POST /installing -> 处理安装表单提交
+// POST /installing -> process installation form submission
 router.post('/installing', isAdmin, (req, res) => {
     console.log('Received installation request:');
     console.log('Body:', req.body);
@@ -155,6 +164,12 @@ router.post('/installing', isAdmin, (req, res) => {
         res.status(400).json({ error: 'Invalid installation configuration' });
     }
 });
+
+// GET /check-environment -> check system environment
+router.get('/check-environment', isAdmin, installerController.checkSystemEnvironment);
+
+// POST /execute-installation -> execute installation
+router.post('/execute-installation', isAdmin, installerController.executeInstallation);
 
 // Admin dashboard - protected by isAdmin middleware
 router.get('/tool_management', isAdmin, (req, res) => {
@@ -184,14 +199,35 @@ router.get('/tools', isAdmin, (req, res) => {
 // Upload help file and process
 router.post('/upload-help', upload.single('helpFile'), async (req, res) => {
   try {
-    const { toolName } = req.body;
+    const { toolName, remoteHelpPath } = req.body;
     const helpFile = req.file;
 
+    // Check if we should read from remote server
+    if (remoteHelpPath) {
+      // Read help file from remote server
+      const helpContent = await readHelpFileFromRemote(remoteHelpPath, req.app.locals.connectionDetails);
+      
+      if (!helpContent) {
+        return res.status(400).json({ error: 'Failed to read help file from remote server' });
+      }
+
+      // Create output directories if they don't exist
+      await fs.mkdir(adminConfig.paths.parametersDir, { recursive: true });
+      await fs.mkdir(adminConfig.paths.helpDir, { recursive: true });
+      await fs.mkdir(adminConfig.paths.tempUploadsDir, { recursive: true });
+
+      // Save help content to local file
+      const helpPath = path.join(adminConfig.paths.helpDir, `${toolName}_help.txt`);
+      await fs.writeFile(helpPath, helpContent, 'utf8');
+
+      console.log('Help file read from remote and saved to:', helpPath);
+    } else {
+      // Original logic for uploaded file
     if (!helpFile) {
       return res.status(400).json({ error: adminConfig.errors.fileUpload.noFile });
     }
 
-    console.log('Processing help file:', {
+      console.log('Processing uploaded help file:', {
       toolName,
       originalName: helpFile.originalname,
       path: helpFile.path,
@@ -208,8 +244,10 @@ router.post('/upload-help', upload.single('helpFile'), async (req, res) => {
     await fs.rename(helpFile.path, helpPath);
 
     console.log('Help file moved to:', helpPath);
+    }
 
     // Process help file using Python scripts
+    const helpPath = path.join(adminConfig.paths.helpDir, `${toolName}_help.txt`);
     const paraOutputPath = path.join(adminConfig.paths.parametersDir, `${toolName}_para.json`);
     const usageOutputPath = path.join(adminConfig.paths.parametersDir, `${toolName}_usage.json`);
 
@@ -303,6 +341,150 @@ router.post('/upload-help', upload.single('helpFile'), async (req, res) => {
     res.status(500).json({ error: error.message || 'Failed to process help file' });
   }
 });
+
+// New route to browse remote help files
+router.get('/browse-remote-help', isConnected, async (req, res) => {
+  try {
+    const { dir = '/' } = req.query;
+    
+    console.log('Browsing remote directory:', { directory: dir });
+
+    const fileList = await getRemoteFileList(dir, {
+      host: req.app.locals.connectionDetails.host,
+      port: req.app.locals.connectionDetails.port,
+      username: req.app.locals.connectionDetails.username,
+      password: req.app.locals.connectionDetails.password
+    });
+
+    console.log(`Found ${fileList.length} items in directory: ${dir}`);
+
+    res.json({
+      currentDir: dir,
+      files: fileList // Return all files and folders, not just .txt files
+    });
+  } catch (error) {
+    console.error('Error browsing remote directory:', error);
+    res.status(500).json({ 
+      error: 'Failed to browse remote directory',
+      details: error.message 
+    });
+  }
+});
+
+// New route to read remote file content
+router.get('/read-remote-file', isConnected, async (req, res) => {
+  try {
+    const { path: filePath } = req.query;
+    
+    console.log('Reading remote file:', { filePath });
+    
+    if (!filePath) {
+      return res.status(400).json({ error: 'File path is required' });
+    }
+
+    const fileContent = await readRemoteFileContent(filePath, {
+      host: req.app.locals.connectionDetails.host,
+      port: req.app.locals.connectionDetails.port,
+      username: req.app.locals.connectionDetails.username,
+      password: req.app.locals.connectionDetails.password
+    });
+
+    console.log(`Successfully read remote file: ${filePath}, size: ${fileContent.content.length} characters`);
+
+    res.json({
+      content: fileContent.content,
+      size: fileContent.size
+    });
+  } catch (error) {
+    console.error('Error reading remote file:', error);
+    res.status(500).json({ 
+      error: 'Failed to read remote file',
+      details: error.message 
+    });
+  }
+});
+
+// Helper function to get file list from remote system (reused from server.js)
+async function getRemoteFileList(dir, sshConfig) {
+  return new Promise((resolve, reject) => {
+    const { Client } = require('ssh2');
+    const conn = new Client();
+    const fileList = [];
+
+    conn.on('ready', () => {
+      conn.sftp((err, sftp) => {
+        if (err) {
+          conn.end();
+          return reject(err);
+        }
+
+        sftp.readdir(dir, (err, list) => {
+          if (err) {
+            conn.end();
+            return reject(err);
+          }
+
+          // Process each file
+          const processFile = (index) => {
+            if (index >= list.length) {
+              conn.end();
+              // Sort directories first, then files alphabetically
+              return resolve(fileList.sort((a, b) => {
+                if (a.isDirectory && !b.isDirectory) return -1;
+                if (!a.isDirectory && b.isDirectory) return 1;
+                return a.filename.localeCompare(b.filename);
+              }));
+            }
+
+            const file = list[index];
+            // Skip system files and hidden files
+            if (file.filename.startsWith('.') || 
+                file.filename === 'pagefile.sys' || 
+                file.filename === 'hiberfil.sys' || 
+                file.filename === 'swapfile.sys') {
+              return processFile(index + 1);
+            }
+
+            const isDirectory = file.attrs.isDirectory();
+            const filePath = path.posix.join(dir, file.filename);
+            
+            fileList.push({
+              filename: file.filename,
+              size: formatFileSize(file.attrs.size),
+              date: new Date(file.attrs.mtime * 1000).toLocaleString(),
+              permissions: getFilePermissions(file.attrs.mode),
+              isDirectory: isDirectory,
+              fullPath: filePath
+            });
+
+            processFile(index + 1);
+          };
+
+          processFile(0);
+        });
+      });
+    }).on('error', (err) => {
+      reject(err);
+    }).connect(sshConfig);
+  });
+}
+
+// Helper function to format file size
+function formatFileSize(bytes) {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Helper function to get file permissions
+function getFilePermissions(mode) {
+  const perms = ['---', '--x', '-w-', '-wx', 'r--', 'r-x', 'rw-', 'rwx'];
+  const octal = mode.toString(8);
+  const lastThree = octal.slice(-3);
+  return lastThree.split('').map(n => perms[parseInt(n)]).join('');
+}
 
 // Delete tool
 router.delete('/tools/:toolName', async (req, res) => {
@@ -936,5 +1118,86 @@ router.post('/tools/:toolName/usage/preview', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+// Helper function to read help file from remote server
+async function readHelpFileFromRemote(remotePath, connectionDetails) {
+  return new Promise((resolve, reject) => {
+    const { Client } = require('ssh2');
+    const conn = new Client();
+
+    console.log('Reading help file from remote server:', {
+      path: remotePath,
+      host: connectionDetails.host,
+      port: connectionDetails.port,
+      username: connectionDetails.username
+    });
+
+    conn.on('ready', () => {
+      console.log('SSH connection established for reading remote file');
+      conn.sftp((err, sftp) => {
+        if (err) {
+          console.error('SFTP error:', err);
+          conn.end();
+          return reject(new Error(`SFTP connection failed: ${err.message}`));
+        }
+
+        sftp.readFile(remotePath, (err, data) => {
+          conn.end();
+          if (err) {
+            console.error('Error reading remote file:', err);
+            return reject(new Error(`Failed to read remote file: ${err.message}`));
+          }
+          
+          // Convert buffer to string with proper encoding
+          const content = data.toString('utf8');
+          console.log(`Successfully read remote file: ${remotePath}, size: ${content.length} characters`);
+          resolve(content);
+        });
+      });
+    }).on('error', (err) => {
+      console.error('SSH connection error:', err);
+      reject(new Error(`SSH connection failed: ${err.message}`));
+    }).connect({
+      host: connectionDetails.host,
+      port: connectionDetails.port,
+      username: connectionDetails.username,
+      password: connectionDetails.password,
+      readyTimeout: 10000
+    });
+  });
+}
+
+// Helper function to read remote file content
+async function readRemoteFileContent(filePath, sshConfig) {
+  return new Promise((resolve, reject) => {
+    const { Client } = require('ssh2');
+    const conn = new Client();
+
+    conn.on('ready', () => {
+      conn.sftp((err, sftp) => {
+        if (err) {
+          conn.end();
+          return reject(new Error(`SFTP connection failed: ${err.message}`));
+        }
+
+        sftp.readFile(filePath, (err, data) => {
+          conn.end();
+          if (err) {
+            return reject(new Error(`Failed to read remote file: ${err.message}`));
+          }
+          
+          // Convert buffer to string with proper encoding
+          const content = data.toString('utf8');
+          resolve({
+            content: content,
+            size: data.length
+          });
+        });
+      });
+    }).on('error', (err) => {
+      reject(new Error(`SSH connection failed: ${err.message}`));
+    }).connect(sshConfig);
+  });
+}
 
 module.exports = router; 

@@ -1,0 +1,5 @@
+{
+    "usage": [
+        "Usage:  bbduk.sh in=<input file> out=<output file> ref=<contaminant files>"
+    ]
+}

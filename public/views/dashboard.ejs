@@ -1,4 +1,4 @@
-<%- include('partials/header', { title: 'MetaScope Dashboard' }) %>
+<%- include('partials/header', { title: 'MetaDock Dashboard' }) %>
 <%- include('partials/navbar') %>
 
 <main class="container mx-auto p-6 space-y-8">
@@ -34,7 +34,7 @@
     <div class="card-body">
       <h2 class="card-title text-2xl mb-4">
         <i class="ti ti-tool mr-2"></i>
-        Analysis Tools
+        Tools
       </h2>
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -56,17 +56,11 @@
     <div class="card-body">
       <h2 class="card-title text-2xl mb-4">
         <i class="ti ti-chart-dots mr-2"></i>
-        可视化工具
+        Visualization Tools
       </h2>
       
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <button 
-          onclick="navigateTo('visualization/bokeh')"
-          class="btn btn-outline h-24 flex-col gap-3 hover:bg-base-300 transition-all"
-        >
-          <i class="ti ti-chart-dots-3 text-2xl"></i>
-          <span class="text-sm">Bokeh</span>
-        </button>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="visualization-tools">
+        <!-- Visualization tools will be loaded dynamically -->
       </div>
     </div>
   </div>
@@ -81,8 +75,34 @@
     setTimeout(() => window.location.href = `/${route}`, 500);
   }
 
+  // Load visualization tools
+  async function loadVisualizationTools() {
+    try {
+      const response = await fetch('/visualization-tools');
+      const visualizations = await response.json();
+      
+      const container = document.getElementById('visualization-tools');
+      container.innerHTML = visualizations.map(viz => `
+        <button 
+          onclick="navigateTo('${viz.route}')"
+          class="btn btn-outline h-24 flex-col gap-3 hover:bg-base-300 transition-all"
+        >
+          <i class="ti ${viz.icon} text-2xl"></i>
+          <span class="text-sm">${viz.toolName}</span>
+        </button>
+      `).join('');
+    } catch (error) {
+      console.error('Error loading visualization tools:', error);
+      document.getElementById('visualization-tools').innerHTML = 
+        '<div class="col-span-full text-center text-gray-500">Failed to load visualization tools</div>';
+    }
+  }
+
   // Tool search functionality
   document.addEventListener('DOMContentLoaded', () => {
+    // Load visualization tools
+    loadVisualizationTools();
+    
     const searchInput = document.getElementById('tool-search');
     const searchResults = document.getElementById('search-results');
     let searchTimeout;

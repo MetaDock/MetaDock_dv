@@ -1,0 +1,912 @@
+[
+    {
+        "category": null,
+        "short": "-Xmx",
+        "long": null,
+        "needs_input": false,
+        "description": "This will be passed to Java to set memory usage, overriding the program's automatic memory detection. -Xmx20g will\nspecify 20 gigs of RAM, and -Xmx200m will specify 200 megs.\nThe max is typically 85% of physical memory."
+    },
+    {
+        "category": null,
+        "short": "-eoom",
+        "long": null,
+        "needs_input": false,
+        "description": "This flag will cause the process to exit if an out-of-memory exception occurs.  Requires Java 8u92+."
+    },
+    {
+        "category": null,
+        "short": "-da",
+        "long": null,
+        "needs_input": false,
+        "description": "Disable assertions. \nPlease contact Brian Bushnell at bbushnell@lbl.gov if you encounter any problems.\n"
+    },
+    {
+        "category": "Input parameters",
+        "short": "in=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Main input. in=stdin.fq will pipe from stdin."
+    },
+    {
+        "category": "Input parameters",
+        "short": "in2=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Input for 2nd read of pairs in a different file."
+    },
+    {
+        "category": "Input parameters",
+        "short": "ref=",
+        "long": "<file,file>",
+        "needs_input": true,
+        "description": "Comma-delimited list of reference files. You can also use ref=phix, ref=adapters, or ref=artifacts."
+    },
+    {
+        "category": "Input parameters",
+        "short": "literal=",
+        "long": "<seq,seq>",
+        "needs_input": true,
+        "description": "Comma-delimited list of literal reference sequences."
+    },
+    {
+        "category": "Input parameters",
+        "short": "touppercase=",
+        "long": "f",
+        "needs_input": true,
+        "description": "(tuc) Change all bases upper-case."
+    },
+    {
+        "category": "Input parameters",
+        "short": "interleaved=",
+        "long": "auto",
+        "needs_input": true,
+        "description": "(int) t/f overrides interleaved autodetection."
+    },
+    {
+        "category": "Input parameters",
+        "short": "qin=",
+        "long": "auto",
+        "needs_input": true,
+        "description": "Input quality offset: 33 (Sanger), 64, or auto."
+    },
+    {
+        "category": "Input parameters",
+        "short": "reads=",
+        "long": "-1",
+        "needs_input": true,
+        "description": "If positive, quit after processing X reads or pairs."
+    },
+    {
+        "category": "Input parameters",
+        "short": "copyundefined=",
+        "long": "f",
+        "needs_input": true,
+        "description": "(cu) Process non-AGCT IUPAC reference bases by making all possible unambiguous copies.  Intended for short motifs or adapter barcodes, as time/memory use is exponential."
+    },
+    {
+        "category": "Input parameters",
+        "short": "samplerate=",
+        "long": "1",
+        "needs_input": true,
+        "description": "Set lower to only process a fraction of input reads."
+    },
+    {
+        "category": "Output parameters",
+        "short": "out=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "(outnonmatch) Write reads here that do not contain kmers matching the database.  'out=stdout.fq' will pipe to standard out."
+    },
+    {
+        "category": "Output parameters",
+        "short": "out2=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "(outnonmatch2) Use this to write 2nd read of pairs to a different file."
+    },
+    {
+        "category": "Output parameters",
+        "short": "outm=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "(outmatch) Write reads here that fail filters.  In default kfilter mode, this means any read with a matching kmer. In any mode, it also includes reads that fail filters such as minlength, mingc, maxgc, entropy, etc.  In other words, it includes all reads that do not go to 'out'."
+    },
+    {
+        "category": "Output parameters",
+        "short": "outm2=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "(outmatch2) Use this to write 2nd read of pairs to a different file."
+    },
+    {
+        "category": "Output parameters",
+        "short": "outs=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "(outsingle) Use this to write singleton reads whose mate was trimmed shorter than minlen."
+    },
+    {
+        "category": "Output parameters",
+        "short": "stats=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Write statistics about which contamininants were detected."
+    },
+    {
+        "category": "Output parameters",
+        "short": "refstats=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Write statistics on a per-reference-file basis."
+    },
+    {
+        "category": "Output parameters",
+        "short": "rpkm=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Write RPKM for each reference sequence (for RNA-seq)."
+    },
+    {
+        "category": "Output parameters",
+        "short": "dump=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Dump kmer tables to a file, in fasta format."
+    },
+    {
+        "category": "Output parameters",
+        "short": "duk=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Write statistics in duk's format. *DEPRECATED*"
+    },
+    {
+        "category": "Output parameters",
+        "short": "nzo=",
+        "long": "t",
+        "needs_input": true,
+        "description": "Only write statistics about ref sequences with nonzero hits."
+    },
+    {
+        "category": "Output parameters",
+        "short": "overwrite=",
+        "long": "t",
+        "needs_input": true,
+        "description": "(ow) Grant permission to overwrite files."
+    },
+    {
+        "category": "Output parameters",
+        "short": "showspeed=",
+        "long": "t",
+        "needs_input": true,
+        "description": "(ss) 'f' suppresses display of processing speed."
+    },
+    {
+        "category": "Output parameters",
+        "short": "ziplevel=",
+        "long": "2",
+        "needs_input": true,
+        "description": "(zl) Compression level; 1 (min) through 9 (max)."
+    },
+    {
+        "category": "Output parameters",
+        "short": "fastawrap=",
+        "long": "70",
+        "needs_input": true,
+        "description": "Length of lines in fasta output."
+    },
+    {
+        "category": "Output parameters",
+        "short": "qout=",
+        "long": "auto",
+        "needs_input": true,
+        "description": "Output quality offset: 33 (Sanger), 64, or auto."
+    },
+    {
+        "category": "Output parameters",
+        "short": "statscolumns=",
+        "long": "3",
+        "needs_input": true,
+        "description": "(cols) Number of columns for stats output, 3 or 5. 5 includes base counts."
+    },
+    {
+        "category": "Output parameters",
+        "short": "rename=",
+        "long": "f",
+        "needs_input": true,
+        "description": "Rename reads to indicate which sequences they matched."
+    },
+    {
+        "category": "Output parameters",
+        "short": "refnames=",
+        "long": "f",
+        "needs_input": true,
+        "description": "Use names of reference files rather than scaffold IDs."
+    },
+    {
+        "category": "Output parameters",
+        "short": "trd=",
+        "long": "f",
+        "needs_input": true,
+        "description": "Truncate read and ref names at the first whitespace."
+    },
+    {
+        "category": "Output parameters",
+        "short": "ordered=",
+        "long": "f",
+        "needs_input": true,
+        "description": "Set to true to output reads in same order as input."
+    },
+    {
+        "category": "Output parameters",
+        "short": "maxbasesout=",
+        "long": "-1",
+        "needs_input": true,
+        "description": "If positive, quit after writing approximately this many bases to out (outu/outnonmatch)."
+    },
+    {
+        "category": "Output parameters",
+        "short": "maxbasesoutm=",
+        "long": "-1",
+        "needs_input": true,
+        "description": "If positive, quit after writing approximately this many bases to outm (outmatch)."
+    },
+    {
+        "category": "Histogram output parameters",
+        "short": "bhist=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Base composition histogram by position."
+    },
+    {
+        "category": "Histogram output parameters",
+        "short": "qhist=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Quality histogram by position."
+    },
+    {
+        "category": "Histogram output parameters",
+        "short": "qchist=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Count of bases with each quality value."
+    },
+    {
+        "category": "Histogram output parameters",
+        "short": "aqhist=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Histogram of average read quality."
+    },
+    {
+        "category": "Histogram output parameters",
+        "short": "bqhist=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Quality histogram designed for box plots."
+    },
+    {
+        "category": "Histogram output parameters",
+        "short": "lhist=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Read length histogram."
+    },
+    {
+        "category": "Histogram output parameters",
+        "short": "gchist=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Read GC content histogram."
+    },
+    {
+        "category": "Histogram output parameters",
+        "short": "gcbins=",
+        "long": "100",
+        "needs_input": true,
+        "description": "Number gchist bins.  Set to 'auto' to use read length."
+    },
+    {
+        "category": "Histogram output parameters",
+        "short": "maxhistlen=",
+        "long": "6000",
+        "needs_input": true,
+        "description": "Set an upper bound for histogram lengths; higher uses more memory.  The default is 6000 for some histograms and 80000 for others."
+    },
+    {
+        "category": "Histograms for mapped sam/bam files only",
+        "short": "histbefore=",
+        "long": "t",
+        "needs_input": true,
+        "description": "Calculate histograms from reads before processing."
+    },
+    {
+        "category": "Histograms for mapped sam/bam files only",
+        "short": "ehist=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Errors-per-read histogram."
+    },
+    {
+        "category": "Histograms for mapped sam/bam files only",
+        "short": "qahist=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Quality accuracy histogram of error rates versus quality score."
+    },
+    {
+        "category": "Histograms for mapped sam/bam files only",
+        "short": "indelhist=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Indel length histogram."
+    },
+    {
+        "category": "Histograms for mapped sam/bam files only",
+        "short": "mhist=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Histogram of match, sub, del, and ins rates by position."
+    },
+    {
+        "category": "Histograms for mapped sam/bam files only",
+        "short": "idhist=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Histogram of read count versus percent identity."
+    },
+    {
+        "category": "Histograms for mapped sam/bam files only",
+        "short": "idbins=",
+        "long": "100",
+        "needs_input": true,
+        "description": "Number idhist bins.  Set to 'auto' to use read length."
+    },
+    {
+        "category": "Histograms for mapped sam/bam files only",
+        "short": "varfile=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Ignore substitution errors listed in this file when calculating error rates.  Can be generated with CallVariants."
+    },
+    {
+        "category": "Histograms for mapped sam/bam files only",
+        "short": "vcf=",
+        "long": "<file>",
+        "needs_input": true,
+        "description": "Ignore substitution errors listed in this VCF file when calculating error rates."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "k=",
+        "long": "27",
+        "needs_input": true,
+        "description": "Kmer length used for finding contaminants.  Contaminants shorter than k will not be found.  k must be at least 1."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "rcomp=",
+        "long": "t",
+        "needs_input": true,
+        "description": "Look for reverse-complements of kmers in addition to forward kmers."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "maskmiddle=",
+        "long": "t",
+        "needs_input": true,
+        "description": "(mm) Treat the middle base of a kmer as a wildcard, to increase sensitivity in the presence of errors."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "minkmerhits=",
+        "long": "1",
+        "needs_input": true,
+        "description": "(mkh) Reads need at least this many matching kmers to be considered as matching the reference."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "minkmerfraction=",
+        "long": "0.0",
+        "needs_input": true,
+        "description": "(mkf) A reads needs at least this fraction of its total kmers to hit a ref, in order to be considered a match. If this and minkmerhits are set, the greater is used."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "mincovfraction=",
+        "long": "0.0",
+        "needs_input": true,
+        "description": "(mcf) A reads needs at least this fraction of its total bases to be covered by ref kmers to be considered a match. If specified, mcf overrides mkh and mkf."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "hammingdistance=",
+        "long": "0",
+        "needs_input": true,
+        "description": "(hdist) Maximum Hamming distance for ref kmers (subs only). Memory use is proportional to (3*K)^hdist."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "qhdist=",
+        "long": "0",
+        "needs_input": true,
+        "description": "Hamming distance for query kmers; impacts speed, not memory."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "editdistance=",
+        "long": "0",
+        "needs_input": true,
+        "description": "(edist) Maximum edit distance from ref kmers (subs and indels).  Memory use is proportional to (8*K)^edist."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "hammingdistance2=",
+        "long": "0",
+        "needs_input": true,
+        "description": "(hdist2) Sets hdist for short kmers, when using mink."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "qhdist2=",
+        "long": "0",
+        "needs_input": true,
+        "description": "Sets qhdist for short kmers, when using mink."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "editdistance2=",
+        "long": "0",
+        "needs_input": true,
+        "description": "(edist2) Sets edist for short kmers, when using mink."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "forbidn=",
+        "long": "f",
+        "needs_input": true,
+        "description": "(fn) Forbids matching of read kmers containing N. By default, these will match a reference 'A' if hdist>0 or edist>0, to increase sensitivity."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "removeifeitherbad=",
+        "long": "t",
+        "needs_input": true,
+        "description": "(rieb) Paired reads get sent to 'outmatch' if either is match (or either is trimmed shorter than minlen). Set to false to require both."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "findbestmatch=",
+        "long": "f",
+        "needs_input": true,
+        "description": "(fbm) If multiple matches, associate read with sequence sharing most kmers.  Reduces speed."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "skipr1=",
+        "long": "f",
+        "needs_input": true,
+        "description": "Don't do kmer-based operations on read 1."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "skipr2=",
+        "long": "f",
+        "needs_input": true,
+        "description": "Don't do kmer-based operations on read 2."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "ecco=",
+        "long": "f",
+        "needs_input": true,
+        "description": "For overlapping paired reads only.  Performs error- correction with BBMerge prior to kmer operations."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "recalibrate=",
+        "long": "f",
+        "needs_input": true,
+        "description": "(recal) Recalibrate quality scores.  Requires calibration matrices generated by CalcTrueQuality."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "sam=",
+        "long": "<file,file>",
+        "needs_input": true,
+        "description": "If recalibration is desired, and matrices have not already been generated, BBDuk will create them from the sam file."
+    },
+    {
+        "category": "Speed and Memory parameters",
+        "short": "threads=",
+        "long": "auto",
+        "needs_input": true,
+        "description": "(t) Set number of threads to use; default is number of logical processors."
+    },
+    {
+        "category": "Speed and Memory parameters",
+        "short": "prealloc=",
+        "long": "f",
+        "needs_input": true,
+        "description": "Preallocate memory in table.  Allows faster table loading and more efficient memory usage, for a large reference."
+    },
+    {
+        "category": "Speed and Memory parameters",
+        "short": "monitor=",
+        "long": "f",
+        "needs_input": true,
+        "description": "Kill this process if it crashes.  monitor=600,0.01 would kill after 600 seconds under 1% usage."
+    },
+    {
+        "category": "Speed and Memory parameters",
+        "short": "minrskip=",
+        "long": "1",
+        "needs_input": true,
+        "description": "(mns) Force minimal skip interval when indexing reference kmers.  1 means use all, 2 means use every other kmer, etc."
+    },
+    {
+        "category": "Speed and Memory parameters",
+        "short": "maxrskip=",
+        "long": "1",
+        "needs_input": true,
+        "description": "(mxs) Restrict maximal skip interval when indexing reference kmers. Normally all are used for scaffolds<100kb, but with longer scaffolds, up to maxrskip-1 are skipped."
+    },
+    {
+        "category": "Speed and Memory parameters",
+        "short": "rskip=",
+        "long": "null",
+        "needs_input": true,
+        "description": "Set both minrskip and maxrskip to the same value. If not set, rskip will vary based on sequence length."
+    },
+    {
+        "category": "Speed and Memory parameters",
+        "short": "qskip=",
+        "long": "1",
+        "needs_input": true,
+        "description": "Skip query kmers to increase speed.  1 means use all."
+    },
+    {
+        "category": "Speed and Memory parameters",
+        "short": "speed=",
+        "long": "0",
+        "needs_input": true,
+        "description": "Ignore this fraction of kmer space (0-15 out of 16) in both reads and reference.  Increases speed and reduces memory."
+    },
+    {
+        "category": "Trimming/Filtering/Masking parameters",
+        "short": "ktrim=",
+        "long": "f",
+        "needs_input": true,
+        "description": "Trim reads to remove bases matching reference kmers. Values: f (don't trim), r (trim to the right), l (trim to the left)"
+    },
+    {
+        "category": "Values",
+        "short": "kmask=",
+        "long": "f",
+        "needs_input": true,
+        "description": "Replace bases matching ref kmers with another symbol. Allows any non-whitespace character other than t or f, and processes short kmers on both ends.  'kmask=lc' will convert masked bases to lowercase."
+    },
+    {
+        "category": "Values",
+        "short": "maskfullycovered=",
+        "long": "f",
+        "needs_input": true,
+        "description": "(mfc) Only mask bases that are fully covered by kmers."
+    },
+    {
+        "category": "Values",
+        "short": "mink=",
+        "long": "0",
+        "needs_input": true,
+        "description": "Look for shorter kmers at read tips down to this length, when k-trimming or masking.  0 means disabled.  Enabling this will disable maskmiddle."
+    },
+    {
+        "category": "Values",
+        "short": "qtrim=",
+        "long": "f",
+        "needs_input": true,
+        "description": "Trim read ends to remove bases with quality below trimq. Performed AFTER looking for kmers. Values: rl (trim both ends), f (neither end), r (right end only), l (left end only), w (sliding window)."
+    },
+    {
+        "category": "Values",
+        "short": "trimq=",
+        "long": "6",
+        "needs_input": true,
+        "description": "Regions with average quality BELOW this will be trimmed, if qtrim is set to something other than f."
+    },
+    {
+        "category": "Values",
+        "short": "trimclip=",
+        "long": "f",
+        "needs_input": true,
+        "description": "Trim soft-clipped bases from sam files."
+    },
+    {
+        "category": "Values",
+        "short": "trimpolya=",
+        "long": "0",
+        "needs_input": true,
+        "description": "If greater than 0, trim poly-A or poly-T tails of at least this length on either end of reads."
+    },
+    {
+        "category": "Values",
+        "short": "minlength=",
+        "long": "10",
+        "needs_input": true,
+        "description": "(ml) Reads shorter than this after trimming will be discarded.  Pairs will be discarded if both are shorter."
+    },
+    {
+        "category": "Values",
+        "short": "mlf=",
+        "long": "0",
+        "needs_input": true,
+        "description": "(minlengthfraction) Reads shorter than this fraction of original length after trimming will be discarded."
+    },
+    {
+        "category": "Values",
+        "short": "maxlength=",
+        "long": "null",
+        "needs_input": true,
+        "description": "Reads longer than this after trimming will be discarded. Pairs will be discarded only if both are longer."
+    },
+    {
+        "category": "Values",
+        "short": "minavgquality=",
+        "long": "0",
+        "needs_input": true,
+        "description": "(maq) Reads with average quality (after trimming) below this will be discarded."
+    },
+    {
+        "category": "Values",
+        "short": "maqb=",
+        "long": "0",
+        "needs_input": true,
+        "description": "If positive, calculate maq from this many initial bases."
+    },
+    {
+        "category": "Values",
+        "short": "minbasequality=",
+        "long": "0",
+        "needs_input": true,
+        "description": "(mbq) Reads with any base below this quality (after trimming) will be discarded."
+    },
+    {
+        "category": "Values",
+        "short": "maxns=",
+        "long": "-1",
+        "needs_input": true,
+        "description": "If non-negative, reads with more Ns than this (after trimming) will be discarded."
+    },
+    {
+        "category": "Values",
+        "short": "mcb=",
+        "long": "0",
+        "needs_input": true,
+        "description": "(minconsecutivebases) Discard reads without at least this many consecutive called bases."
+    },
+    {
+        "category": "Values",
+        "short": "ottm=",
+        "long": "f",
+        "needs_input": true,
+        "description": "(outputtrimmedtomatch) Output reads trimmed to shorter than minlength to outm rather than discarding."
+    },
+    {
+        "category": "Values",
+        "short": "tp=",
+        "long": "0",
+        "needs_input": true,
+        "description": "(trimpad) Trim this much extra around matching kmers."
+    },
+    {
+        "category": "Values",
+        "short": "tbo=",
+        "long": "f",
+        "needs_input": true,
+        "description": "(trimbyoverlap) Trim adapters based on where paired reads overlap."
+    },
+    {
+        "category": "Values",
+        "short": "strictoverlap=",
+        "long": "t",
+        "needs_input": true,
+        "description": "Adjust sensitivity for trimbyoverlap mode."
+    },
+    {
+        "category": "Values",
+        "short": "minoverlap=",
+        "long": "14",
+        "needs_input": true,
+        "description": "Require this many bases of overlap for detection."
+    },
+    {
+        "category": "Values",
+        "short": "mininsert=",
+        "long": "40",
+        "needs_input": true,
+        "description": "Require insert size of at least this for overlap. Should be reduced to 16 for small RNA sequencing."
+    },
+    {
+        "category": "Values",
+        "short": "tpe=",
+        "long": "f",
+        "needs_input": true,
+        "description": "(trimpairsevenly) When kmer right-trimming, trim both reads to the minimum length of either."
+    },
+    {
+        "category": "Values",
+        "short": "forcetrimleft=",
+        "long": "0",
+        "needs_input": true,
+        "description": "(ftl) If positive, trim bases to the left of this position (exclusive, 0-based)."
+    },
+    {
+        "category": "Values",
+        "short": "forcetrimright=",
+        "long": "0",
+        "needs_input": true,
+        "description": "(ftr) If positive, trim bases to the right of this position (exclusive, 0-based)."
+    },
+    {
+        "category": "Values",
+        "short": "forcetrimright2=",
+        "long": "0",
+        "needs_input": true,
+        "description": "(ftr2) If positive, trim this many bases on the right end."
+    },
+    {
+        "category": "Values",
+        "short": "forcetrimmod=",
+        "long": "0",
+        "needs_input": true,
+        "description": "(ftm) If positive, right-trim length to be equal to zero, modulo this number."
+    },
+    {
+        "category": "Values",
+        "short": "restrictleft=",
+        "long": "0",
+        "needs_input": true,
+        "description": "If positive, only look for kmer matches in the leftmost X bases."
+    },
+    {
+        "category": "Values",
+        "short": "restrictright=",
+        "long": "0",
+        "needs_input": true,
+        "description": "If positive, only look for kmer matches in the rightmost X bases."
+    },
+    {
+        "category": "Values",
+        "short": "mingc=",
+        "long": "0",
+        "needs_input": true,
+        "description": "Discard reads with GC content below this."
+    },
+    {
+        "category": "Values",
+        "short": "maxgc=",
+        "long": "1",
+        "needs_input": true,
+        "description": "Discard reads with GC content above this."
+    },
+    {
+        "category": "Values",
+        "short": "gcpairs=",
+        "long": "t",
+        "needs_input": true,
+        "description": "Use average GC of paired reads. Also affects gchist."
+    },
+    {
+        "category": "Values",
+        "short": "tossjunk=",
+        "long": "f",
+        "needs_input": true,
+        "description": "Discard reads with invalid characters as bases."
+    },
+    {
+        "category": "Header-parsing parameters - these require Illumina headers",
+        "short": "chastityfilter=",
+        "long": "f",
+        "needs_input": true,
+        "description": "(cf) Discard reads with id containing ' 1:Y:' or ' 2:Y:'."
+    },
+    {
+        "category": "Header-parsing parameters - these require Illumina headers",
+        "short": "barcodefilter=",
+        "long": "f",
+        "needs_input": true,
+        "description": "Remove reads with unexpected barcodes if barcodes is set, or barcodes containing 'N' otherwise.  A barcode must be the last part of the read header. Values: t:     Remove reads with bad barcodes. f:     Ignore barcodes. crash: Crash upon encountering bad barcodes."
+    },
+    {
+        "category": "Values",
+        "short": "barcodes=",
+        "long": "null",
+        "needs_input": true,
+        "description": "Comma-delimited list of barcodes or files of barcodes."
+    },
+    {
+        "category": "Values",
+        "short": "xmin=",
+        "long": "-1",
+        "needs_input": true,
+        "description": "If positive, discard reads with a lesser X coordinate."
+    },
+    {
+        "category": "Values",
+        "short": "ymin=",
+        "long": "-1",
+        "needs_input": true,
+        "description": "If positive, discard reads with a lesser Y coordinate."
+    },
+    {
+        "category": "Values",
+        "short": "xmax=",
+        "long": "-1",
+        "needs_input": true,
+        "description": "If positive, discard reads with a greater X coordinate."
+    },
+    {
+        "category": "Values",
+        "short": "ymax=",
+        "long": "-1",
+        "needs_input": true,
+        "description": "If positive, discard reads with a greater Y coordinate."
+    },
+    {
+        "category": "Entropy/Complexity parameters",
+        "short": "entropy=",
+        "long": "-1",
+        "needs_input": true,
+        "description": "Set between 0 and 1 to filter reads with entropy below that value.  Higher is more stringent."
+    },
+    {
+        "category": "Entropy/Complexity parameters",
+        "short": "entropywindow=",
+        "long": "50",
+        "needs_input": true,
+        "description": "Calculate entropy using a sliding window of this length."
+    },
+    {
+        "category": "Entropy/Complexity parameters",
+        "short": "entropyk=",
+        "long": "5",
+        "needs_input": true,
+        "description": "Calculate entropy using kmers of this length."
+    },
+    {
+        "category": "Entropy/Complexity parameters",
+        "short": "minbasefrequency=",
+        "long": "0",
+        "needs_input": true,
+        "description": "Discard reads with a minimum base frequency below this."
+    },
+    {
+        "category": "Entropy/Complexity parameters",
+        "short": "entropymask=",
+        "long": "f",
+        "needs_input": true,
+        "description": "Values: f:  Discard low-entropy sequences. t:  Mask low-entropy parts of sequences with N. lc: Change low-entropy parts of sequences to lowercase."
+    },
+    {
+        "category": "Cardinality estimation",
+        "short": "cardinality=",
+        "long": "f",
+        "needs_input": true,
+        "description": "(loglog) Count unique kmers using the LogLog algorithm."
+    },
+    {
+        "category": "Cardinality estimation",
+        "short": "loglogk=",
+        "long": "31",
+        "needs_input": true,
+        "description": "Use this kmer length for counting."
+    },
+    {
+        "category": "Cardinality estimation",
+        "short": "loglogbuckets=",
+        "long": "1999",
+        "needs_input": true,
+        "description": "Use this many buckets for counting."
+    }
+]

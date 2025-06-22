@@ -1,9 +1,9 @@
 // controllers/installerController.js
 const toolService = require('../services/toolService');
+const InstallationService = require('../services/installationService');
 
-// 1. 显示首页 (Rectangle 1)
+// 1. home page
 exports.showHomePage = (req, res) => {
-    // 假设你的 navbar.ejs 需要这些数据
     const pageData = {
         title: 'Installer Home',
         connectionDetails: req.app.locals.connectionDetails,
@@ -12,7 +12,7 @@ exports.showHomePage = (req, res) => {
     res.render('index', pageData);
 };
 
-// 2. 显示搜索/推荐工具页面 (Rectangle 2)
+// 2. show search/recommend tool page
 exports.showSearchPage = (req, res) => {
     const recommendedTools = toolService.findRecommended();
     res.render('select', {
@@ -23,18 +23,18 @@ exports.showSearchPage = (req, res) => {
     });
 };
 
-// 3. 处理选择的工具并显示选项页面 (Flow from 2 to 3)
+// 3. process selected tools and show option page
 exports.processSelectedTools = (req, res) => {
     try {
-        // 解析 JSON 字符串形式的工具 ID
+        // parse tool IDs from JSON string
         const selectedIds = JSON.parse(req.body.toolIds || '[]');
-        console.log('Selected tool IDs:', selectedIds); // 调试日志
+        console.log('Selected tool IDs:', selectedIds); 
 
-        // 获取工具信息
+        // get tool information
         const tools = toolService.findByIds(selectedIds);
-        console.log('Found tools:', tools); // 调试日志
+        console.log('Found tools:', tools); 
 
-        // 将用户选择的工具存入 session，以便在安装步骤使用
+        // save selected tools to session for installation step
         req.session.selectedTools = tools;
 
         res.render('option', {
@@ -55,26 +55,155 @@ exports.processSelectedTools = (req, res) => {
     }
 };
 
-// 4. 开始安装并显示安装过程页面 (Flow from 3 to 8)
-exports.startInstallation = (req, res) => {
-    // 前端拖拽后，需要通过一个隐藏的表单或JS来提交最终的安装配置。
-    // 例如，每个drop-zone里有一个 <input type="hidden" name="anaconda" value="cutadapt,metaphlan">
-    const installationConfig = req.body;
-    console.log('Received installation config:', installationConfig);
-    
-    // 这里的 `installationConfig` 大概是这样的:
-    // { anaconda: 'cutadapt,metaphlan', pip: '', git: 'some_other_tool' }
-    
-    // 在真实应用中，你会调用一个服务来执行安装。
-    // installationService.execute(installationConfig);
-    // 这个服务会使用子进程 (child_process) 来执行真实的 shell 命令。
-    // 并且通过 WebSocket (如 Socket.IO) 将实时日志推送到前端。
+// 4. start installation and show installation process page
+exports.startInstallation = async (req, res) => {
+    try {
+        const installationConfig = req.body;
+        console.log('Received installation config:', installationConfig);
+        
+        // parse installation config
+        let config;
+        if (typeof installationConfig === 'string') {
+            config = JSON.parse(installationConfig);
+        } else if (installationConfig.installationConfig) {
+            config = JSON.parse(installationConfig.installationConfig);
+        } else {
+            config = installationConfig;
+        }
 
-    // 为了简化，我们直接渲染最终页面，并传入配置用于显示。
-    res.render('installing', {
-        title: 'Installing...',
-        config: installationConfig,
-        connectionDetails: req.app.locals.connectionDetails,
-        isAdmin: req.session.isAdmin
-    });
+        // get admin settings
+        const adminSettings = {
+            condaEnvPath: req.body.condaEnvPath || null,
+            gitInstallPath: req.body.gitInstallPath || null
+        };
+
+        // create installation service instance
+        const installationService = new InstallationService(req.app.locals.connectionDetails);
+
+        // validate installation config
+        const validation = await installationService.validateInstallationConfig(config, adminSettings);
+        
+        if (!validation.valid) {
+            console.log('Installation validation failed:', validation.errors);
+            return res.render('option', {
+                title: 'Download Options',
+                selectedTools: req.session.selectedTools || [],
+                connectionDetails: req.app.locals.connectionDetails,
+                isAdmin: req.session.isAdmin,
+                validationErrors: validation.errors,
+                validationWarnings: validation.warnings,
+                condaCheck: validation.condaCheck,
+                environmentCheck: validation.environmentCheck,
+                pathChecks: validation.pathChecks
+            });
+        }
+
+        // if validation passed, render installation page
+        res.render('installing', {
+            title: 'Installing...',
+            config: config,
+            adminSettings: adminSettings,
+            connectionDetails: req.app.locals.connectionDetails,
+            isAdmin: req.session.isAdmin
+        });
+    } catch (error) {
+        console.error('Error in startInstallation:', error);
+        res.status(500).render('option', {
+            title: 'Download Options',
+            selectedTools: req.session.selectedTools || [],
+            connectionDetails: req.app.locals.connectionDetails,
+            isAdmin: req.session.isAdmin,
+            error: 'Failed to start installation. Please try again.'
+        });
+    }
+};
+
+// 5. execute installation API endpoint
+exports.executeInstallation = async (req, res) => {
+    try {
+        const { config, adminSettings } = req.body;
+        
+        // create installation service instance
+        const installationService = new InstallationService(req.app.locals.connectionDetails);
+        
+        // execute installation
+        const results = await installationService.executeInstallation(
+            config, 
+            adminSettings,
+            (message, type) => {
+                console.log(`[${type}] ${message}`);
+            }
+        );
+        
+        res.json({
+            success: true,
+            results: results
+        });
+    } catch (error) {
+        console.error('Error executing installation:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+};
+
+// 6. check system environment API endpoint
+exports.checkSystemEnvironment = async (req, res) => {
+    console.log('checkSystemEnvironment called');
+    console.log('Request headers:', req.headers);
+    console.log('Request method:', req.method);
+    console.log('Request URL:', req.url);
+    
+    try {
+        console.log('Creating InstallationService instance...');
+        const installationService = new InstallationService(req.app.locals.connectionDetails);
+        
+        console.log('Checking conda installation...');
+        const condaCheck = await installationService.checkCondaInstallation();
+        console.log('Conda check result:', condaCheck);
+        
+        console.log('Checking conda environment...');
+        const environmentCheck = await installationService.checkCondaEnvironment();
+        console.log('Environment check result:', environmentCheck);
+        
+        console.log('Checking install path...');
+        const pathCheck = await installationService.checkInstallPath();
+        console.log('Path check result:', pathCheck);
+        
+        // get system information
+        const os = require('os');
+        const path = require('path');
+        
+        const systemInfo = {
+            platform: os.platform(),
+            arch: os.arch(),
+            release: os.release(),
+            hostname: os.hostname(),
+            cwd: process.cwd(),
+            homeDir: os.homedir(),
+            tmpDir: os.tmpdir()
+        };
+        
+        console.log('System info:', systemInfo);
+        
+        const response = {
+            conda: condaCheck,
+            environment: environmentCheck,
+            paths: {
+                git: pathCheck
+            },
+            system: systemInfo
+        };
+        
+        console.log('Sending response:', response);
+        res.json(response);
+    } catch (error) {
+        console.error('Error in checkSystemEnvironment:', error);
+        console.error('Error stack:', error.stack);
+        res.status(500).json({
+            error: error.message,
+            stack: error.stack
+        });
+    }
 };

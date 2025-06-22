@@ -1,0 +1,352 @@
+[
+    {
+        "category": "options",
+        "short": "-h",
+        "long": "--help",
+        "needs_input": false,
+        "description": "show this help message and exit"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--verbose",
+        "needs_input": false,
+        "description": "Print out detailed procedure for each step."
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--dbCANFile DBCANFILE",
+        "needs_input": true,
+        "description": "Indicate the file name of HMM database such as\ndbCAN.txt, please use the newest one from dbCAN2\nwebsite."
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--dia_eval DIA_EVAL",
+        "needs_input": true,
+        "description": "DIAMOND E Value"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--dia_cpu DIA_CPU",
+        "needs_input": true,
+        "description": "Number of CPU cores that DIAMOND is allowed to use"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--hmm_eval HMM_EVAL",
+        "needs_input": true,
+        "description": "HMMER E Value"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--hmm_cov HMM_COV",
+        "needs_input": true,
+        "description": "HMMER Coverage val"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--hmm_cpu HMM_CPU",
+        "needs_input": true,
+        "description": "Number of CPU cores that HMMER is allowed to use"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--out_pre OUT_PRE",
+        "needs_input": true,
+        "description": "Output files prefix"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--out_dir OUT_DIR",
+        "needs_input": true,
+        "description": "Output directory"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--db_dir DB_DIR",
+        "needs_input": true,
+        "description": "Database directory"
+    },
+    {
+        "category": "options",
+        "short": "-t {hmmer,diamond,dbcansub,all} [{hmmer,diamond,dbcansub,all} ...]",
+        "long": "--tools {hmmer,diamond,dbcansub,all} [{hmmer,diamond,dbcansub,all} ...]",
+        "needs_input": true,
+        "description": "Choose a combination of tools to run"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--use_signalP USE_SIGNALP",
+        "needs_input": true,
+        "description": "Use signalP or not, remember, you need to setup\nsignalP tool first. Because of signalP license, Docker\nversion does not have signalP."
+    },
+    {
+        "category": "options",
+        "short": "-sp SIGNALP_PATH",
+        "long": "--signalP_path SIGNALP_PATH",
+        "needs_input": true,
+        "description": "The path for signalp. Default location is signalp"
+    },
+    {
+        "category": "options",
+        "short": "-g {p,n,all}",
+        "long": "--gram {p,n,all}",
+        "needs_input": true,
+        "description": "Choose gram+(p) or gram-(n) for proteome/prokaryote\nnucleotide, which are params of SingalP, only if user\nuse singalP"
+    },
+    {
+        "category": "options",
+        "short": "-v VERSION",
+        "long": "--version VERSION",
+        "needs_input": true,
+        "description": ""
+    },
+    {
+        "category": "dbCAN-sub parameters",
+        "short": "-dt DBCAN_THREAD",
+        "long": "--dbcan_thread DBCAN_THREAD",
+        "needs_input": true,
+        "description": ""
+    },
+    {
+        "category": "dbCAN-sub parameters",
+        "short": null,
+        "long": "--tf_eval TF_EVAL",
+        "needs_input": true,
+        "description": "tf.hmm HMMER E Value"
+    },
+    {
+        "category": "dbCAN-sub parameters",
+        "short": null,
+        "long": "--tf_cov TF_COV",
+        "needs_input": true,
+        "description": "tf.hmm HMMER Coverage val"
+    },
+    {
+        "category": "dbCAN-sub parameters",
+        "short": null,
+        "long": "--tf_cpu TF_CPU",
+        "needs_input": true,
+        "description": "tf.hmm Number of CPU cores that HMMER is allowed to use"
+    },
+    {
+        "category": "dbCAN-sub parameters",
+        "short": null,
+        "long": "--stp_eval STP_EVAL",
+        "needs_input": true,
+        "description": "stp.hmm HMMER E Value"
+    },
+    {
+        "category": "dbCAN-sub parameters",
+        "short": null,
+        "long": "--stp_cov STP_COV",
+        "needs_input": true,
+        "description": "stp.hmm HMMER Coverage val"
+    },
+    {
+        "category": "dbCAN-sub parameters",
+        "short": null,
+        "long": "--stp_cpu STP_CPU",
+        "needs_input": true,
+        "description": "stp.hmm Number of CPU cores that HMMER is allowed to use\n"
+    },
+    {
+        "category": "CGC_Finder parameters",
+        "short": "-c CLUSTER",
+        "long": "--cluster CLUSTER",
+        "needs_input": true,
+        "description": "Predict CGCs via CGCFinder. This argument requires an\nauxillary locations file if a protein input is being\nused"
+    },
+    {
+        "category": "CGC_Finder parameters",
+        "short": null,
+        "long": "--cgc_dis CGC_DIS",
+        "needs_input": true,
+        "description": "CGCFinder Distance value"
+    },
+    {
+        "category": "CGC_Finder parameters",
+        "short": null,
+        "long": "--cgc_sig_genes {tf,tp,stp,tp+tf,tp+stp,tf+stp,all}",
+        "needs_input": true,
+        "description": "CGCFinder Signature Genes value\n"
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": null,
+        "long": "--only_sub",
+        "needs_input": false,
+        "description": "Only run substrate prediction for PUL. If this parameter is presented, dbcan will skip the CAZyme\nannotation and CGC prediction."
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": null,
+        "long": "--cgc_substrate",
+        "needs_input": false,
+        "description": "run cgc substrate prediction?"
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": null,
+        "long": "--pul PUL",
+        "needs_input": true,
+        "description": "dbCAN-PUL PUL.faa"
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-o OUT",
+        "long": "--out OUT",
+        "needs_input": true,
+        "description": ""
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-w WORKDIR",
+        "long": "--workdir WORKDIR",
+        "needs_input": true,
+        "description": ""
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-env ENV",
+        "long": "--env ENV",
+        "needs_input": true,
+        "description": ""
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-odbcan_sub",
+        "long": "--odbcan_sub",
+        "needs_input": false,
+        "description": "Output dbCAN-sub prediction intermediate result? for\ndebug"
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-odbcanpul",
+        "long": "--odbcanpul",
+        "needs_input": false,
+        "description": "Output dbCAN-PUL prediction intermediate result? for\ndebug.\n\ndbCAN-PUL homologous searching parameters:\nhow to define homologous gene hits and PUL hits\n"
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-upghn UNIQ_PUL_GENE_HIT_NUM",
+        "long": "--uniq_pul_gene_hit_num UNIQ_PUL_GENE_HIT_NUM",
+        "needs_input": true,
+        "description": ""
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-uqcgn UNIQ_QUERY_CGC_GENE_NUM",
+        "long": "--uniq_query_cgc_gene_num UNIQ_QUERY_CGC_GENE_NUM",
+        "needs_input": true,
+        "description": ""
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-cpn CAZYME_PAIR_NUM",
+        "long": "--CAZyme_pair_num CAZYME_PAIR_NUM",
+        "needs_input": true,
+        "description": ""
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-tpn TOTAL_PAIR_NUM",
+        "long": "--total_pair_num TOTAL_PAIR_NUM",
+        "needs_input": true,
+        "description": ""
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-ept EXTRA_PAIR_TYPE",
+        "long": "--extra_pair_type EXTRA_PAIR_TYPE",
+        "needs_input": true,
+        "description": "None[TC-TC,STP-STP]. Some like sigunature hits"
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-eptn EXTRA_PAIR_TYPE_NUM",
+        "long": "--extra_pair_type_num EXTRA_PAIR_TYPE_NUM",
+        "needs_input": true,
+        "description": "specify signature pair cutoff.1,2"
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-iden IDENTITY_CUTOFF",
+        "long": "--identity_cutoff IDENTITY_CUTOFF",
+        "needs_input": true,
+        "description": "identity to identify a homologous hit"
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-cov COVERAGE_CUTOFF",
+        "long": "--coverage_cutoff COVERAGE_CUTOFF",
+        "needs_input": true,
+        "description": "query coverage cutoff to identify a homologous hit"
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-bsc BITSCORE_CUTOFF",
+        "long": "--bitscore_cutoff BITSCORE_CUTOFF",
+        "needs_input": true,
+        "description": "bitscore cutoff to identify a homologous hit"
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-evalue EVALUE_CUTOFF",
+        "long": "--evalue_cutoff EVALUE_CUTOFF",
+        "needs_input": true,
+        "description": "evalue cutoff to identify a homologous hit\n\ndbCAN-sub major voting parameters:\nhow to define dbsub hits and dbCAN-sub subfamily substrate\n"
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-hmmcov HMMCOV",
+        "long": "--hmmcov HMMCOV",
+        "needs_input": true,
+        "description": ""
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-hmmevalue HMMEVALUE",
+        "long": "--hmmevalue HMMEVALUE",
+        "needs_input": true,
+        "description": ""
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-ndsc NUM_OF_DOMAINS_SUBSTRATE_CUTOFF",
+        "long": "--num_of_domains_substrate_cutoff NUM_OF_DOMAINS_SUBSTRATE_CUTOFF",
+        "needs_input": true,
+        "description": "define how many domains share substrates in a CGC, one\nprotein may include several subfamily domains."
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-npsc NUM_OF_PROTEIN_SUBSTRATE_CUTOFF",
+        "long": "--num_of_protein_substrate_cutoff NUM_OF_PROTEIN_SUBSTRATE_CUTOFF",
+        "needs_input": true,
+        "description": "define how many sequences share substrates in a CGC,\none protein may include several subfamily domains."
+    },
+    {
+        "category": "CGC_Substrate parameters",
+        "short": "-subs SUBSTRATE_SCORS",
+        "long": "--substrate_scors SUBSTRATE_SCORS",
+        "needs_input": true,
+        "description": "each cgc contains with substrate must more than this\nvalue"
+    },
+    {
+        "category": "positional arguments",
+        "short": "prok=",
+        "long": "prokaryote;",
+        "needs_input": true,
+        "description": "meta=metagenome"
+    }
+]

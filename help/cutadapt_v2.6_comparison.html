@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Help Comparison Report</title>
+    <style>
+        body {
+            font-family: 'Consolas', monospace;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+        .issues {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 5px solid #ffeeba;
+        }
+        .comparison {
+            display: flex;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            position: relative;
+        }
+        .original, .generated {
+            flex: 1;
+            padding: 10px;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .original {
+            background: #fff8f8;
+            border-right: 1px solid #eee;
+        }
+        .generated {
+            background: #f8fff8;
+        }
+        .diff-header {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: -10px -10px 10px -10px;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+        }
+        .timestamp {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .empty {
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+        }
+        .match {
+            background: #e8f5e9;
+        }
+        .nomatch {
+            background: #ffebee;
+        }
+        .section-actions {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .comparison:hover .section-actions {
+            opacity: 1;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .btn-add {
+            background: #28a745;
+        }
+        .btn-modify {
+            background: #17a2b8;
+        }
+        .btn-delete {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Help Comparison Report</h1>
+            <div class="timestamp">Generated on: 2025-06-22 14:52:06</div>
+        </div>
+<div class="comparison" data-section-id="section_0">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">cutadapt version 2.6</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Usage: cutadapt -a ADAPTER [options] [-o output.fastq] input.fastq</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_1">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Copyright (C) 2010-2019 Marcel Martin <marcel.martin@scilifelab.se></div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_2">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">cutadapt removes adapter sequences from high-throughput sequencing reads.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_3">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Usage:
+    cutadapt -a ADAPTER [options] [-o output.fastq] input.fastq</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_4">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">For paired-end reads:
+    cutadapt -a ADAPT1 -A ADAPT2 [options] -o out1.fastq -p out2.fastq in1.fastq in2.fastq</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_5">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Replace "ADAPTER" with the actual sequence of your 3' adapter. IUPAC wildcard</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_6">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">characters are supported. The reverse complement is *not* automatically</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_7">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">searched. All reads from input.fastq will be written to output.fastq with the</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_8">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">adapter sequence removed. Adapter matching is error-tolerant. Multiple adapter</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_9">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">sequences can be given (use further -a options), but only the best-matching</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_10">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">adapter will be removed.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_11">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Input may also be in FASTA format. Compressed input and output is supported and</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_12">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">auto-detected from the file name (.gz, .xz, .bz2). Use the file name '-' for</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_13">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">standard input/output. Without the -o option, output is sent to standard output.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_14">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Citation:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_15">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Marcel Martin. Cutadapt removes adapter sequences from high-throughput</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_16">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">sequencing reads. EMBnet.Journal, 17(1):10-12, May 2011.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_17">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">http://dx.doi.org/10.14806/ej.17.1.200</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_18">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Run "cutadapt --help" to see all command-line options.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_19">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">See https://cutadapt.readthedocs.io/ for full documentation.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_20">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">Options:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">Options:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_21">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -h, --help            Show this help message and exit</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -h, --help
+                        Show this help message and exit</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_22">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --version             Show version number and exit</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --version
+                        Show version number and exit</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_23">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --debug               Print debugging information.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --debug
+                        Print debugging information.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_24">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  -j CORES, --cores CORES
+                        Number of CPU cores to use. Use 0 to auto-detect.
+                        Default: 1</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -n COUNT, --times COUNT
+                        Remove up to COUNT adapters from
+                        each read. Default: 1</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_25">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Finding adapters:
+  Parameters -a, -g, -b specify adapters to be removed from each read (or
+  from the first read in a pair if data is paired). If specified multiple
+  times, only the best matching adapter is trimmed (but see the --times
+  option). When the special notation 'file:FILE' is used, adapter sequences
+  are read from the given FASTA file.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -j CORES, --cores CORES
+                        Number of CPU cores to use. Use
+                        0 to auto-detect. Default: 1
+                        Finding adapters: Parameters -a,
+                        -g, -b specify adapters to be
+                        removed from each read (or from
+                        the first read in a pair if data
+                        is paired). If specified
+                        multiple times, only the best
+                        matching adapter is trimmed (but
+                        see the --times option). When
+                        the special notation 'file:FILE'
+                        is used, adapter sequences are
+                        read from the given FASTA file.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_26">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -a ADAPTER, --adapter ADAPTER
+                        Sequence of an adapter ligated to the 3' end (paired
+                        data: of the first read). The adapter and subsequent
+                        bases are trimmed. If a '$' character is appended
+                        ('anchoring'), the adapter is only found if it is a
+                        suffix of the read.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -a ADAPTER, --adapter ADAPTER
+                        Sequence of an adapter ligated
+                        to the 3' end (paired data: of
+                        the first read). The adapter and
+                        subsequent bases are trimmed. If
+                        a '$' character is appended
+                        ('anchoring'), the adapter is
+                        only found if it is a suffix of
+                        the read.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_27">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -g ADAPTER, --front ADAPTER
+                        Sequence of an adapter ligated to the 5' end (paired
+                        data: of the first read). The adapter and any
+                        preceding bases are trimmed. Partial matches at the 5'
+                        end are allowed. If a '^' character is prepended
+                        ('anchoring'), the adapter is only found if it is a
+                        prefix of the read.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -g ADAPTER, --front ADAPTER
+                        Sequence of an adapter ligated
+                        to the 5' end (paired data: of
+                        the first read). The adapter and
+                        any preceding bases are trimmed.
+                        Partial matches at the 5' end
+                        are allowed. If a '^' character
+                        is prepended ('anchoring'), the
+                        adapter is only found if it is a
+                        prefix of the read.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_28">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -b ADAPTER, --anywhere ADAPTER
+                        Sequence of an adapter that may be ligated to the 5'
+                        or 3' end (paired data: of the first read). Both types
+                        of matches as described under -a und -g are allowed.
+                        If the first base of the read is part of the match,
+                        the behavior is as with -g, otherwise as with -a. This
+                        option is mostly for rescuing failed library
+                        preparations - do not use if you know which end your
+                        adapter was ligated to!</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -b ADAPTER, --anywhere ADAPTER
+                        Sequence of an adapter that may
+                        be ligated to the 5' or 3' end
+                        (paired data: of the first
+                        read). Both types of matches as
+                        described under -a und -g are
+                        allowed. If the first base of
+                        the read is part of the match,
+                        the behavior is as with -g,
+                        otherwise as with -a. This
+                        option is mostly for rescuing
+                        failed library preparations - do
+                        not use if you know which end
+                        your adapter was ligated to!</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_29">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -e RATE, --error-rate RATE
+                        Maximum allowed error rate as value between 0 and 1
+                        (no. of errors divided by length of matching region).
+                        Default: 0.1 (=10%)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -e RATE, --error-rate RATE
+                        Maximum allowed error rate as
+                        value between 0 and 1 (no. of
+                        errors divided by length of
+                        matching region). Default: 0.1
+                        (=10%)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_30">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --no-indels           Allow only mismatches in alignments. Default: allow
+                        both mismatches and indels</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --no-indels
+                        Allow only mismatches in
+                        alignments. Default: allow both
+                        mismatches and indels</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_31">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  -n COUNT, --times COUNT
+                        Remove up to COUNT adapters from each read. Default: 1</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -O MINLENGTH, --overlap MINLENGTH
+                        Require MINLENGTH overlap
+                        between read and adapter for an
+                        adapter to be found. Default: 3</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_32">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  -O MINLENGTH, --overlap MINLENGTH
+                        Require MINLENGTH overlap between read and adapter for
+                        an adapter to be found. Default: 3</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -N, --no-match-adapter-wildcards
+                        Do not interpret IUPAC wildcards
+                        in adapters.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_33">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --match-read-wildcards
+                        Interpret IUPAC wildcards in reads. Default: False</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --match-read-wildcards
+                        Interpret IUPAC wildcards in
+                        reads. Default: False</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_34">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  -N, --no-match-adapter-wildcards
+                        Do not interpret IUPAC wildcards in adapters.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  --action {trim,mask,lowercase,none}
+                        What to do with found adapters.
+                        mask: replace with 'N'
+                        characters; lowercase: convert
+                        to lowercase; none: leave
+                        unchanged (useful with
+                        --discard-untrimmed). Default:
+                        trim</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_35">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --action {trim,mask,lowercase,none}
+                        What to do with found adapters. mask: replace with 'N'
+                        characters; lowercase: convert to lowercase; none:
+                        leave unchanged (useful with --discard-untrimmed).
+                        Default: trim</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_36">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">Additional read modifications:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">Additional read modifications:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_37">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  -u LENGTH, --cut LENGTH
+                        Remove bases from each read (first read only if
+                        paired). If LENGTH is positive, remove bases from the
+                        beginning. If LENGTH is negative, remove bases from
+                        the end. Can be used twice if LENGTHs have different
+                        signs. This is applied *before* adapter trimming.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -u LENGTH, --cut LENGTH
+                        Remove bases from each read
+                        (first read only if paired). If
+                        LENGTH is positive, remove bases
+                        from the beginning. If LENGTH is
+                        negative, remove bases from the
+                        end. Can be used twice if
+                        LENGTHs have different signs.
+                        This is applied *before* adapter
+                        trimming.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_38">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --nextseq-trim 3'CUTOFF
+                        NextSeq-specific quality trimming (each read). Trims
+                        also dark cycles appearing as high-quality G bases.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --nextseq-trim 3'CUTOFF
+                        NextSeq-specific quality
+                        trimming (each read). Trims also
+                        dark cycles appearing as high-
+                        quality G bases.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_39">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -q [5'CUTOFF,]3'CUTOFF, --quality-cutoff [5'CUTOFF,]3'CUTOFF
+                        Trim low-quality bases from 5' and/or 3' ends of each
+                        read before adapter removal. Applied to both reads if
+                        data is paired. If one value is given, only the 3' end
+                        is trimmed. If two comma-separated cutoffs are given,
+                        the 5' end is trimmed with the first cutoff, the 3'
+                        end with the second.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -q [5'CUTOFF,]3'CUTOFF, --quality-cutoff [5'CUTOFF,]3'CUTOFF
+                        Trim low-quality bases from 5'
+                        and/or 3' ends of each read
+                        before adapter removal. Applied
+                        to both reads if data is paired.
+                        If one value is given, only the
+                        3' end is trimmed. If two comma-
+                        separated cutoffs are given, the
+                        5' end is trimmed with the first
+                        cutoff, the 3' end with the
+                        second.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_40">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --quality-base N      Assume that quality values in FASTQ are encoded as
+                        ascii(quality + N). This needs to be set to 64 for
+                        some old Illumina FASTQ files. Default: 33</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --quality-base N
+                        Assume that quality values in
+                        FASTQ are encoded as
+                        ascii(quality + N). This needs
+                        to be set to 64 for some old
+                        Illumina FASTQ files. Default:
+                        33</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_41">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --length LENGTH, -l LENGTH
+                        Shorten reads to LENGTH. Positive values remove bases
+                        at the end while negative ones remove bases at the
+                        beginning. This and the following modifications are
+                        applied after adapter trimming.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -l LENGTH, --length LENGTH
+                        Shorten reads to LENGTH.
+                        Positive values remove bases at
+                        the end while negative ones
+                        remove bases at the beginning.
+                        This and the following
+                        modifications are applied after
+                        adapter trimming.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_42">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --trim-n              Trim N's on ends of reads.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --trim-n
+                        Trim N's on ends of reads.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_43">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --length-tag TAG      Search for TAG followed by a decimal number in the
+                        description field of the read. Replace the decimal
+                        number with the correct length of the trimmed read.
+                        For example, use --length-tag 'length=' to correct
+                        fields like 'length=123'.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --length-tag TAG
+                        Search for TAG followed by a
+                        decimal number in the
+                        description field of the read.
+                        Replace the decimal number with
+                        the correct length of the
+                        trimmed read. For example, use
+                        --length-tag 'length=' to
+                        correct fields like
+                        'length=123'.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_44">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --strip-suffix STRIP_SUFFIX
+                        Remove this suffix from read names if present. Can be
+                        given multiple times.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --strip-suffix STRIP_SUFFIX
+                        Remove this suffix from read
+                        names if present. Can be given
+                        multiple times.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_45">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -x PREFIX, --prefix PREFIX
+                        Add this prefix to read names. Use {name} to insert
+                        the name of the matching adapter.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -x PREFIX, --prefix PREFIX
+                        Add this prefix to read names.
+                        Use {name} to insert the name of
+                        the matching adapter.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_46">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -y SUFFIX, --suffix SUFFIX
+                        Add this suffix to read names; can also include {name}</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -y SUFFIX, --suffix SUFFIX
+                        Add this suffix to read names;
+                        can also include {name}</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_47">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --zero-cap, -z        Change negative quality values to zero.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -z, --zero-cap
+                        Change negative quality values
+                        to zero.  Filtering of processed
+                        reads: Filters are applied after
+                        above read modifications.
+                        Paired-end reads are always
+                        discarded pairwise (see also
+                        --pair-filter).</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_48">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Filtering of processed reads:
+  Filters are applied after above read modifications. Paired-end reads are
+  always discarded pairwise (see also --pair-filter).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  --trimmed-only
+                        Discard reads that do not
+                        contain an adapter.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_49">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -m LEN[:LEN2], --minimum-length LEN[:LEN2]
+                        Discard reads shorter than LEN. Default: 0</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -m LEN[:LEN2], --minimum-length LEN[:LEN2]
+                        Discard reads shorter than LEN.
+                        Default: 0</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_50">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -M LEN[:LEN2], --maximum-length LEN[:LEN2]
+                        Discard reads longer than LEN. Default: no limit</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -M LEN[:LEN2], --maximum-length LEN[:LEN2]
+                        Discard reads longer than LEN.
+                        Default: no limit</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_51">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --max-n COUNT         Discard reads with more than COUNT 'N' bases. If COUNT
+                        is a number between 0 and 1, it is interpreted as a
+                        fraction of the read length.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --max-n COUNT
+                        Discard reads with more than
+                        COUNT 'N' bases. If COUNT is a
+                        number between 0 and 1, it is
+                        interpreted as a fraction of the
+                        read length.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_52">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --discard-trimmed, --discard
+                        Discard reads that contain an adapter. Use also -O to
+                        avoid discarding too many randomly matching reads.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --discard
+                        Discard reads that contain an
+                        adapter. Use also -O to avoid
+                        discarding too many randomly
+                        matching reads.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_53">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --discard-untrimmed, --trimmed-only
+                        Discard reads that do not contain an adapter.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  --discard-casava
+                        Discard reads that did not pass
+                        CASAVA filtering (header has
+                        :Y:).</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_54">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --discard-casava      Discard reads that did not pass CASAVA filtering
+                        (header has :Y:).</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_55">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">Output:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">Output:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_56">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --quiet               Print only error messages.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --quiet
+                        Print only error messages.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_57">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --report {full,minimal}
+                        Which type of report to print: 'full' or 'minimal'.
+                        Default: full</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --report {full,minimal}
+                        Which type of report to print:
+                        'full' or 'minimal'. Default:
+                        full</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_58">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -o FILE, --output FILE
+                        Write trimmed reads to FILE. FASTQ or FASTA format is
+                        chosen depending on input. Summary report is sent to
+                        standard output. Use '{name}' for demultiplexing (see
+                        docs). Default: write to standard output</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -o FILE, --output FILE
+                        Write trimmed reads to FILE.
+                        FASTQ or FASTA format is chosen
+                        depending on input. Summary
+                        report is sent to standard
+                        output. Use '{name}' for
+                        demultiplexing (see docs).
+                        Default: write to standard
+                        output</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_59">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --fasta               Output FASTA to standard output even on FASTQ input.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --fasta
+                        Output FASTA to standard output
+                        even on FASTQ input.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_60">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -Z                    Use compression level 1 for gzipped output files
+                        (faster, but uses more space)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -Z
+                        Use compression level 1 for
+                        gzipped output files (faster,
+                        but uses more space)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_61">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --info-file FILE      Write information about each read and its adapter
+                        matches into FILE. See the documentation for the file
+                        format.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --info-file FILE
+                        Write information about each
+                        read and its adapter matches
+                        into FILE. See the documentation
+                        for the file format.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_62">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -r FILE, --rest-file FILE
+                        When the adapter matches in the middle of a read,
+                        write the rest (after the adapter) to FILE.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -r FILE, --rest-file FILE
+                        When the adapter matches in the
+                        middle of a read, write the rest
+                        (after the adapter) to FILE.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_63">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --wildcard-file FILE  When the adapter has N wildcard bases, write adapter
+                        bases matching wildcard positions to FILE. (Inaccurate
+                        with indels.)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --wildcard-file FILE
+                        When the adapter has N wildcard
+                        bases, write adapter bases
+                        matching wildcard positions to
+                        FILE. (Inaccurate with indels.)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_64">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --too-short-output FILE
+                        Write reads that are too short (according to length
+                        specified by -m) to FILE. Default: discard reads</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --too-short-output FILE
+                        Write reads that are too short
+                        (according to length specified
+                        by -m) to FILE. Default: discard
+                        reads</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_65">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --too-long-output FILE
+                        Write reads that are too long (according to length
+                        specified by -M) to FILE. Default: discard reads</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --too-long-output FILE
+                        Write reads that are too long
+                        (according to length specified
+                        by -M) to FILE. Default: discard
+                        reads</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_66">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --untrimmed-output FILE
+                        Write reads that do not contain any adapter to FILE.
+                        Default: output to same file as trimmed reads</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  --untrimmed-paired-output FILE
+                        Write second read in a pair to
+                        this FILE when no adapter was
+                        found. Use with --untrimmed-
+                        output. Default: output to same
+                        file as trimmed reads</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_67">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Paired-end options:
+  The -A/-G/-B/-U options work like their -a/-b/-g/-u counterparts, but are
+  applied to the second read in each pair.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  --untrimmed-output FILE
+                        Write reads that do not contain
+                        any adapter to FILE. Default:
+                        output to same file as trimmed
+                        reads  Paired-end options: The
+                        -A/-G/-B/-U options work like
+                        their -a/-b/-g/-u counterparts,
+                        but are applied to the second
+                        read in each pair.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_68">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -A ADAPTER            3' adapter to be removed from second read in a pair.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -A ADAPTER
+                        3' adapter to be removed from
+                        second read in a pair.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_69">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -G ADAPTER            5' adapter to be removed from second read in a pair.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -G ADAPTER
+                        5' adapter to be removed from
+                        second read in a pair.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_70">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -B ADAPTER            5'/3 adapter to be removed from second read in a pair.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -B ADAPTER
+                        5'/3 adapter to be removed from
+                        second read in a pair.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_71">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -U LENGTH             Remove LENGTH bases from second read in a pair.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -U LENGTH
+                        Remove LENGTH bases from second
+                        read in a pair.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_72">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -p FILE, --paired-output FILE
+                        Write second read in a pair to FILE.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -p FILE, --paired-output FILE
+                        Write second read in a pair to
+                        FILE.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_73">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --pair-adapters       Treat adapters given with -a/-A etc. as pairs. Either
+                        both or none are removed from each read pair.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -A etc. as pairs. Either, --pair-adapters
+                        Treat adapters given with both
+                        or none are removed from each
+                        read pair.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_74">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --pair-filter (any|both|first)
+                        Which of the reads in a paired-end read have to match
+                        the filtering criterion in order for the pair to be
+                        filtered. Default: any</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --pair-filter (any|both|first)
+                        Which of the reads in a paired-
+                        end read have to match the
+                        filtering criterion in order for
+                        the pair to be filtered.
+                        Default: any</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_75">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --interleaved         Read and write interleaved paired-end reads.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --interleaved
+                        Read and write interleaved
+                        paired-end reads.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_76">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --untrimmed-paired-output FILE
+                        Write second read in a pair to this FILE when no
+                        adapter was found. Use with --untrimmed-output.
+                        Default: output to same file as trimmed reads</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  --too-short-paired-output FILE
+                        Write second read in a pair to
+                        this file if pair is too short.
+                        Use also --too-short-output.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_77">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --too-short-paired-output FILE
+                        Write second read in a pair to this file if pair is
+                        too short. Use also --too-short-output.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --too-long-paired-output FILE
+                        Write second read in a pair to
+                        this file if pair is too long.
+                        Use also --too-long-output.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_78">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --too-long-paired-output FILE
+                        Write second read in a pair to this file if pair is
+                        too long. Use also --too-long-output.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+    </div>
+</body>
+</html>

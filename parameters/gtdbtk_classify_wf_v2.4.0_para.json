@@ -1,0 +1,184 @@
+[
+    {
+        "category": null,
+        "short": null,
+        "long": "--out_dir OUT_DIR",
+        "needs_input": true,
+        "description": "(--skip_ani_screen | --mash_db MASH_DB) [--no_mash]\n[--mash_k MASH_K] [--mash_s MASH_S]\n[--mash_v MASH_V]\n[--mash_max_distance MASH_MAX_DISTANCE] [-f]\n[-x EXTENSION] [--min_perc_aa MIN_PERC_AA]\n[--prefix PREFIX] [--genes] [--cpus CPUS]\n[--pplacer_cpus PPLACER_CPUS] [--force]\n[--scratch_dir SCRATCH_DIR]\n[--write_single_copy_genes] [--keep_intermediates]\n[--min_af MIN_AF] [--tmpdir TMPDIR] [--debug] [-h]\n"
+    },
+    {
+        "category": "mutually exclusive required arguments",
+        "short": null,
+        "long": "--genome_dir GENOME_DIR",
+        "needs_input": true,
+        "description": "directory containing genome files in FASTA format"
+    },
+    {
+        "category": "mutually exclusive required arguments",
+        "short": null,
+        "long": "--batchfile BATCHFILE",
+        "needs_input": true,
+        "description": "path to file describing genomes - tab separated in 2\nor 3 columns (FASTA file, genome ID, translation table\n[optional])\n"
+    },
+    {
+        "category": "required named arguments",
+        "short": null,
+        "long": "--out_dir OUT_DIR",
+        "needs_input": true,
+        "description": "directory to output files"
+    },
+    {
+        "category": "mutually exclusive required arguments",
+        "short": null,
+        "long": "--skip_ani_screen",
+        "needs_input": false,
+        "description": "Skip the ani_screening step to classify genomes using mash and skani. (default: False)"
+    },
+    {
+        "category": "mutually exclusive required arguments",
+        "short": null,
+        "long": "--mash_db MASH_DB",
+        "needs_input": true,
+        "description": "path to save/read (if exists) the Mash reference sketch database (.msh)\n"
+    },
+    {
+        "category": "optional Mash arguments",
+        "short": null,
+        "long": "--no_mash",
+        "needs_input": false,
+        "description": "skip pre-filtering of genomes using Mash (default: False)"
+    },
+    {
+        "category": "optional Mash arguments",
+        "short": null,
+        "long": "--mash_k MASH_K",
+        "needs_input": true,
+        "description": "k-mer size [1-32] (default: 16)"
+    },
+    {
+        "category": "optional Mash arguments",
+        "short": null,
+        "long": "--mash_s MASH_S",
+        "needs_input": true,
+        "description": "maximum number of non-redundant hashes (default: 5000)"
+    },
+    {
+        "category": "optional Mash arguments",
+        "short": null,
+        "long": "--mash_v MASH_V",
+        "needs_input": true,
+        "description": "maximum p-value to keep [0-1] (default: 1.0)"
+    },
+    {
+        "category": "optional Mash arguments",
+        "short": null,
+        "long": "--mash_max_distance MASH_MAX_DISTANCE",
+        "needs_input": true,
+        "description": "Maximum Mash distance to select a potential GTDB\ngenome as representative of a user genome. (default:\n0.15)\n"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-f",
+        "long": "--full_tree",
+        "needs_input": false,
+        "description": "use the unsplit bacterial tree for the classify step; this is the original GTDB-Tk approach (version < 2)\nand requires more than 320 GB of RAM to load the\nreference tree (default: False)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-x",
+        "long": "--extension EXTENSION",
+        "needs_input": true,
+        "description": "extension of files to process, gz = gzipped (default:\nfna)"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--min_perc_aa MIN_PERC_AA",
+        "needs_input": true,
+        "description": "exclude genomes that do not have at least this\npercentage of AA in the MSA (inclusive bound)\n(default: 10)"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--prefix PREFIX",
+        "needs_input": true,
+        "description": "prefix for all output files (default: gtdbtk)"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--genes",
+        "needs_input": false,
+        "description": "indicates input files contain predicted proteins as amino acids (skip gene calling).Warning: This flag\nwill skip the ANI comparison steps (ani_screen and\nclassification). (default: False)"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--cpus CPUS",
+        "needs_input": true,
+        "description": "number of CPUs to use (default: 1)"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--pplacer_cpus PPLACER_CPUS",
+        "needs_input": true,
+        "description": "number of CPUs to use during pplacer placement"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--force",
+        "needs_input": false,
+        "description": "continue processing if an error occurs on a single genome (default: False)"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--scratch_dir SCRATCH_DIR",
+        "needs_input": true,
+        "description": "reduce pplacer memory usage by writing to disk\n(slower)."
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--write_single_copy_genes",
+        "needs_input": false,
+        "description": "output unaligned single-copy marker genes (default:\nFalse)"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--keep_intermediates",
+        "needs_input": false,
+        "description": "keep intermediate files in the final directory (default: False)"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--min_af MIN_AF",
+        "needs_input": true,
+        "description": "minimum alignment fraction to assign genome to a species cluster (default: 0.5)"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--tmpdir TMPDIR",
+        "needs_input": true,
+        "description": "specify alternative directory for temporary files (default: /vol/tmp/users/khuang)"
+    },
+    {
+        "category": "optional arguments",
+        "short": null,
+        "long": "--debug",
+        "needs_input": false,
+        "description": "create intermediate files for debugging purposes (default: False)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-h",
+        "long": "--help",
+        "needs_input": false,
+        "description": "show help message"
+    }
+]

@@ -1,0 +1,303 @@
+<%- include('partials/header', { title: 'Workflow Builder' }) %>
+<%- include('partials/navbar') %>
+
+<main class="container mx-auto p-6 space-y-6">
+  <!-- Workflow Header -->
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <div class="flex justify-between items-center">
+        <h2 class="card-title text-2xl">
+          <i class="ti ti-graph mr-2"></i>
+          Workflow Builder
+        </h2>
+        <div class="flex gap-2">
+          <button id="save-workflow" class="btn btn-primary">
+            <i class="ti ti-device-floppy mr-2"></i>
+            Save Workflow
+          </button>
+          <button id="load-workflow" class="btn btn-outline">
+            <i class="ti ti-folder-open mr-2"></i>
+            Load Workflow
+          </button>
+          <button id="export-workflow" class="btn btn-secondary">
+            <i class="ti ti-download mr-2"></i>
+            Export
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Workflow Area -->
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <!-- Components Panel -->
+    <div class="lg:col-span-1">
+      <div class="card bg-base-200 shadow-xl h-full">
+        <div class="card-body">
+          <h3 class="card-title text-lg mb-4">
+            <i class="ti ti-puzzle mr-2"></i>
+            Components
+          </h3>
+          
+          <!-- Search Components -->
+          <div class="form-control mb-4">
+            <input 
+              type="text" 
+              id="component-search" 
+              class="input input-bordered input-sm" 
+              placeholder="Search components..."
+            >
+          </div>
+
+          <!-- Component Categories -->
+          <div class="space-y-4">
+            <!-- File Components -->
+            <div class="collapse collapse-arrow bg-base-100">
+              <input type="checkbox" checked /> 
+              <div class="collapse-title text-sm font-medium">
+                <i class="ti ti-files mr-2"></i>
+                File Components
+              </div>
+              <div class="collapse-content">
+                <div class="space-y-2">
+                  <div class="component-item" data-type="file-input" data-component="local-file" draggable="true">
+                    <i class="ti ti-upload mr-2"></i>
+                    Local File Input
+                  </div>
+                  <div class="component-item" data-type="file-input" data-component="server-file" draggable="true">
+                    <i class="ti ti-server mr-2"></i>
+                    Server File Input
+                  </div>
+                  <div class="component-item" data-type="file-output" data-component="local-folder" draggable="true">
+                    <i class="ti ti-folder-down mr-2"></i>
+                    Local Folder Output
+                  </div>
+                  <div class="component-item" data-type="file-output" data-component="server-folder" draggable="true">
+                    <i class="ti ti-folder-up mr-2"></i>
+                    Server Folder Output
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tool Components -->
+            <div class="collapse collapse-arrow bg-base-100">
+              <input type="checkbox" checked /> 
+              <div class="collapse-title text-sm font-medium">
+                <i class="ti ti-tool mr-2"></i>
+                Tools
+              </div>
+              <div class="collapse-content">
+                <div id="tool-components" class="space-y-2">
+                  <!-- Tools will be loaded dynamically -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Visualization Components -->
+            <div class="collapse collapse-arrow bg-base-100">
+              <input type="checkbox" checked /> 
+              <div class="collapse-title text-sm font-medium">
+                <i class="ti ti-chart-dots mr-2"></i>
+                Visualization
+              </div>
+              <div class="collapse-content">
+                <div id="viz-components" class="space-y-2">
+                  <!-- Visualization tools will be loaded dynamically -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workflow Canvas -->
+    <div class="lg:col-span-3">
+      <div class="card bg-base-200 shadow-xl">
+        <div class="card-body">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="card-title text-lg">
+              <i class="ti ti-layout mr-2"></i>
+              Workflow Canvas
+            </h3>
+            <div class="flex gap-2">
+              <button id="clear-canvas" class="btn btn-error btn-sm">
+                <i class="ti ti-trash mr-1"></i>
+                Clear
+              </button>
+              <button id="run-workflow" class="btn btn-success btn-sm">
+                <i class="ti ti-player-play mr-1"></i>
+                Run Workflow
+              </button>
+            </div>
+          </div>
+          
+          <div id="workflow-canvas" class="border-2 border-dashed border-base-300 rounded-lg min-h-[600px] relative bg-base-100">
+            <!-- Workflow nodes will be placed here -->
+            <div class="absolute inset-0 flex items-center justify-center text-base-content/50">
+              <div class="text-center">
+                <i class="ti ti-mouse text-4xl mb-2"></i>
+                <p>Drag components from the left panel to start building your workflow</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Workflow Properties Panel -->
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <h3 class="card-title text-lg mb-4">
+        <i class="ti ti-settings mr-2"></i>
+        Properties
+      </h3>
+      <div id="properties-panel" class="space-y-4">
+        <div class="text-center text-base-content/50">
+          Select a component to view its properties
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Component Configuration Modal -->
+<dialog id="component-config-modal" class="modal">
+  <div class="modal-box w-11/12 max-w-5xl">
+    <h3 class="font-bold text-lg mb-4">Configure Component</h3>
+    <div id="component-config-content">
+      <!-- Configuration content will be loaded here -->
+    </div>
+    <div class="modal-action">
+      <button class="btn btn-outline" onclick="closeComponentConfig()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveComponentConfig()">Save</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- File Browser Modal -->
+<dialog id="file-browser-modal" class="modal">
+  <div class="modal-box w-11/12 max-w-5xl">
+    <h3 class="font-bold text-lg mb-4">File Browser</h3>
+    <div id="file-browser-content">
+      <!-- File browser content will be loaded here -->
+    </div>
+    <div class="modal-action">
+      <button class="btn btn-outline" onclick="closeFileBrowser()">Cancel</button>
+      <button class="btn btn-primary" onclick="selectFile()">Select</button>
+    </div>
+  </div>
+</dialog>
+
+<%- include('partials/footer') %>
+
+<style>
+.component-item {
+  @apply p-2 rounded-lg cursor-pointer hover:bg-base-300 transition-colors text-sm;
+  user-select: none;
+}
+
+.component-item[draggable="true"] {
+  cursor: grab;
+}
+
+.component-item[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.component-item.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+
+.workflow-node {
+  @apply absolute bg-base-100 border-2 border-base-300 rounded-lg p-3 shadow-lg cursor-move;
+  min-width: 150px;
+  min-height: 80px;
+  user-select: none;
+}
+
+.workflow-node.selected {
+  @apply border-primary shadow-xl;
+}
+
+.workflow-node .node-header {
+  @apply flex items-center justify-between mb-2;
+}
+
+.workflow-node .node-title {
+  @apply font-medium text-sm;
+}
+
+.workflow-node .node-type {
+  @apply text-xs opacity-70;
+}
+
+.workflow-node .node-ports {
+  @apply flex justify-between items-center mt-2;
+}
+
+.workflow-node .port {
+  @apply w-3 h-3 rounded-full border-2 cursor-pointer transition-colors;
+}
+
+.workflow-node .port.input {
+  @apply border-blue-500 bg-blue-500;
+}
+
+.workflow-node .port.output {
+  @apply border-green-500 bg-green-500;
+}
+
+.workflow-node .port:hover {
+  @apply scale-125;
+}
+
+.workflow-connection {
+  @apply absolute pointer-events-none;
+  stroke: #3b82f6;
+  stroke-width: 2;
+  fill: none;
+}
+
+.workflow-connection.valid {
+  stroke: #10b981;
+}
+
+.workflow-connection.invalid {
+  stroke: #ef4444;
+}
+
+#workflow-canvas {
+  background-image: 
+    radial-gradient(circle, #374151 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.node-connection-point {
+  @apply absolute w-4 h-4 bg-base-300 border-2 border-base-content rounded-full cursor-crosshair;
+  transform: translate(-50%, -50%);
+}
+
+.node-connection-point.input {
+  @apply bg-blue-500 border-blue-600;
+}
+
+.node-connection-point.output {
+  @apply bg-green-500 border-green-600;
+}
+
+/* Drag and drop visual feedback */
+#workflow-canvas.drag-over {
+  @apply border-primary bg-primary/10;
+}
+
+.component-item.drag-over {
+  @apply bg-primary/20 border-primary;
+}
+</style>
+
+<script src="/js/components.js"></script>
+<script src="/js/workflow-builder.js"></script> 

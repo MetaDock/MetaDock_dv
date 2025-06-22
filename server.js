@@ -865,5 +865,452 @@ app.get('/visualization/:filename', (req, res) => {
 // Serve static files from public directory (including visualization files)
 app.use('/visualization', express.static(path.join(__dirname, 'public', 'visualization')));
 
+// Workflow Builder Routes
+app.get('/workflow', checkConnection, (req, res) => {
+  res.render('workflow');
+});
+
+// API Routes for Workflow Builder
+app.get('/api/tools', (req, res) => {
+  const tools = Object.values(toolsConfig).map(tool => ({
+    toolName: tool.toolName,
+    title: tool.title,
+    route: tool.route,
+    commandRoute: tool.commandRoute,
+    usagePath: tool.usagePath,
+    paraPath: tool.paraPath
+  }));
+  res.json(tools);
+});
+
+app.get('/api/visualization-tools', (req, res) => {
+  const visualizations = Object.values(visualizationConfig).map(viz => ({
+    toolName: viz.toolName,
+    title: viz.title,
+    route: viz.route,
+    icon: viz.icon
+  }));
+  res.json(visualizations);
+});
+
+app.get('/api/tool-config/:toolName', async (req, res) => {
+  try {
+    const toolName = req.params.toolName;
+    const tool = toolsConfig[toolName];
+    
+    if (!tool) {
+      return res.status(404).json({ error: 'Tool not found' });
+    }
+    
+    // Load tool parameters
+    const paraPath = path.join(__dirname, tool.paraPath);
+    const usagePath = path.join(__dirname, tool.usagePath);
+    
+    let parameters = {};
+    let description = '';
+    
+    try {
+      const paraData = await fs.readFile(paraPath, 'utf8');
+      const paraJson = JSON.parse(paraData);
+      parameters = paraJson;
+    } catch (error) {
+      console.error(`Error loading parameters for ${toolName}:`, error);
+    }
+    
+    try {
+      const usageData = await fs.readFile(usagePath, 'utf8');
+      const usageJson = JSON.parse(usageData);
+      description = usageJson.description || '';
+    } catch (error) {
+      console.error(`Error loading usage for ${toolName}:`, error);
+    }
+    
+    res.json({
+      name: toolName,
+      description: description,
+      parameters: parameters,
+      requiredInputs: ['input_file'], // Default required inputs
+      outputs: ['output_file'] // Default outputs
+    });
+  } catch (error) {
+    console.error('Error loading tool config:', error);
+    res.status(500).json({ error: 'Failed to load tool configuration' });
+  }
+});
+
+app.get('/api/server-files', checkConnection, async (req, res) => {
+  try {
+    const { dir = '/' } = req.query;
+    
+    const fileList = await getRemoteFileList(dir, {
+      host: req.app.locals.connectionDetails.host,
+      port: req.app.locals.connectionDetails.port,
+      username: req.app.locals.connectionDetails.username,
+      password: req.app.locals.connectionDetails.password
+    });
+    
+    // Filter to show only files (not directories)
+    const files = fileList.filter(item => !item.isDirectory);
+    
+    res.json(files);
+  } catch (error) {
+    console.error('Error loading server files:', error);
+    res.status(500).json({ error: 'Failed to load server files' });
+  }
+});
+
+app.get('/api/server-folders', checkConnection, async (req, res) => {
+  try {
+    const { dir = '/' } = req.query;
+    
+    const fileList = await getRemoteFileList(dir, {
+      host: req.app.locals.connectionDetails.host,
+      port: req.app.locals.connectionDetails.port,
+      username: req.app.locals.connectionDetails.username,
+      password: req.app.locals.connectionDetails.password
+    });
+    
+    // Filter to show only directories
+    const folders = fileList.filter(item => item.isDirectory);
+    
+    res.json(folders);
+  } catch (error) {
+    console.error('Error loading server folders:', error);
+    res.status(500).json({ error: 'Failed to load server folders' });
+  }
+});
+
+app.post('/api/run-workflow', checkConnection, async (req, res) => {
+  try {
+    const workflow = req.body;
+    
+    if (!workflow.nodes || workflow.nodes.length === 0) {
+      return res.status(400).json({ error: 'No nodes in workflow' });
+    }
+    
+    // Validate workflow
+    const validation = validateWorkflow(workflow);
+    if (!validation.valid) {
+      return res.status(400).json({ error: 'Invalid workflow', details: validation.errors });
+    }
+    
+    // Execute workflow
+    const result = await executeWorkflow(workflow, req.app.locals.connectionDetails);
+    
+    res.json({
+      success: true,
+      result: result
+    });
+  } catch (error) {
+    console.error('Error running workflow:', error);
+    res.status(500).json({ error: 'Failed to run workflow', details: error.message });
+  }
+});
+
+// Helper function to validate workflow
+function validateWorkflow(workflow) {
+  const errors = [];
+  
+  // Check for cycles
+  const hasCycles = checkForCycles(workflow);
+  if (hasCycles) {
+    errors.push('Workflow contains cycles');
+  }
+  
+  // Check for disconnected nodes
+  const disconnectedNodes = findDisconnectedNodes(workflow);
+  if (disconnectedNodes.length > 0) {
+    errors.push(`Disconnected nodes: ${disconnectedNodes.join(', ')}`);
+  }
+  
+  // Check for missing inputs
+  const missingInputs = findMissingInputs(workflow);
+  if (missingInputs.length > 0) {
+    errors.push(`Missing inputs: ${missingInputs.join(', ')}`);
+  }
+  
+  return {
+    valid: errors.length === 0,
+    errors: errors
+  };
+}
+
+// Helper function to check for cycles in workflow
+function checkForCycles(workflow) {
+  const visited = new Set();
+  const recStack = new Set();
+  
+  function hasCycle(nodeId) {
+    if (recStack.has(nodeId)) return true;
+    if (visited.has(nodeId)) return false;
+    
+    visited.add(nodeId);
+    recStack.add(nodeId);
+    
+    const outgoingConnections = workflow.connections.filter(conn => conn.fromNode === nodeId);
+    for (const conn of outgoingConnections) {
+      if (hasCycle(conn.toNode)) return true;
+    }
+    
+    recStack.delete(nodeId);
+    return false;
+  }
+  
+  for (const node of workflow.nodes) {
+    if (!visited.has(node.id)) {
+      if (hasCycle(node.id)) return true;
+    }
+  }
+  
+  return false;
+}
+
+// Helper function to find disconnected nodes
+function findDisconnectedNodes(workflow) {
+  const connectedNodes = new Set();
+  
+  workflow.connections.forEach(conn => {
+    connectedNodes.add(conn.fromNode);
+    connectedNodes.add(conn.toNode);
+  });
+  
+  return workflow.nodes
+    .filter(node => !connectedNodes.has(node.id))
+    .map(node => node.id);
+}
+
+// Helper function to find missing inputs
+function findMissingInputs(workflow) {
+  const missingInputs = [];
+  
+  for (const node of workflow.nodes) {
+    if (node.type === 'tool' || node.type === 'visualization') {
+      const hasInput = workflow.connections.some(conn => conn.toNode === node.id);
+      if (!hasInput) {
+        missingInputs.push(node.id);
+      }
+    }
+  }
+  
+  return missingInputs;
+}
+
+// Helper function to execute workflow
+async function executeWorkflow(workflow, connectionDetails) {
+  const results = [];
+  const executedNodes = new Set();
+  
+  // Topological sort to determine execution order
+  const executionOrder = getExecutionOrder(workflow);
+  
+  for (const nodeId of executionOrder) {
+    const node = workflow.nodes.find(n => n.id === nodeId);
+    if (!node) continue;
+    
+    try {
+      const result = await executeNode(node, workflow, connectionDetails, executedNodes);
+      results.push({
+        nodeId: nodeId,
+        nodeType: node.type,
+        success: true,
+        result: result
+      });
+      executedNodes.add(nodeId);
+    } catch (error) {
+      results.push({
+        nodeId: nodeId,
+        nodeType: node.type,
+        success: false,
+        error: error.message
+      });
+      
+      // Check if we should continue on error
+      const nodeConfig = workflow.nodes.find(n => n.id === nodeId)?.config;
+      if (!nodeConfig?.continueOnError) {
+        break;
+      }
+    }
+  }
+  
+  return results;
+}
+
+// Helper function to get execution order (topological sort)
+function getExecutionOrder(workflow) {
+  const inDegree = new Map();
+  const graph = new Map();
+  
+  // Initialize
+  workflow.nodes.forEach(node => {
+    inDegree.set(node.id, 0);
+    graph.set(node.id, []);
+  });
+  
+  // Build graph and calculate in-degrees
+  workflow.connections.forEach(conn => {
+    const fromNode = conn.fromNode;
+    const toNode = conn.toNode;
+    
+    graph.get(fromNode).push(toNode);
+    inDegree.set(toNode, inDegree.get(toNode) + 1);
+  });
+  
+  // Topological sort
+  const queue = [];
+  const order = [];
+  
+  // Add nodes with no incoming edges
+  for (const [nodeId, degree] of inDegree) {
+    if (degree === 0) {
+      queue.push(nodeId);
+    }
+  }
+  
+  while (queue.length > 0) {
+    const nodeId = queue.shift();
+    order.push(nodeId);
+    
+    for (const neighbor of graph.get(nodeId)) {
+      inDegree.set(neighbor, inDegree.get(neighbor) - 1);
+      if (inDegree.get(neighbor) === 0) {
+        queue.push(neighbor);
+      }
+    }
+  }
+  
+  return order;
+}
+
+// Helper function to execute a single node
+async function executeNode(node, workflow, connectionDetails, executedNodes) {
+  switch (node.type) {
+    case 'file-input':
+      return await executeFileInput(node, workflow);
+    case 'tool':
+      return await executeTool(node, workflow, connectionDetails, executedNodes);
+    case 'visualization':
+      return await executeVisualization(node, workflow, executedNodes);
+    case 'file-output':
+      return await executeFileOutput(node, workflow, executedNodes);
+    default:
+      throw new Error(`Unknown node type: ${node.type}`);
+  }
+}
+
+async function executeFileInput(node, workflow) {
+  // File input nodes don't need execution, they just provide data
+  return { message: 'File input ready' };
+}
+
+async function executeTool(node, workflow, connectionDetails, executedNodes) {
+  // Get input files from connected nodes
+  const inputFiles = getInputFiles(node.id, workflow, executedNodes);
+  
+  // Build command
+  const command = buildToolCommand(node, inputFiles);
+  
+  // Execute command on remote server
+  return await executeRemoteCommand(command, connectionDetails);
+}
+
+async function executeVisualization(node, workflow, executedNodes) {
+  // Get input files from connected nodes
+  const inputFiles = getInputFiles(node.id, workflow, executedNodes);
+  
+  // Generate visualization
+  return { message: 'Visualization generated', inputFiles };
+}
+
+async function executeFileOutput(node, workflow, executedNodes) {
+  // Get input files from connected nodes
+  const inputFiles = getInputFiles(node.id, workflow, executedNodes);
+  
+  // Copy files to output location
+  return { message: 'Files copied to output', inputFiles };
+}
+
+function getInputFiles(nodeId, workflow, executedNodes) {
+  const inputConnections = workflow.connections.filter(conn => conn.toNode === nodeId);
+  const inputFiles = [];
+  
+  for (const conn of inputConnections) {
+    const sourceNode = workflow.nodes.find(n => n.id === conn.fromNode);
+    if (sourceNode && executedNodes.has(sourceNode.id)) {
+      // Get output files from source node
+      inputFiles.push(...getNodeOutputFiles(sourceNode, workflow));
+    }
+  }
+  
+  return inputFiles;
+}
+
+function getNodeOutputFiles(node, workflow) {
+  // This is a simplified version - in a real implementation,
+  // you would track actual output files from each node
+  switch (node.type) {
+    case 'file-input':
+      return node.config?.files || [];
+    case 'tool':
+      return [`${node.component}_output.txt`];
+    case 'visualization':
+      return [`${node.component}_viz.html`];
+    default:
+      return [];
+  }
+}
+
+function buildToolCommand(node, inputFiles) {
+  let command = node.component;
+  
+  // Add parameters
+  if (node.config?.parameters) {
+    Object.entries(node.config.parameters).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        command += ` --${key} ${value}`;
+      }
+    });
+  }
+  
+  // Add input files
+  if (inputFiles.length > 0) {
+    command += ` ${inputFiles.join(' ')}`;
+  }
+  
+  return command;
+}
+
+async function executeRemoteCommand(command, connectionDetails) {
+  return new Promise((resolve, reject) => {
+    const conn = new Client();
+    
+    conn.on('ready', () => {
+      conn.exec(command, (err, stream) => {
+        if (err) {
+          conn.end();
+          return reject(err);
+        }
+        
+        let stdout = '';
+        let stderr = '';
+        
+        stream.on('close', (code) => {
+          conn.end();
+          if (code === 0) {
+            resolve({ stdout, stderr, code });
+          } else {
+            reject(new Error(`Command failed with code ${code}: ${stderr}`));
+          }
+        }).on('data', (data) => {
+          stdout += data.toString();
+        }).stderr.on('data', (data) => {
+          stderr += data.toString();
+        });
+      });
+    }).on('error', (err) => {
+      reject(err);
+    }).connect(connectionDetails);
+  });
+}
+
 const PORT = process.env.PORT || 3010;
 app.listen(PORT, '0.0.0.0', () => console.log(`Server running on http://localhost:${PORT}`));

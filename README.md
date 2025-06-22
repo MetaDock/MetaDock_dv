@@ -11,12 +11,25 @@ A web-based tool management system for bioinformatics tools.
 - Other dependencies listed in package.json
 
 1. Clone 
-2. Install dependencies
+2. Create virtual environment
+   ```shell
+   python -m venv .venv
+   ```
+3. Activate virtual environment
+   - Windows
+   ```shell
+   .venv\Scripts\activate
+   ```
+   - macOS or Linux
+   ```shell
+   source .venv/bin/activate
+   ```
+3. Install dependencies
    ```shell
    npm install all
    ```
-3. Start
+4. Start
    ```shell
    node server.js
    ```
-4. visit [localhost](http://localhost:3010)
+5. visit [localhost](http://localhost:3010)

@@ -2,13 +2,6 @@
 
 MetaDock is built using JavaScript and requires [Node.js](https://nodejs.org/) to run. To verify if Node.js is installed on your system, run:
 
-## Other Dependencies
-
-- [Express.js](https://expressjs.com/)
-- [SSH2 (for remote server connections)](https://www.npmjs.com/package/ssh2)
-- [Multer (for file uploads)](https://www.npmjs.com/package/multer)
-- [EJS (for templating)](https://ejs.co/)
-- Other dependencies listed in package.json
 
 ```bash
 node -v
@@ -37,6 +30,15 @@ If Node.js is not installed, you can set up an isolated Conda environment named 
     ```
 
 ---
+
+## Other Dependencies
+
+- [Express.js](https://expressjs.com/)
+- [SSH2 (for remote server connections)](https://www.npmjs.com/package/ssh2)
+- [Multer (for file uploads)](https://www.npmjs.com/package/multer)
+- [EJS (for templating)](https://ejs.co/)
+- Other dependencies listed in package.json
+
 
 ## Installing MetaDock
 

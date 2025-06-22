@@ -1,5 +1,0 @@
-{
-    "usage": [
-        "usage: gtdbtk classify (--genome_dir GENOME_DIR | --batchfile BATCHFILE) --align_dir ALIGN_DIR --out_dir OUT_DIR [-x EXTENSION] [--prefix PREFIX] [--cpus CPUS] [--scratch_dir SCRATCH_DIR] [-r] [-d] [-h]"
-    ]
-}

@@ -32,7 +32,7 @@ const isConnected = (req, res, next) => {
   next();
 };
 
-// GET /data/tools_install.json -> 提供工具安装配置数据
+// GET /data/tools_install.json -> provide tool installation configuration data
 router.get('/data/tools_install.json', isAdmin, (req, res) => {
     try {
         const toolsPath = path.join(__dirname, '..', 'data', 'tools_install.json');
@@ -52,7 +52,7 @@ router.post('/login', async (req, res) => {
   });
 
   try {
-    // 检查是否已建立SSH连接
+    // check if SSH connection is established
     if (!req.app.locals.connectionDetails) {
       console.log('SSH connection required');
       return res.status(401).json({ error: 'SSH connection required' });
@@ -117,13 +117,13 @@ const upload = multer({
   }
 });
 
-// GET / -> 显示首页 (Rectangle 1)
+// GET / -> show home page
 router.get('/', isAdmin, installerController.showHomePage);
 
-// GET /search -> 显示搜索/推荐工具页 (Rectangle 2)
+// GET /search -> show search/recommend tool page
 router.get('/search', isAdmin, installerController.showSearchPage);
 
-// GET /options -> 显示选项页面
+// GET /options -> show option page
 router.get('/options', isAdmin, (req, res) => {
     const selectedTools = req.session.selectedTools || [];
     res.render('option', {
@@ -134,16 +134,16 @@ router.get('/options', isAdmin, (req, res) => {
     });
 });
 
-// POST /options -> 处理从搜索页提交的表单，进入选项页 (Flow from 2 to 3)
+// POST /options -> process form submission from search page and enter option page
 router.post('/options', isAdmin, installerController.processSelectedTools);
 
-// POST /install -> 处理从选项页提交的安装请求 (Flow from 3 to 8)
+// POST /install -> process form submission from option page and enter installation page
 router.post('/install', isAdmin, installerController.startInstallation);
 
-// GET /installing -> 显示安装过程页面
+// GET /installing -> show installation process page
 router.get('/installing', isAdmin, installerController.startInstallation);
 
-// POST /installing -> 处理安装表单提交
+// POST /installing -> process installation form submission
 router.post('/installing', isAdmin, (req, res) => {
     console.log('Received installation request:');
     console.log('Body:', req.body);
@@ -165,10 +165,10 @@ router.post('/installing', isAdmin, (req, res) => {
     }
 });
 
-// GET /check-environment -> 检查系统环境
+// GET /check-environment -> check system environment
 router.get('/check-environment', isAdmin, installerController.checkSystemEnvironment);
 
-// POST /execute-installation -> 执行安装
+// POST /execute-installation -> execute installation
 router.post('/execute-installation', isAdmin, installerController.executeInstallation);
 
 // Admin dashboard - protected by isAdmin middleware

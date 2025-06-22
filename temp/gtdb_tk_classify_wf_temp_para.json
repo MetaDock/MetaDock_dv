@@ -1,9 +1,0 @@
-[
-    {
-        "category": "mutually exclusive required arguments",
-        "short": "",
-        "long": "--batchfile BATCHFILE",
-        "needs_input": true,
-        "description": "file describing genomes - tab separated in 2 columns\n(FASTA file, genome ID)"
-    }
-]

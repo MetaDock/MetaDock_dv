@@ -1,5 +1,0 @@
-{
-    "usage": [
-        "usage: average_nucleotide_identity.py [-h] [--version] -o OUTDIRNAME -i INDIRNAME [-v] [-f] [-s FRAGSIZE] [-l LOGFILE] [--skip_nucmer] [--skip_blastn] [--noclobber] [--nocompress] [-g] [--gformat GFORMAT] [--gmethod {mpl,seaborn}] [--labels LABELS] [--classes CLASSES] [-m {ANIm,ANIb,ANIblastall,TETRA}] [--scheduler {multiprocessing,SGE}] [--workers WORKERS] [--SGEgroupsize SGEGROUPSIZE] [--SGEargs SGEARGS] [--maxmatch] [--nucmer_exe NUCMER_EXE] [--filter_exe FILTER_EXE] [--blastn_exe BLASTN_EXE] [--makeblastdb_exe MAKEBLASTDB_EXE] [--blastall_exe BLASTALL_EXE] [--formatdb_exe FORMATDB_EXE] [--write_excel] [--rerender] [--subsample SUBSAMPLE] [--seed SEED] [--jobprefix JOBPREFIX]"
-    ]
-}

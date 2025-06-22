@@ -183,6 +183,17 @@ Annotation:
           </div>
         </div>
       </div>
+
+      <!-- Service Restart Notice -->
+      <div class="alert alert-warning mb-4">
+        <div>
+          <i class="ti ti-alert-triangle text-2xl mr-2"></i>
+          <div>
+            <h4 class="font-bold">Important Notice</h4>
+            <p class="text-sm">After adding a new tool, you need to restart the server for the changes to take effect in the regular user interface. The new tool will not appear in the user dashboard until the server is restarted.</p>
+          </div>
+        </div>
+      </div>
       
       <!-- Add New Tool Form -->
       <form id="addToolForm" class="space-y-4">
@@ -372,7 +383,7 @@ Annotation:
 <script>
   let selectedRemotePath = null;
   let currentDirectory = '/';
-  let manualInputPath = ''; // 保存手动输入的路径
+  let manualInputPath = '';
   
   // Handle file source selection
   document.querySelectorAll('input[name="fileSource"]').forEach(radio => {

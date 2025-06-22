@@ -14,18 +14,18 @@ const getTools = () => {
     }
 };
 
-// 获取所有工具
+// get all tools
 exports.findAll = () => {
     return getTools();
 };
 
-// 获取被推荐的工具
+// get recommended tools
 exports.findRecommended = () => {
     const allTools = getTools();
     return allTools.filter(tool => tool.isRecommended);
 };
 
-// 根据ID查找工具
+// find tools by IDs
 exports.findByIds = (ids) => {
     const allTools = getTools();
     return allTools.filter(tool => ids.includes(tool.id));

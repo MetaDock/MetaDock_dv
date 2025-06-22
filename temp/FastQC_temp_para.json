@@ -1,9 +1,0 @@
-[
-    {
-        "category": "",
-        "short": "-h",
-        "long": "--help",
-        "needs_input": false,
-        "description": "Print this help file and exit"
-    }
-]

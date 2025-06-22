@@ -12,7 +12,7 @@ class InstallationService {
         this.sshClient = null;
     }
 
-    // 检查conda是否已安装
+    // check if conda is installed
     async checkCondaInstallation() {
         try {
             const { stdout } = await execAsync('conda --version');
@@ -24,18 +24,18 @@ class InstallationService {
         }
     }
 
-    // 检查conda环境路径
+    // check conda environment path
     async checkCondaEnvironment(envPath = null) {
         try {
             if (envPath) {
-                // 检查指定的环境路径是否存在
+                // check if the specified environment path exists
                 const envExists = await fs.access(envPath).then(() => true).catch(() => false);
                 if (!envExists) {
                     return { valid: false, error: `Conda environment path does not exist: ${envPath}` };
                 }
                 return { valid: true, path: envPath };
             } else {
-                // 查询系统conda环境
+                // query system conda environment
                 const { stdout } = await execAsync('conda info --envs --json');
                 const envs = JSON.parse(stdout);
                 const activeEnv = envs.envs.find(env => env.active);
@@ -52,7 +52,7 @@ class InstallationService {
         }
     }
 
-    // 检查安装路径
+    // check installation path
     async checkInstallPath(installPath = null, method = 'git') {
         try {
             if (method === 'git') {
@@ -63,7 +63,7 @@ class InstallationService {
                     return { valid: false, error: `Installation path does not exist: ${targetPath}` };
                 }
                 
-                // 检查写入权限
+                // check write permission
                 try {
                     await fs.access(targetPath, fs.constants.W_OK);
                     return { valid: true, path: targetPath };
@@ -79,7 +79,7 @@ class InstallationService {
         }
     }
 
-    // 验证安装配置
+    // validate installation config
     async validateInstallationConfig(config, adminSettings = {}) {
         const validation = {
             valid: true,
@@ -90,7 +90,7 @@ class InstallationService {
             pathChecks: {}
         };
 
-        // 检查conda安装
+        // check conda installation
         validation.condaCheck = await this.checkCondaInstallation();
         
         if (!validation.condaCheck.installed) {
@@ -104,7 +104,7 @@ class InstallationService {
             }
         }
 
-        // 检查conda环境（如果需要）
+        // check conda environment (if needed)
         if (validation.condaCheck.installed && (config.anaconda?.length > 0 || config.pip?.length > 0)) {
             validation.environmentCheck = await this.checkCondaEnvironment(adminSettings.condaEnvPath);
             
@@ -114,7 +114,7 @@ class InstallationService {
             }
         }
 
-        // 检查Git安装路径
+        // check Git installation path
         if (config.git && config.git.length > 0) {
             validation.pathChecks.git = await this.checkInstallPath(adminSettings.gitInstallPath, 'git');
             
@@ -127,7 +127,7 @@ class InstallationService {
         return validation;
     }
 
-    // 执行安装命令
+    // execute installation command
     async executeInstallation(config, adminSettings = {}, progressCallback = null) {
         const results = {
             success: [],
@@ -135,7 +135,7 @@ class InstallationService {
             logs: []
         };
 
-        // 验证配置
+        // validate config
         const validation = await this.validateInstallationConfig(config, adminSettings);
         if (!validation.valid) {
             results.failed.push({
@@ -146,7 +146,7 @@ class InstallationService {
             return results;
         }
 
-        // 执行conda安装
+        // execute conda installation
         if (config.anaconda && config.anaconda.length > 0) {
             for (const tool of config.anaconda) {
                 try {
@@ -166,7 +166,7 @@ class InstallationService {
             }
         }
 
-        // 执行pip安装
+        // execute pip installation
         if (config.pip && config.pip.length > 0) {
             for (const tool of config.pip) {
                 try {
@@ -186,7 +186,7 @@ class InstallationService {
             }
         }
 
-        // 执行git安装
+        // execute git installation
         if (config.git && config.git.length > 0) {
             for (const tool of config.git) {
                 try {
@@ -209,7 +209,7 @@ class InstallationService {
         return results;
     }
 
-    // Conda安装
+    // conda installation
     async installViaConda(tool, adminSettings, progressCallback) {
         const command = tool.installCommands?.anaconda;
         if (!command) {
@@ -257,7 +257,7 @@ class InstallationService {
         }
     }
 
-    // Pip安装
+    // pip installation
     async installViaPip(tool, adminSettings, progressCallback) {
         const command = tool.installCommands?.pip;
         if (!command) {
@@ -305,7 +305,7 @@ class InstallationService {
         }
     }
 
-    // Git安装
+    // git installation
     async installViaGit(tool, adminSettings, progressCallback) {
         const command = tool.installCommands?.git;
         if (!command) {

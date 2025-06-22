@@ -2,7 +2,7 @@
 const toolService = require('../services/toolService');
 const InstallationService = require('../services/installationService');
 
-// 1. 显示首页 (Rectangle 1)
+// 1. home page
 exports.showHomePage = (req, res) => {
     const pageData = {
         title: 'Installer Home',
@@ -12,7 +12,7 @@ exports.showHomePage = (req, res) => {
     res.render('index', pageData);
 };
 
-// 2. 显示搜索/推荐工具页面 (Rectangle 2)
+// 2. show search/recommend tool page
 exports.showSearchPage = (req, res) => {
     const recommendedTools = toolService.findRecommended();
     res.render('select', {
@@ -23,18 +23,18 @@ exports.showSearchPage = (req, res) => {
     });
 };
 
-// 3. 处理选择的工具并显示选项页面 (Flow from 2 to 3)
+// 3. process selected tools and show option page
 exports.processSelectedTools = (req, res) => {
     try {
-        // 解析 JSON 字符串形式的工具 ID
+        // parse tool IDs from JSON string
         const selectedIds = JSON.parse(req.body.toolIds || '[]');
-        console.log('Selected tool IDs:', selectedIds); // 调试日志
+        console.log('Selected tool IDs:', selectedIds); 
 
-        // 获取工具信息
+        // get tool information
         const tools = toolService.findByIds(selectedIds);
-        console.log('Found tools:', tools); // 调试日志
+        console.log('Found tools:', tools); 
 
-        // 将用户选择的工具存入 session，以便在安装步骤使用
+        // save selected tools to session for installation step
         req.session.selectedTools = tools;
 
         res.render('option', {
@@ -55,13 +55,13 @@ exports.processSelectedTools = (req, res) => {
     }
 };
 
-// 4. 开始安装并显示安装过程页面 (Flow from 3 to 8)
+// 4. start installation and show installation process page
 exports.startInstallation = async (req, res) => {
     try {
         const installationConfig = req.body;
         console.log('Received installation config:', installationConfig);
         
-        // 解析安装配置
+        // parse installation config
         let config;
         if (typeof installationConfig === 'string') {
             config = JSON.parse(installationConfig);
@@ -71,16 +71,16 @@ exports.startInstallation = async (req, res) => {
             config = installationConfig;
         }
 
-        // 获取管理员设置
+        // get admin settings
         const adminSettings = {
             condaEnvPath: req.body.condaEnvPath || null,
             gitInstallPath: req.body.gitInstallPath || null
         };
 
-        // 创建安装服务实例
+        // create installation service instance
         const installationService = new InstallationService(req.app.locals.connectionDetails);
 
-        // 验证安装配置
+        // validate installation config
         const validation = await installationService.validateInstallationConfig(config, adminSettings);
         
         if (!validation.valid) {
@@ -98,7 +98,7 @@ exports.startInstallation = async (req, res) => {
             });
         }
 
-        // 如果验证通过，渲染安装页面
+        // if validation passed, render installation page
         res.render('installing', {
             title: 'Installing...',
             config: config,
@@ -118,20 +118,19 @@ exports.startInstallation = async (req, res) => {
     }
 };
 
-// 5. 执行安装API端点
+// 5. execute installation API endpoint
 exports.executeInstallation = async (req, res) => {
     try {
         const { config, adminSettings } = req.body;
         
-        // 创建安装服务实例
+        // create installation service instance
         const installationService = new InstallationService(req.app.locals.connectionDetails);
         
-        // 执行安装
+        // execute installation
         const results = await installationService.executeInstallation(
             config, 
             adminSettings,
             (message, type) => {
-                // 这里可以实现实时日志推送
                 console.log(`[${type}] ${message}`);
             }
         );
@@ -149,7 +148,7 @@ exports.executeInstallation = async (req, res) => {
     }
 };
 
-// 6. 检查系统环境API端点
+// 6. check system environment API endpoint
 exports.checkSystemEnvironment = async (req, res) => {
     console.log('checkSystemEnvironment called');
     console.log('Request headers:', req.headers);
@@ -172,7 +171,7 @@ exports.checkSystemEnvironment = async (req, res) => {
         const pathCheck = await installationService.checkInstallPath();
         console.log('Path check result:', pathCheck);
         
-        // 获取系统信息
+        // get system information
         const os = require('os');
         const path = require('path');
         

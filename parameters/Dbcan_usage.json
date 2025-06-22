@@ -1,5 +1,0 @@
-{
-    "usage": [
-        "usage: run_dbcan.py [-h] [--cluster CLUSTER] [--dbCANFile DBCANFILE] [--dia_eval DIA_EVAL] [--dia_cpu DIA_CPU] [--hmm_eval HMM_EVAL] [--hmm_cov HMM_COV] [--hmm_cpu HMM_CPU] [--hotpep_hits HOTPEP_HITS] [--hotpep_freq HOTPEP_FREQ] [--hotpep_cpu HOTPEP_CPU] [--tf_eval TF_EVAL] [--tf_cov TF_COV] [--tf_cpu TF_CPU] [--stp_eval STP_EVAL] [--stp_cov STP_COV] [--stp_cpu STP_CPU] [--out_pre OUT_PRE] [--out_dir OUT_DIR] [--db_dir DB_DIR] [--cgc_dis CGC_DIS] [--cgc_sig_genes {tp,tf,all}] [--tools {hmmer,diamond,hotpep,all} [{hmmer,diamond,hotpep,all} ...]] [--use_signalP USE_SIGNALP] [--gram {p,n,all}] inputFile {protein,prok,meta}"
-    ]
-}

@@ -1,5 +1,0 @@
-{
-    "usage": [
-        "usage: gtdb_tk_classify_wf [--batchfile BATCHFILE] VALUE"
-    ]
-}

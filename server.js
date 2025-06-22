@@ -4,6 +4,7 @@ const { Client } = require('ssh2');
 const fs = require('fs').promises;
 const multer = require('multer');
 const toolsConfig = require('./config/tools');
+const visualizationConfig = require('./config/visualization');
 const commandHandler = require('./handlers/commandHandler');
 const iconv = require('iconv-lite');
 const path = require('path');
@@ -107,10 +108,10 @@ app.get('/dashboard', checkConnection, (req, res) => {
   res.render('dashboard', { toolsConfig });
 });
 
-// Dynamic tool routes
+// Dynamic tool routes - must be before the :tool/file-browser route
 Object.values(toolsConfig).forEach(tool => {
   // Add case-insensitive routes
-  app.get(`/${tool.route.toLowerCase()}`, (req, res) => {
+  app.get(`/${tool.route.toLowerCase()}`, checkConnection, (req, res) => {
     res.render(tool.html, {
         title: tool.title,
         toolName: tool.toolName,
@@ -143,6 +144,18 @@ Object.values(toolsConfig).forEach(tool => {
       }
     });
   });
+
+// Dynamic visualization routes
+Object.values(visualizationConfig).forEach(visualization => {
+  app.get(`/${visualization.route.toLowerCase()}`, checkConnection, (req, res) => {
+    res.render(visualization.html, {
+      title: visualization.title,
+      toolName: visualization.toolName,
+      icon: visualization.icon,
+      visualizationPath: visualization.visualizationPath
+    });
+  });
+});
 
 // SSH connection configuration
 const sshConfig = {
@@ -202,6 +215,7 @@ async function getRemoteFileList(dir, sshConfig) {
                             date: new Date(file.attrs.mtime * 1000).toLocaleString(),
                             permissions: getFilePermissions(file.attrs.mode),
                             isDirectory: isDirectory,
+                            fullPath: filePath, // Add fullPath for navigation
                             buttons: isDirectory 
                                 ? `<button onclick="navigateToFolder('${filePath}')" class="folder-btn">Open</button>`
                                 : `<button onclick="selectFile('${file.filename}')" class="file-btn">Select</button>`
@@ -722,6 +736,134 @@ function getFilePermissions(mode) {
     const lastThree = octal.slice(-3);
     return lastThree.split('').map(n => perms[parseInt(n)]).join('');
 }
+
+// New route to browse remote files (without admin prefix)
+app.get('/browse-remote-files', checkConnection, async (req, res) => {
+  try {
+    let { dir = '/' } = req.query;
+    
+    // Normalize the path
+    dir = dir.replace(/\/+/g, '/'); // Replace multiple slashes with single slash
+    if (!dir.startsWith('/')) {
+      dir = '/' + dir;
+    }
+    
+    console.log('Browsing remote directory:', { directory: dir });
+
+    const fileList = await getRemoteFileList(dir, {
+      host: req.app.locals.connectionDetails.host,
+      port: req.app.locals.connectionDetails.port,
+      username: req.app.locals.connectionDetails.username,
+      password: req.app.locals.connectionDetails.password
+    });
+
+    console.log(`Found ${fileList.length} items in directory: ${dir}`);
+
+    res.json({
+      currentDir: dir,
+      files: fileList
+    });
+  } catch (error) {
+    console.error('Error browsing remote directory:', error);
+    res.status(500).json({ 
+      error: 'Failed to browse remote directory',
+      details: error.message 
+    });
+  }
+});
+
+// New route to read remote file content (without admin prefix)
+app.get('/read-remote-file', checkConnection, async (req, res) => {
+  try {
+    const { path: filePath } = req.query;
+    
+    console.log('Reading remote file:', { filePath });
+    
+    if (!filePath) {
+      return res.status(400).json({ error: 'File path is required' });
+    }
+
+    const fileContent = await readRemoteFileContent(filePath, {
+      host: req.app.locals.connectionDetails.host,
+      port: req.app.locals.connectionDetails.port,
+      username: req.app.locals.connectionDetails.username,
+      password: req.app.locals.connectionDetails.password
+    });
+
+    console.log(`Successfully read remote file: ${filePath}, size: ${fileContent.content.length} characters`);
+
+    res.json({
+      content: fileContent.content,
+      size: fileContent.size
+    });
+  } catch (error) {
+    console.error('Error reading remote file:', error);
+    res.status(500).json({ 
+      error: 'Failed to read remote file',
+      details: error.message 
+    });
+  }
+});
+
+// Helper function to read remote file content
+async function readRemoteFileContent(filePath, sshConfig) {
+  return new Promise((resolve, reject) => {
+    const { Client } = require('ssh2');
+    const conn = new Client();
+
+    conn.on('ready', () => {
+      conn.sftp((err, sftp) => {
+        if (err) {
+          conn.end();
+          return reject(new Error(`SFTP connection failed: ${err.message}`));
+        }
+
+        sftp.readFile(filePath, (err, data) => {
+          conn.end();
+          if (err) {
+            return reject(new Error(`Failed to read remote file: ${err.message}`));
+          }
+          
+          // Convert buffer to string with proper encoding
+          const content = data.toString('utf8');
+          resolve({
+            content: content,
+            size: data.length
+          });
+        });
+      });
+    }).on('error', (err) => {
+      reject(new Error(`SSH connection failed: ${err.message}`));
+    }).connect(sshConfig);
+  });
+}
+
+// Get visualization tools list
+app.get('/visualization-tools', (req, res) => {
+  const visualizations = Object.values(visualizationConfig).map(viz => ({
+    title: viz.title,
+    toolName: viz.toolName,
+    route: viz.route,
+    icon: viz.icon
+  }));
+  res.json(visualizations);
+});
+
+// Serve visualization files
+app.get('/visualization/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(__dirname, 'public', 'visualization', filename);
+  
+  // Check if file exists
+  if (!require('fs').existsSync(filePath)) {
+    return res.status(404).json({ error: 'Visualization file not found' });
+  }
+  
+  res.sendFile(filePath);
+});
+
+// Serve static files from public directory (including visualization files)
+app.use('/visualization', express.static(path.join(__dirname, 'public', 'visualization')));
 
 const PORT = process.env.PORT || 3010;
 app.listen(PORT, '0.0.0.0', () => console.log(`Server running on http://localhost:${PORT}`));

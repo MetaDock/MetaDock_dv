@@ -143,7 +143,7 @@ Your answer must follow the following Markdown format, ensuring the content is s
 1.  **Overview**: First, use a few sentences to summarize the main functionality of the tool.
 2.  **Key Features**: Use numbered lists to detail the key features of the tool. For each feature, you can use sublists or paragraphs to elaborate.
 3.  **References**: If the context contains literature references, DOIs, or project links, list them in this section.
-4.  **Example Commands**: If there are any, provide one or more example commands and format them using Markdown code blocks.
+4.  **Example Commands**: If there are any, provide one or more example commands and format them using Markdown code blocks. The code blocks should be formatted correctly, with proper indentation and line breaks.
 
 ---
 
@@ -152,7 +152,7 @@ Context information:
 
 ---
 
-Question: {question}
+Question: {question}   
 
 ---
 

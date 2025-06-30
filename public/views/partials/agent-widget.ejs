@@ -12,9 +12,14 @@
       <h2 class="text-lg font-bold flex items-center">
         <i class="ti ti-message-chatbot mr-2"></i> Bioinfo Agent
       </h2>
-      <button class="btn btn-sm btn-ghost btn-circle" onclick="toggleAgentChat()">
-        <i class="ti ti-x"></i>
-      </button>
+      <div>
+        <button id="clear-chat-btn" class="btn btn-sm btn-ghost btn-circle" title="Clear chat history">
+            <i class="ti ti-trash"></i>
+        </button>
+        <button class="btn btn-sm btn-ghost btn-circle" onclick="toggleAgentChat()">
+            <i class="ti ti-x"></i>
+        </button>
+      </div>
     </div>
 
     <!-- Chat Body -->
@@ -36,8 +41,11 @@
         </button>
       </div>
     </div>
-    <!-- Resize Handle -->
-    <div id="resize-handle" class="absolute bottom-0 right-0 w-4 h-4 cursor-nwse-resize"></div>
+    <!-- Resize Handles -->
+    <div class="resize-handle n"></div><div class="resize-handle s"></div>
+    <div class="resize-handle e"></div><div class="resize-handle w"></div>
+    <div class="resize-handle nw"></div><div class="resize-handle ne"></div>
+    <div class="resize-handle sw"></div><div class="resize-handle se"></div>
   </div>
 </div>
 
@@ -46,77 +54,105 @@
   const agentChatPopup = document.getElementById('agent-chat-popup');
   const agentIcon = document.getElementById('agent-icon');
   const chatHeader = document.getElementById('chat-header');
-  const resizeHandle = document.getElementById('resize-handle');
+  const clearChatBtn = document.getElementById('clear-chat-btn');
   const chatBody = document.getElementById('chat-body');
   const chatInput = document.getElementById('chat-input');
   const chatSendBtn = document.getElementById('chat-send-btn');
 
   function toggleAgentChat() {
-    const isHidden = agentChatPopup.classList.contains('hidden');
-    if (isHidden) {
-      agentChatPopup.classList.remove('hidden');
-      agentIcon.classList.remove('ti-message-chatbot');
-      agentIcon.classList.add('ti-x');
-    } else {
-      agentChatPopup.classList.add('hidden');
+    agentChatPopup.classList.toggle('hidden');
+    if (agentChatPopup.classList.contains('hidden')) {
       agentIcon.classList.remove('ti-x');
       agentIcon.classList.add('ti-message-chatbot');
+    } else {
+      agentIcon.classList.remove('ti-message-chatbot');
+      agentIcon.classList.add('ti-x');
     }
+    saveState();
   }
 
-  // --- Dragging Logic ---
+  // --- Dragging & Resizing Logic ---
   let isDragging = false;
-  let offsetX, offsetY;
+  let isResizing = false;
+  let resizeDirection = '';
+  let offsetX, offsetY, lastX, lastY;
 
   chatHeader.addEventListener('mousedown', (e) => {
+    // Prevent starting a drag on the close button
+    if (e.target.closest('button')) return;
     isDragging = true;
     offsetX = e.clientX - agentChatPopup.offsetLeft;
     offsetY = e.clientY - agentChatPopup.offsetTop;
-    agentChatPopup.style.userSelect = 'none'; // Prevent text selection
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    agentChatPopup.style.left = `${e.clientX - offsetX}px`;
-    agentChatPopup.style.top = `${e.clientY - offsetY}px`;
-    // unset bottom and right to allow free dragging
-    agentChatPopup.style.bottom = 'auto';
-    agentChatPopup.style.right = 'auto';
-  });
-
-  document.addEventListener('mouseup', () => {
-    isDragging = false;
-    agentChatPopup.style.userSelect = 'auto';
-  });
-
-  // --- Resizing Logic ---
-  let isResizing = false;
-  let lastX, lastY;
-
-  resizeHandle.addEventListener('mousedown', (e) => {
-    isResizing = true;
-    lastX = e.clientX;
-    lastY = e.clientY;
-    document.body.style.cursor = 'nwse-resize';
     agentChatPopup.style.userSelect = 'none';
   });
 
+  agentChatPopup.querySelectorAll('.resize-handle').forEach(handle => {
+    handle.addEventListener('mousedown', (e) => {
+        isResizing = true;
+        resizeDirection = e.target.className.split(' ')[1];
+        lastX = e.clientX;
+        lastY = e.clientY;
+        document.body.style.cursor = getComputedStyle(e.target).cursor;
+        agentChatPopup.style.userSelect = 'none';
+        e.stopPropagation();
+        e.preventDefault();
+    });
+  });
+
   document.addEventListener('mousemove', (e) => {
-    if (!isResizing) return;
-    e.preventDefault();
-    const width = agentChatPopup.offsetWidth + (e.clientX - lastX);
-    const height = agentChatPopup.offsetHeight + (e.clientY - lastY);
-    agentChatPopup.style.width = `${width > 300 ? width : 300}px`; // Min width
-    agentChatPopup.style.height = `${height > 200 ? height : 200}px`; // Min height
-    lastX = e.clientX;
-    lastY = e.clientY;
+    if (isDragging) {
+        e.preventDefault();
+        agentChatPopup.style.left = `${e.clientX - offsetX}px`;
+        agentChatPopup.style.top = `${e.clientY - offsetY}px`;
+        agentChatPopup.style.bottom = 'auto';
+        agentChatPopup.style.right = 'auto';
+    } else if (isResizing) {
+        e.preventDefault();
+        
+        const rect = agentChatPopup.getBoundingClientRect();
+        let newWidth = rect.width;
+        let newHeight = rect.height;
+        let newLeft = rect.left;
+        let newTop = rect.top;
+        
+        const deltaX = e.clientX - lastX;
+        const deltaY = e.clientY - lastY;
+
+        if (resizeDirection.includes('e')) newWidth += deltaX;
+        if (resizeDirection.includes('w')) {
+            newWidth -= deltaX;
+            newLeft += deltaX;
+        }
+        if (resizeDirection.includes('s')) newHeight += deltaY;
+        if (resizeDirection.includes('n')) {
+            newHeight -= deltaY;
+            newTop += deltaY;
+        }
+
+        // Apply minimum size constraints and update style
+        if (newWidth >= 300) {
+            agentChatPopup.style.width = `${newWidth}px`;
+            if (resizeDirection.includes('w')) agentChatPopup.style.left = `${newLeft}px`;
+        }
+        if (newHeight >= 200) {
+            agentChatPopup.style.height = `${newHeight}px`;
+            if (resizeDirection.includes('n')) agentChatPopup.style.top = `${newTop}px`;
+        }
+        
+        lastX = e.clientX;
+        lastY = e.clientY;
+    }
   });
 
   document.addEventListener('mouseup', () => {
-    isResizing = false;
-    document.body.style.cursor = 'auto';
-    agentChatPopup.style.userSelect = 'auto';
+    if (isDragging || isResizing) {
+      isDragging = false;
+      isResizing = false;
+      resizeDirection = '';
+      agentChatPopup.style.userSelect = 'auto';
+      document.body.style.cursor = 'auto';
+      saveState();
+    }
   });
   
   function addMessage(message, sender) {
@@ -172,8 +208,8 @@
     agentMessageElement.className = 'chat chat-start';
     const agentBubble = document.createElement('div');
     agentBubble.className = 'chat-bubble chat-bubble-primary';
-    // Add a blinking cursor to indicate typing
-    agentBubble.innerHTML = '<span class="blinking-cursor"></span>'; 
+    // Add a dedicated container for markdown content
+    agentBubble.innerHTML = '<div class="markdown-content"><span class="blinking-cursor"></span></div>'; 
     agentMessageElement.appendChild(agentBubble);
     chatBody.appendChild(agentMessageElement);
     chatBody.scrollTop = chatBody.scrollHeight;
@@ -199,8 +235,9 @@
       const decoder = new TextDecoder();
       let buffer = '';
 
-      // Remove the blinking cursor once the stream starts
-      agentBubble.innerHTML = '';
+      // Set up the content container
+      const markdownContainer = agentBubble.querySelector('.markdown-content');
+      markdownContainer.innerHTML = ''; // Remove blinking cursor
 
       while (true) {
         const { done, value } = await reader.read();
@@ -220,7 +257,7 @@
 
                 if (event.type === 'chunk' && event.content) {
                     fullAnswer += event.content;
-                    agentBubble.innerHTML = marked.parse(fullAnswer + '<span class="blinking-cursor"></span>');
+                    markdownContainer.innerHTML = marked.parse(fullAnswer + '<span class="blinking-cursor"></span>');
                     chatBody.scrollTop = chatBody.scrollHeight;
                 } else if (event.type === 'sources' && event.sources) {
                     sources = event.sources;
@@ -240,7 +277,8 @@
       }
 
       // Final update to the bubble without the cursor
-      let finalHtml = marked.parse(fullAnswer);
+      const finalMarkdown = marked.parse(fullAnswer);
+      let sourcesHtmlContent = '';
       if (sources && sources.length > 0) {
         let sourcesHtml = '<hr class="my-2 border-base-300/50"><div class="text-xs mt-2 opacity-70"><strong>Sources:</strong><ul class="list-disc list-inside">';
         let hasValidSource = false;
@@ -253,16 +291,18 @@
         sourcesHtml += '</ul></div>';
         
         if (hasValidSource) {
-            finalHtml += sourcesHtml;
+            sourcesHtmlContent = sourcesHtml;
         }
       }
-      agentBubble.innerHTML = finalHtml;
+      markdownContainer.innerHTML = finalMarkdown + sourcesHtmlContent;
       chatBody.scrollTop = chatBody.scrollHeight;
+      saveState();
 
     } catch (error) {
       console.error('Error asking agent:', error);
       agentBubble.classList.add('chat-bubble-error');
       agentBubble.innerHTML = `Sorry, I encountered an error: ${error.message}`;
+      saveState();
     } finally {
       chatInput.disabled = false;
       chatSendBtn.disabled = false;
@@ -286,25 +326,92 @@
     }
   });
 
-  // Initial status check
-  checkAgentStatusLoop();
+  clearChatBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // Prevent drag from starting
+    clearChatHistory();
+  });
+
+  function clearChatHistory() {
+    chatBody.innerHTML = `
+        <div class="chat chat-start">
+            <div class="chat-bubble chat-bubble-primary">
+                <div class="markdown-content"><p>Hello! How can I help you with bioinformatics tools today?</p></div>
+            </div>
+        </div>
+    `;
+    saveState();
+  }
+
+  // --- State Persistence ---
+  function saveState() {
+    const state = {
+      history: chatBody.innerHTML,
+      position: {
+        left: agentChatPopup.style.left,
+        top: agentChatPopup.style.top,
+      },
+      size: {
+        width: agentChatPopup.style.width,
+        height: agentChatPopup.style.height,
+      },
+      isOpen: !agentChatPopup.classList.contains('hidden'),
+    };
+    localStorage.setItem('agentWidgetState', JSON.stringify(state));
+  }
+
+  function loadState() {
+    const savedState = localStorage.getItem('agentWidgetState');
+    if (!savedState) return;
+
+    const state = JSON.parse(savedState);
+    
+    if (state.history) {
+      chatBody.innerHTML = state.history;
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    if (state.position && state.position.left && state.position.top) {
+      agentChatPopup.style.left = state.position.left;
+      agentChatPopup.style.top = state.position.top;
+      agentChatPopup.style.bottom = 'auto';
+      agentChatPopup.style.right = 'auto';
+    }
+
+    if (state.size && state.size.width && state.size.height) {
+      agentChatPopup.style.width = state.size.width;
+      agentChatPopup.style.height = state.size.height;
+    }
+
+    if (state.isOpen) {
+      agentChatPopup.classList.remove('hidden');
+      agentIcon.classList.remove('ti-message-chatbot');
+      agentIcon.classList.add('ti-x');
+    } else {
+      agentChatPopup.classList.add('hidden');
+      agentIcon.classList.remove('ti-x');
+      agentIcon.classList.add('ti-message-chatbot');
+    }
+  }
+
+  // Initial status check and state load
+  document.addEventListener('DOMContentLoaded', () => {
+    loadState();
+    checkAgentStatusLoop();
+  });
 </script>
 <style>
-#resize-handle {
-    z-index: 10;
-}
-#resize-handle::after {
-    content: '';
+.resize-handle {
     position: absolute;
-    bottom: 0px;
-    right: 0px;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 0 12px 12px;
-    border-color: transparent transparent #a0aec0 transparent;
-    cursor: nwse-resize;
+    z-index: 5;
 }
+.resize-handle.n { top: -3px; left: 5px; right: 5px; height: 6px; cursor: ns-resize; }
+.resize-handle.s { bottom: -3px; left: 5px; right: 5px; height: 6px; cursor: ns-resize; }
+.resize-handle.e { top: 5px; bottom: 5px; right: -3px; width: 6px; cursor: ew-resize; }
+.resize-handle.w { top: 5px; bottom: 5px; left: -3px; width: 6px; cursor: ew-resize; }
+.resize-handle.nw { top: -3px; left: -3px; width: 12px; height: 12px; cursor: nwse-resize; z-index: 10; }
+.resize-handle.ne { top: -3px; right: -3px; width: 12px; height: 12px; cursor: nesw-resize; z-index: 10; }
+.resize-handle.sw { bottom: -3px; left: -3px; width: 12px; height: 12px; cursor: nesw-resize; z-index: 10; }
+.resize-handle.se { bottom: -3px; right: -3px; width: 12px; height: 12px; cursor: nwse-resize; z-index: 10; }
 
 #agent-widget {
   transition: all 0.3s ease-in-out;
@@ -325,6 +432,8 @@
 }
 </style>
 <style>
+/* Style for the markdown container */
+
 /* Markdown Content Styling */
 .chat-bubble pre {
   background-color: #2a303c; /* Darker background for code blocks */
@@ -360,5 +469,48 @@
 }
 .chat-bubble hr {
     border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Fix for markdown headings and paragraphs */
+.markdown-content > p,
+.markdown-content > ul,
+.markdown-content > ol,
+.markdown-content > pre,
+.markdown-content > blockquote,
+.markdown-content > hr {
+    margin-bottom: 0.8rem;
+}
+
+.markdown-content > h1, .markdown-content > h2, .markdown-content > h3, .markdown-content > h4, .markdown-content > h5, .markdown-content > h6 {
+    margin-top: 1.2rem; 
+    margin-bottom: 0.6rem; 
+    line-height: 1.25;
+    font-weight: 600;
+}
+
+.markdown-content > h1 { font-size: 1.2em; }
+.markdown-content > h2 { font-size: 1.1em; }
+.markdown-content > h3 { font-size: 1.05em; }
+
+.markdown-content > *:last-child {
+    margin-bottom: 0;
+}
+
+.chat-bubble h1, .chat-bubble h2, .chat-bubble h3, .chat-bubble h4, .chat-bubble h5, .chat-bubble h6 {
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 1.25;
+    font-weight: 600;
+}
+.chat-bubble h1 { font-size: 1.2em; }
+.chat-bubble h2 { font-size: 1.1em; }
+.chat-bubble h3 { font-size: 1.05em; }
+
+.chat-bubble p {
+    margin-bottom: 0;
+}
+/* Ensure the last element in a bubble doesn't have a bottom margin */
+.chat-bubble > *:last-child {
+    margin-bottom: 0;
 }
 </style> 

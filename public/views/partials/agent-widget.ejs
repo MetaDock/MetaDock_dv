@@ -1,0 +1,364 @@
+<!-- Agent Widget -->
+<div id="agent-widget-container" class="fixed bottom-5 right-5 z-50">
+  <!-- FAB Button -->
+  <button id="agent-fab" class="btn btn-primary btn-circle btn-lg shadow-lg" onclick="toggleAgentChat()">
+    <i id="agent-icon" class="ti ti-message-chatbot text-3xl"></i>
+  </button>
+
+  <!-- Chat Popup -->
+  <div id="agent-chat-popup" class="hidden fixed bg-base-100 rounded-lg shadow-2xl border border-base-300 flex flex-col" style="width: 24rem; height: 32rem; bottom: 5.5rem; right: 1.25rem;">
+    <!-- Header -->
+    <div id="chat-header" class="card-title bg-base-200 p-4 flex items-center justify-between cursor-move">
+      <h2 class="text-lg font-bold flex items-center">
+        <i class="ti ti-message-chatbot mr-2"></i> Bioinfo Agent
+      </h2>
+      <button class="btn btn-sm btn-ghost btn-circle" onclick="toggleAgentChat()">
+        <i class="ti ti-x"></i>
+      </button>
+    </div>
+
+    <!-- Chat Body -->
+    <div id="chat-body" class="card-body flex-grow p-4 overflow-y-auto bg-base-100" style="flex: 1 1 auto;">
+      <!-- Messages will be appended here -->
+      <div class="chat chat-start">
+        <div class="chat-bubble chat-bubble-primary">
+          Hello! How can I help you with bioinformatics tools today?
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="card-footer bg-base-200 p-4 border-t border-base-300">
+      <div class="flex items-center space-x-2">
+        <input type="text" id="chat-input" class="input input-bordered w-full" placeholder="Ask a question..." autocomplete="off">
+        <button id="chat-send-btn" class="btn btn-primary btn-circle">
+          <i class="ti ti-send"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Resize Handle -->
+    <div id="resize-handle" class="absolute bottom-0 right-0 w-4 h-4 cursor-nwse-resize"></div>
+  </div>
+</div>
+
+<script>
+  const agentFab = document.getElementById('agent-fab');
+  const agentChatPopup = document.getElementById('agent-chat-popup');
+  const agentIcon = document.getElementById('agent-icon');
+  const chatHeader = document.getElementById('chat-header');
+  const resizeHandle = document.getElementById('resize-handle');
+  const chatBody = document.getElementById('chat-body');
+  const chatInput = document.getElementById('chat-input');
+  const chatSendBtn = document.getElementById('chat-send-btn');
+
+  function toggleAgentChat() {
+    const isHidden = agentChatPopup.classList.contains('hidden');
+    if (isHidden) {
+      agentChatPopup.classList.remove('hidden');
+      agentIcon.classList.remove('ti-message-chatbot');
+      agentIcon.classList.add('ti-x');
+    } else {
+      agentChatPopup.classList.add('hidden');
+      agentIcon.classList.remove('ti-x');
+      agentIcon.classList.add('ti-message-chatbot');
+    }
+  }
+
+  // --- Dragging Logic ---
+  let isDragging = false;
+  let offsetX, offsetY;
+
+  chatHeader.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    offsetX = e.clientX - agentChatPopup.offsetLeft;
+    offsetY = e.clientY - agentChatPopup.offsetTop;
+    agentChatPopup.style.userSelect = 'none'; // Prevent text selection
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    agentChatPopup.style.left = `${e.clientX - offsetX}px`;
+    agentChatPopup.style.top = `${e.clientY - offsetY}px`;
+    // unset bottom and right to allow free dragging
+    agentChatPopup.style.bottom = 'auto';
+    agentChatPopup.style.right = 'auto';
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+    agentChatPopup.style.userSelect = 'auto';
+  });
+
+  // --- Resizing Logic ---
+  let isResizing = false;
+  let lastX, lastY;
+
+  resizeHandle.addEventListener('mousedown', (e) => {
+    isResizing = true;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    document.body.style.cursor = 'nwse-resize';
+    agentChatPopup.style.userSelect = 'none';
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isResizing) return;
+    e.preventDefault();
+    const width = agentChatPopup.offsetWidth + (e.clientX - lastX);
+    const height = agentChatPopup.offsetHeight + (e.clientY - lastY);
+    agentChatPopup.style.width = `${width > 300 ? width : 300}px`; // Min width
+    agentChatPopup.style.height = `${height > 200 ? height : 200}px`; // Min height
+    lastX = e.clientX;
+    lastY = e.clientY;
+  });
+
+  document.addEventListener('mouseup', () => {
+    isResizing = false;
+    document.body.style.cursor = 'auto';
+    agentChatPopup.style.userSelect = 'auto';
+  });
+  
+  function addMessage(message, sender) {
+      const chatClass = sender === 'user' ? 'chat-end' : 'chat-start';
+      const bubbleClass = sender === 'user' ? 'chat-bubble-secondary' : 'chat-bubble-primary';
+      
+      const messageElement = document.createElement('div');
+      messageElement.className = `chat ${chatClass}`;
+      
+      const bubble = document.createElement('div');
+      bubble.className = `chat-bubble ${bubbleClass}`;
+      bubble.innerHTML = message; // Using innerHTML to render markdown (if any)
+      
+      messageElement.appendChild(bubble);
+      chatBody.appendChild(messageElement);
+      chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  function setAgentStatus(ready) {
+      if (ready) {
+          chatInput.disabled = false;
+          chatSendBtn.disabled = false;
+          chatInput.placeholder = "Ask a question...";
+      } else {
+          chatInput.disabled = true;
+          chatSendBtn.disabled = true;
+          chatInput.placeholder = "Initializing agent...";
+      }
+  }
+
+  async function checkAgentStatusLoop() {
+      try {
+          const response = await fetch('/api/agent/status');
+          const data = await response.json();
+          setAgentStatus(data.ready);
+          if (!data.ready) {
+              setTimeout(checkAgentStatusLoop, 2500); // Poll again
+          }
+      } catch (e) {
+          setAgentStatus(false);
+          setTimeout(checkAgentStatusLoop, 2500); // Poll again on error
+      }
+  }
+
+  async function askAgent(question) {
+    addMessage(question, 'user');
+    chatInput.value = '';
+    chatInput.disabled = true;
+    chatSendBtn.disabled = true;
+
+    // Create a new, empty message bubble for the agent's response
+    const agentMessageElement = document.createElement('div');
+    agentMessageElement.className = 'chat chat-start';
+    const agentBubble = document.createElement('div');
+    agentBubble.className = 'chat-bubble chat-bubble-primary';
+    // Add a blinking cursor to indicate typing
+    agentBubble.innerHTML = '<span class="blinking-cursor"></span>'; 
+    agentMessageElement.appendChild(agentBubble);
+    chatBody.appendChild(agentMessageElement);
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    let fullAnswer = '';
+    let sources = [];
+
+    try {
+      const response = await fetch('/api/agent/ask', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ question }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Agent API error');
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      // Remove the blinking cursor once the stream starts
+      agentBubble.innerHTML = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          break;
+        }
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\\n\\n');
+        buffer = lines.pop(); // Keep the last, potentially incomplete line
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const jsonStr = line.substring(6);
+            try {
+                const event = JSON.parse(jsonStr);
+
+                if (event.type === 'chunk' && event.content) {
+                    fullAnswer += event.content;
+                    agentBubble.innerHTML = marked.parse(fullAnswer + '<span class="blinking-cursor"></span>');
+                    chatBody.scrollTop = chatBody.scrollHeight;
+                } else if (event.type === 'sources' && event.sources) {
+                    sources = event.sources;
+                } else if (event.type === 'final_data') {
+                    // In our new flow, final data is also handled via chunks and sources events
+                    // But we can grab the final answer here if needed.
+                    if (event.answer) fullAnswer = event.answer;
+                    if (event.sources) sources = event.sources;
+                } else if (event.type === 'error') {
+                    throw new Error(event.error);
+                }
+            } catch (e) {
+                console.error('Failed to parse stream event:', jsonStr, e);
+            }
+          }
+        }
+      }
+
+      // Final update to the bubble without the cursor
+      let finalHtml = marked.parse(fullAnswer);
+      if (sources && sources.length > 0) {
+        let sourcesHtml = '<hr class="my-2 border-base-300/50"><div class="text-xs mt-2 opacity-70"><strong>Sources:</strong><ul class="list-disc list-inside">';
+        let hasValidSource = false;
+        sources.forEach(source => {
+            if (source && source.source) {
+                sourcesHtml += `<li>${source.source}</li>`;
+                hasValidSource = true;
+            }
+        });
+        sourcesHtml += '</ul></div>';
+        
+        if (hasValidSource) {
+            finalHtml += sourcesHtml;
+        }
+      }
+      agentBubble.innerHTML = finalHtml;
+      chatBody.scrollTop = chatBody.scrollHeight;
+
+    } catch (error) {
+      console.error('Error asking agent:', error);
+      agentBubble.classList.add('chat-bubble-error');
+      agentBubble.innerHTML = `Sorry, I encountered an error: ${error.message}`;
+    } finally {
+      chatInput.disabled = false;
+      chatSendBtn.disabled = false;
+      chatInput.focus();
+    }
+  }
+
+  chatSendBtn.addEventListener('click', () => {
+    const question = chatInput.value.trim();
+    if (question) {
+      askAgent(question);
+    }
+  });
+
+  chatInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      const question = chatInput.value.trim();
+      if (question) {
+        askAgent(question);
+      }
+    }
+  });
+
+  // Initial status check
+  checkAgentStatusLoop();
+</script>
+<style>
+#resize-handle {
+    z-index: 10;
+}
+#resize-handle::after {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 12px 12px;
+    border-color: transparent transparent #a0aec0 transparent;
+    cursor: nwse-resize;
+}
+
+#agent-widget {
+  transition: all 0.3s ease-in-out;
+}
+.blinking-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1.2em;
+  background-color: currentColor;
+  animation: blink 1s step-end infinite;
+  vertical-align: bottom;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+</style>
+<style>
+/* Markdown Content Styling */
+.chat-bubble pre {
+  background-color: #2a303c; /* Darker background for code blocks */
+  color: #d1d5db;          /* Lighter text for contrast */
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;       /* Add horizontal scroll for wide code */
+  white-space: pre-wrap;    /* Wrap long lines */
+  word-wrap: break-word;    /* Break long words */
+  max-width: 100%;
+}
+
+.chat-bubble pre code {
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 0.875rem;
+  background-color: transparent; /* Code tag inside pre should be transparent */
+  padding: 0;
+}
+
+/* Inline code snippets */
+.chat-bubble :not(pre) > code {
+  background-color: rgba(97, 106, 122, 0.5);
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.25rem;
+  font-size: 0.85em;
+}
+
+/* Other markdown elements */
+.chat-bubble ul, .chat-bubble ol {
+  padding-left: 1.5rem; /* Indent lists */
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.chat-bubble hr {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+</style> 

@@ -12,8 +12,13 @@ const adminRoutes = require('./admin/routes/adminRoutes');
 const session = require('express-session');
 const { promisify } = require('util');
 const JSZip = require('jszip');
+const axios = require('axios');
+const { spawn } = require('child_process');
 
 const app = express();
+
+// Agent state
+app.locals.isAgentReady = false;
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -46,6 +51,45 @@ app.use((req, res, next) => {
 // Basic middleware configuration
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Start Python Agent
+const agentProcess = spawn('python', ['agent/agent_server.py']);
+
+agentProcess.stdout.on('data', (data) => {
+  console.log(`Agent-stdout: ${data}`);
+});
+
+agentProcess.stderr.on('data', (data) => {
+  console.error(`Agent-stderr: ${data}`);
+});
+
+agentProcess.on('close', (code) => {
+  console.log(`Agent process exited with code ${code}`);
+  app.locals.isAgentReady = false; // Mark agent as not ready
+});
+
+// Health check for the agent
+const checkAgentHealth = async () => {
+  try {
+    const response = await axios.get('http://127.0.0.1:5111/health');
+    if (response.status === 200 && response.data.status === 'ok') {
+      if (!app.locals.isAgentReady) {
+        console.log('✅ Bioinfo Agent is ready.');
+        app.locals.isAgentReady = true;
+      }
+    } else {
+      setTimeout(checkAgentHealth, 2000); // Check again in 2 seconds
+    }
+  } catch (error) {
+    if (app.locals.isAgentReady) {
+        console.log('Agent connection lost. Re-checking...');
+        app.locals.isAgentReady = false;
+    }
+    setTimeout(checkAgentHealth, 2000); // Check again in 2 seconds
+  }
+};
+
+setTimeout(checkAgentHealth, 3000); // Start polling after a short delay
 
 // Session configuration
 app.use(session({
@@ -1005,6 +1049,61 @@ app.post('/api/run-workflow', checkConnection, async (req, res) => {
     console.error('Error running workflow:', error);
     res.status(500).json({ error: 'Failed to run workflow', details: error.message });
   }
+});
+
+// New route for agent communication
+app.post('/api/agent/ask', async (req, res) => {
+  const { question } = req.body;
+  if (!question) {
+    return res.status(400).json({ error: 'Question is required' });
+  }
+
+  if (!app.locals.isAgentReady) {
+    return res.status(503).json({ error: 'Agent is not ready yet. Please try again in a moment.' });
+  }
+
+  try {
+    // Make a request to the Python agent and get a response stream
+    const agentResponse = await axios({
+      method: 'post',
+      url: 'http://127.0.0.1:5111/ask',
+      data: { question },
+      responseType: 'stream'
+    });
+
+    // Set headers for Server-Sent Events (SSE)
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+
+    // Pipe the stream from the agent directly to the client
+    agentResponse.data.pipe(res);
+
+    agentResponse.data.on('error', (err) => {
+        console.error('Error in agent stream:', err);
+        if (!res.headersSent) {
+            res.status(500).json({ error: 'Error in agent stream' });
+        }
+        res.end();
+    });
+
+  } catch (error) {
+    console.error('Error communicating with agent:', error.message);
+    if (!res.headersSent) {
+      if (error.response) {
+        // If the error is from the agent (e.g., bad request), forward it
+        res.status(error.response.status).json(error.response.data);
+      } else {
+        res.status(500).json({ error: 'Failed to communicate with agent' });
+      }
+    }
+  }
+});
+
+// New route for agent status
+app.get('/api/agent/status', (req, res) => {
+    res.json({ ready: app.locals.isAgentReady });
 });
 
 // Helper function to validate workflow

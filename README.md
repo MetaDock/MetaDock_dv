@@ -27,6 +27,7 @@ A web-based tool management system for bioinformatics tools.
 3. Install dependencies
    ```shell
    npm install all
+   pip install -r requirements.txt
    ```
 4. Start
    ```shell

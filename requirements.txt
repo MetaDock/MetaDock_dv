@@ -1,0 +1,12 @@
+openai
+langchain
+langchain-openai
+langchain-community
+chromadb
+sentence-transformers
+faiss-cpu
+numpy
+pandas
+tiktoken
+flask
+flask-cors

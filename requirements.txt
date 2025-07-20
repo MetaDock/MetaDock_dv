@@ -4,6 +4,7 @@ langchain-openai
 langchain-community
 langchain-core
 langchain-huggingface
+langgraph
 chromadb
 sentence-transformers
 faiss-cpu

@@ -1,5 +1,5 @@
 """
-Bioinformatics Agent with Adaptive RAG system
+Upgraded bioinformatics Agent - using Adaptive RAG system
 Supports fast startup and offline document processing
 """
 
@@ -17,8 +17,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class BioinfoAgent:
-    """Bioinformatics tool Q&A Agent with Adaptive RAG"""
+class BioinfoAgentV2:
+    """Upgraded bioinformatics tool Q&A Agent"""
     
     def __init__(self, 
                  docs_path: str = "../help_pages_for_test", 
@@ -72,7 +72,7 @@ class BioinfoAgent:
             return True
         
         try:
-            logger.info("Initializing BioinfoAgent...")
+            logger.info("Initializing BioinfoAgent V2...")
             
             # Quick check if vector store exists
             vector_store_dir = Path(self.vector_store_path)
@@ -102,7 +102,7 @@ class BioinfoAgent:
                     logger.warning("Could not load metadata: %s", str(e))
             
             self.is_initialized = True
-            logger.info("BioinfoAgent initialized successfully!")
+            logger.info("BioinfoAgent V2 initialized successfully!")
             return True
             
         except Exception as e:
@@ -286,4 +286,5 @@ class BioinfoAgent:
         return status
 
 
- 
+# Backward compatibility - create an alias
+BioinfoAgent = BioinfoAgentV2 

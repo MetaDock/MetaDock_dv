@@ -1,0 +1,20 @@
+{
+  "last_update": "2025-07-20T14:33:30.284628",
+  "docs_hash": "ed227a18cd63ca3180530fa206e08ac9",
+  "total_documents": 11,
+  "total_chunks": 138,
+  "available_tools": [
+    "bakta",
+    "bbduk",
+    "bbmap",
+    "cutadapt",
+    "dbcan",
+    "fastqc",
+    "gtdb",
+    "gtdbtk",
+    "metaphlan",
+    "metaspades",
+    "pyani"
+  ],
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2"
+}

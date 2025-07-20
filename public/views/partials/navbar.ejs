@@ -8,7 +8,10 @@
         </a>
     </div>
     <div class="flex-none">
-        <div class="dropdown dropdown-end">
+        <!-- Theme Toggle Button -->
+        <%- include('theme-toggle') %>
+        
+        <div class="dropdown dropdown-end ml-2">
             <div tabindex="0" role="button" class="btn btn-ghost">
                 <i class="fas fa-user mr-2"></i>
                 <% if (locals.connectionDetails) { %>

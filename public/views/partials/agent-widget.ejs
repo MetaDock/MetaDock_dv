@@ -432,85 +432,228 @@
 }
 </style>
 <style>
-/* Style for the markdown container */
+/* Comprehensive Markdown Styling for Chat Bubbles */
 
-/* Markdown Content Styling */
+/* ===== TEXT FORMATTING ===== */
+.chat-bubble strong, 
+.chat-bubble b,
+.markdown-content strong,
+.markdown-content b {
+  font-weight: 700;
+  color: inherit;
+}
+
+.chat-bubble em,
+.chat-bubble i,
+.markdown-content em,
+.markdown-content i {
+  font-style: italic;
+  color: inherit;
+}
+
+.chat-bubble u,
+.markdown-content u {
+  text-decoration: underline;
+}
+
+.chat-bubble s,
+.chat-bubble del,
+.markdown-content s,
+.markdown-content del {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+/* ===== HEADINGS ===== */
+.chat-bubble h1, .chat-bubble h2, .chat-bubble h3, 
+.chat-bubble h4, .chat-bubble h5, .chat-bubble h6,
+.markdown-content h1, .markdown-content h2, .markdown-content h3,
+.markdown-content h4, .markdown-content h5, .markdown-content h6 {
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: inherit;
+}
+
+.chat-bubble h1, .markdown-content h1 { 
+  font-size: 1.25rem; 
+  border-bottom: 2px solid rgba(255,255,255,0.2);
+  padding-bottom: 0.25rem;
+}
+.chat-bubble h2, .markdown-content h2 { 
+  font-size: 1.15rem; 
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 0.25rem;
+}
+.chat-bubble h3, .markdown-content h3 { font-size: 1.1rem; }
+.chat-bubble h4, .markdown-content h4 { font-size: 1.05rem; }
+.chat-bubble h5, .markdown-content h5 { font-size: 1rem; }
+.chat-bubble h6, .markdown-content h6 { font-size: 0.95rem; opacity: 0.9; }
+
+/* ===== PARAGRAPHS ===== */
+.chat-bubble p,
+.markdown-content p {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+/* ===== LISTS ===== */
+.chat-bubble ul, .chat-bubble ol,
+.markdown-content ul, .markdown-content ol {
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.chat-bubble ul,
+.markdown-content ul {
+  list-style-type: disc;
+}
+
+.chat-bubble ol,
+.markdown-content ol {
+  list-style-type: decimal;
+}
+
+.chat-bubble li,
+.markdown-content li {
+  margin-bottom: 0.25rem;
+  line-height: 1.5;
+}
+
+.chat-bubble ul ul, .chat-bubble ol ol,
+.markdown-content ul ul, .markdown-content ol ol {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+/* ===== CODE BLOCKS ===== */
 .chat-bubble pre {
-  background-color: #2a303c; /* Darker background for code blocks */
-  color: #d1d5db;          /* Lighter text for contrast */
+  background-color: #1e293b;
+  color: #e2e8f0;
   padding: 0.75rem;
   border-radius: 0.5rem;
-  overflow-x: auto;       /* Add horizontal scroll for wide code */
-  white-space: pre-wrap;    /* Wrap long lines */
-  word-wrap: break-word;    /* Break long words */
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
   max-width: 100%;
+  margin: 0.75rem 0;
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
 .chat-bubble pre code {
-  font-family: Consolas, 'Courier New', monospace;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 0.875rem;
-  background-color: transparent; /* Code tag inside pre should be transparent */
+  background-color: transparent;
   padding: 0;
+  color: inherit;
 }
 
-/* Inline code snippets */
-.chat-bubble :not(pre) > code {
-  background-color: rgba(97, 106, 122, 0.5);
-  padding: 0.1rem 0.3rem;
+/* Inline code */
+.chat-bubble :not(pre) > code,
+.markdown-content :not(pre) > code {
+  background-color: rgba(148, 163, 184, 0.2);
+  color: #f1f5f9;
+  padding: 0.125rem 0.375rem;
   border-radius: 0.25rem;
-  font-size: 0.85em;
+  font-size: 0.875rem;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* Other markdown elements */
-.chat-bubble ul, .chat-bubble ol {
-  padding-left: 1.5rem; /* Indent lists */
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-.chat-bubble hr {
-    border-color: rgba(255, 255, 255, 0.1);
+/* ===== BLOCKQUOTES ===== */
+.chat-bubble blockquote,
+.markdown-content blockquote {
+  border-left: 4px solid #3b82f6;
+  padding-left: 1rem;
+  margin: 0.75rem 0;
+  opacity: 0.9;
+  font-style: italic;
+  background-color: rgba(59, 130, 246, 0.05);
+  padding: 0.5rem 1rem;
+  border-radius: 0 0.25rem 0.25rem 0;
 }
 
-/* Fix for markdown headings and paragraphs */
+/* ===== HORIZONTAL RULES ===== */
+.chat-bubble hr,
+.markdown-content hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 1rem 0;
+}
+
+/* ===== TABLES ===== */
+.chat-bubble table,
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.75rem 0;
+  font-size: 0.875rem;
+}
+
+.chat-bubble th, .chat-bubble td,
+.markdown-content th, .markdown-content td {
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.chat-bubble th,
+.markdown-content th {
+  background-color: rgba(255,255,255,0.1);
+  font-weight: 600;
+}
+
+/* ===== LINKS ===== */
+.chat-bubble a,
+.markdown-content a {
+  color: #60a5fa;
+  text-decoration: underline;
+  text-decoration-color: rgba(96, 165, 250, 0.5);
+}
+
+.chat-bubble a:hover,
+.markdown-content a:hover {
+  color: #93c5fd;
+  text-decoration-color: #93c5fd;
+}
+
+/* ===== LAYOUT FIXES ===== */
+.markdown-content > *:first-child {
+  margin-top: 0;
+}
+
+.markdown-content > *:last-child,
+.chat-bubble > *:last-child {
+  margin-bottom: 0;
+}
+
+/* ===== SPACING OVERRIDES ===== */
 .markdown-content > p,
 .markdown-content > ul,
 .markdown-content > ol,
 .markdown-content > pre,
 .markdown-content > blockquote,
-.markdown-content > hr {
-    margin-bottom: 0.8rem;
+.markdown-content > hr,
+.markdown-content > table {
+  margin-bottom: 0.75rem;
 }
 
-.markdown-content > h1, .markdown-content > h2, .markdown-content > h3, .markdown-content > h4, .markdown-content > h5, .markdown-content > h6 {
-    margin-top: 1.2rem; 
-    margin-bottom: 0.6rem; 
-    line-height: 1.25;
-    font-weight: 600;
+.markdown-content > h1, .markdown-content > h2, 
+.markdown-content > h3, .markdown-content > h4, 
+.markdown-content > h5, .markdown-content > h6 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
 }
 
-.markdown-content > h1 { font-size: 1.2em; }
-.markdown-content > h2 { font-size: 1.1em; }
-.markdown-content > h3 { font-size: 1.05em; }
-
-.markdown-content > *:last-child {
-    margin-bottom: 0;
-}
-
-.chat-bubble h1, .chat-bubble h2, .chat-bubble h3, .chat-bubble h4, .chat-bubble h5, .chat-bubble h6 {
-    margin-top: 0;
-    margin-bottom: 0;
-    line-height: 1.25;
-    font-weight: 600;
-}
-.chat-bubble h1 { font-size: 1.2em; }
-.chat-bubble h2 { font-size: 1.1em; }
-.chat-bubble h3 { font-size: 1.05em; }
-
-.chat-bubble p {
-    margin-bottom: 0;
-}
-/* Ensure the last element in a bubble doesn't have a bottom margin */
-.chat-bubble > *:last-child {
-    margin-bottom: 0;
+/* First element adjustments */
+.markdown-content > h1:first-child,
+.markdown-content > h2:first-child,
+.markdown-content > h3:first-child,
+.markdown-content > h4:first-child,
+.markdown-content > h5:first-child,
+.markdown-content > h6:first-child {
+  margin-top: 0;
 }
 </style> 

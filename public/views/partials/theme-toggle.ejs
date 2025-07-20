@@ -1,0 +1,159 @@
+<!-- Theme Toggle Component -->
+<div class="theme-toggle-container">
+    <!-- Theme Toggle Button -->
+    <button id="theme-toggle" class="btn btn-ghost btn-circle" title="切换主题 / Toggle Theme">
+        <!-- Sun Icon (Light Mode) -->
+        <i id="sun-icon" class="ti ti-sun text-xl hidden"></i>
+        <!-- Moon Icon (Dark Mode) -->
+        <i id="moon-icon" class="ti ti-moon text-xl"></i>
+    </button>
+</div>
+
+<!-- Theme Toggle JavaScript -->
+<script>
+    class ThemeToggle {
+        constructor() {
+            this.htmlElement = document.documentElement;
+            this.toggleButton = document.getElementById('theme-toggle');
+            this.sunIcon = document.getElementById('sun-icon');
+            this.moonIcon = document.getElementById('moon-icon');
+            
+            this.initTheme();
+            this.bindEvents();
+        }
+        
+        initTheme() {
+            // Get saved theme from localStorage, default to dark
+            const savedTheme = localStorage.getItem('metadock-theme') || 'dark';
+            this.setTheme(savedTheme);
+        }
+        
+        bindEvents() {
+            this.toggleButton.addEventListener('click', () => {
+                this.toggleTheme();
+            });
+        }
+        
+        getCurrentTheme() {
+            return this.htmlElement.getAttribute('data-theme') || 'dark';
+        }
+        
+        setTheme(theme) {
+            // Set theme
+            this.htmlElement.setAttribute('data-theme', theme);
+            
+            // Update icon display
+            if (theme === 'dark') {
+                this.sunIcon.classList.add('hidden');
+                this.moonIcon.classList.remove('hidden');
+            } else {
+                this.sunIcon.classList.remove('hidden');
+                this.moonIcon.classList.add('hidden');
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('metadock-theme', theme);
+            
+            // Update body styles
+            this.updateBodyStyles(theme);
+            
+            // Trigger theme change event
+            window.dispatchEvent(new CustomEvent('themeChanged', { 
+                detail: { theme: theme }
+            }));
+        }
+        
+        updateBodyStyles(theme) {
+            const body = document.body;
+            
+            if (theme === 'dark') {
+                body.className = body.className.replace(/bg-gradient-to-br\s+from-\S+\s+to-\S+/, '');
+                body.classList.add('min-h-screen', 'bg-gradient-to-br', 'from-gray-900', 'to-gray-800');
+            } else {
+                body.className = body.className.replace(/bg-gradient-to-br\s+from-\S+\s+to-\S+/, '');
+                body.classList.add('min-h-screen', 'bg-gradient-to-br', 'from-blue-50', 'to-gray-100');
+            }
+        }
+        
+        toggleTheme() {
+            const currentTheme = this.getCurrentTheme();
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            this.setTheme(newTheme);
+        }
+    }
+    
+    // Initialize theme toggle after page load
+    document.addEventListener('DOMContentLoaded', () => {
+        window.themeToggle = new ThemeToggle();
+        
+        // Initialize body styles
+        const savedTheme = localStorage.getItem('metadock-theme') || 'dark';
+        const body = document.getElementById('app-body');
+        if (body) {
+            if (savedTheme === 'dark') {
+                body.classList.add('bg-gradient-to-br', 'from-gray-900', 'to-gray-800');
+            } else {
+                body.classList.add('bg-gradient-to-br', 'from-blue-50', 'to-gray-100');
+            }
+        }
+    });
+    
+    // Handle theme persistence on page switch
+    window.addEventListener('beforeunload', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        localStorage.setItem('metadock-theme', currentTheme);
+    });
+</script>
+
+<!-- Additional Theme Styles -->
+<style>
+    /* Dark Theme Custom Variables */
+    [data-theme='dark'] {
+        --gradient-tech: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);
+        --card-bg: rgba(45, 55, 72, 0.8);
+        --border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Light Theme Custom Variables */
+    [data-theme='light'] {
+        --gradient-tech: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+        --card-bg: rgba(255, 255, 255, 0.8);
+        --border-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Theme Toggle Button Animation */
+    .theme-toggle-container {
+        position: relative;
+    }
+    
+    #theme-toggle {
+        transition: all 0.3s ease;
+    }
+    
+    #theme-toggle:hover {
+        transform: scale(1.1);
+    }
+    
+    #sun-icon, #moon-icon {
+        transition: all 0.3s ease;
+    }
+    
+    /* Icon rotation animation */
+    [data-theme='light'] #sun-icon {
+        animation: rotate 0.5s ease-in-out;
+    }
+    
+    [data-theme='dark'] #moon-icon {
+        animation: rotate 0.5s ease-in-out;
+    }
+    
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    
+    /* Smooth theme transition for all elements */
+    * {
+        transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    }
+</style> 

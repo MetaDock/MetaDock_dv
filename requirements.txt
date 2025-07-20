@@ -2,6 +2,8 @@ openai
 langchain
 langchain-openai
 langchain-community
+langchain-core
+langchain-huggingface
 chromadb
 sentence-transformers
 faiss-cpu
@@ -10,3 +12,8 @@ pandas
 tiktoken
 flask
 flask-cors
+pydantic>=2.0.0
+requests
+# Optional: LangGraph for advanced RAG features
+# langgraph
+# tavily-python

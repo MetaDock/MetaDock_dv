@@ -152,6 +152,15 @@ app.get('/dashboard', checkConnection, (req, res) => {
   res.render('dashboard', { toolsConfig });
 });
 
+// Theme testing page
+app.get('/theme-test', (req, res) => {
+  res.render('theme-test', { 
+    title: 'Theme Toggle Test - MetaDock',
+    connectionDetails: req.session.connectionDetails,
+    isAdmin: req.session.isAdmin
+  });
+});
+
 // Dynamic tool routes - must be before the :tool/file-browser route
 Object.values(toolsConfig).forEach(tool => {
   // Add case-insensitive routes

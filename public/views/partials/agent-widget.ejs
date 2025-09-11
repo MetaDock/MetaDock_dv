@@ -1,4 +1,4 @@
-<!-- Agent Widget -->
+<!-- Agent Widget with Memory -->
 <div id="agent-widget-container" class="fixed bottom-5 right-5 z-50">
   <!-- FAB Button -->
   <button id="agent-fab" class="btn btn-primary btn-circle btn-lg shadow-lg" onclick="toggleAgentChat()">
@@ -11,8 +11,12 @@
     <div id="chat-header" class="card-title bg-base-200 p-4 flex items-center justify-between cursor-move">
       <h2 class="text-lg font-bold flex items-center">
         <i class="ti ti-message-chatbot mr-2"></i> Bioinfo Agent
+        <span id="session-indicator" class="badge badge-success badge-sm ml-2 hidden">Memory</span>
       </h2>
-      <div>
+      <div class="flex items-center gap-1">
+        <button id="session-menu-btn" class="btn btn-sm btn-ghost btn-circle" title="Session Management">
+            <i class="ti ti-history"></i>
+        </button>
         <button id="clear-chat-btn" class="btn btn-sm btn-ghost btn-circle" title="Clear chat history">
             <i class="ti ti-trash"></i>
         </button>
@@ -22,12 +26,62 @@
       </div>
     </div>
 
+    <!-- Session Sidebar (側拉) -->
+    <div id="session-sidebar" class="fixed left-0 top-0 h-full w-80 bg-base-100 shadow-2xl border-r border-base-300 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 hidden">
+      <div class="flex flex-col h-full">
+        <!-- Sidebar Header -->
+        <div class="flex items-center justify-between p-4 border-b border-base-300">
+          <h2 class="font-bold text-lg">Chat History</h2>
+          <button id="close-session-sidebar" class="btn btn-sm btn-ghost btn-circle">
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
+        
+        <!-- New Chat Button -->
+        <div class="p-4 border-b border-base-300">
+          <button id="new-session-btn" class="btn btn-primary w-full">
+            <i class="ti ti-plus mr-2"></i> New Chat
+          </button>
+        </div>
+
+        <!-- Session List -->
+        <div class="flex-1 overflow-y-auto p-4">
+          <div id="session-list">
+            <div class="text-center py-8 opacity-60">
+              <i class="ti ti-message-circle text-4xl mb-2"></i>
+              <p class="text-sm">Loading chat history...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar Footer -->
+        <div class="p-4 border-t border-base-300">
+          <div class="flex gap-2">
+            <button id="save-session-btn" class="btn btn-sm btn-success flex-1">
+              <i class="ti ti-device-floppy mr-1"></i> Save
+            </button>
+            <button id="cleanup-sessions-btn" class="btn btn-sm btn-warning flex-1">
+              <i class="ti ti-trash mr-1"></i> Cleanup
+            </button>
+          </div>
+          <div class="mt-2 text-xs opacity-60 text-center" id="session-status">
+            No active session
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="hideSidebar()"></div>
+
     <!-- Chat Body -->
     <div id="chat-body" class="card-body flex-grow p-4 overflow-y-auto bg-base-100" style="flex: 1 1 auto;">
       <!-- Messages will be appended here -->
       <div class="chat chat-start">
         <div class="chat-bubble chat-bubble-primary">
-          Hello! How can I help you with bioinformatics tools today?
+          <div class="markdown-content">
+            <p>Hello! How can I help you with bioinformatics tools today?</p>
+          </div>
         </div>
       </div>
     </div>
@@ -38,6 +92,10 @@
         <input type="text" id="chat-input" class="input input-bordered w-full" placeholder="Ask a question..." autocomplete="off">
         <button id="chat-send-btn" class="btn btn-primary btn-circle">
           <i class="ti ti-send"></i>
+        </button>
+        <!-- Stop Generation Button (hidden by default) -->
+        <button id="stop-generation-btn" class="btn btn-error btn-circle hidden" title="Stop generation">
+          <i class="ti ti-square"></i>
         </button>
       </div>
     </div>
@@ -58,6 +116,31 @@
   const chatBody = document.getElementById('chat-body');
   const chatInput = document.getElementById('chat-input');
   const chatSendBtn = document.getElementById('chat-send-btn');
+  const stopGenerationBtn = document.getElementById('stop-generation-btn');
+  
+  // AbortController for stopping generation
+  let currentAbortController = null;
+  
+  // Memory-related elements
+  const sessionMenuBtn = document.getElementById('session-menu-btn');
+  const sessionSidebar = document.getElementById('session-sidebar');
+  const closeSessionSidebar = document.getElementById('close-session-sidebar');
+  const sidebarOverlay = document.getElementById('sidebar-overlay');
+  const sessionIndicator = document.getElementById('session-indicator');
+  const sessionStatus = document.getElementById('session-status');
+  const sessionList = document.getElementById('session-list');
+  const newSessionBtn = document.getElementById('new-session-btn');
+  const saveSessionBtn = document.getElementById('save-session-btn');
+  const cleanupSessionsBtn = document.getElementById('cleanup-sessions-btn');
+  
+  // Memory state
+  let currentSessionId = null;
+  let sessions = [];
+  let isMemoryEnabled = false;
+
+
+
+
 
   function toggleAgentChat() {
     agentChatPopup.classList.toggle('hidden');
@@ -164,8 +247,52 @@
       
       const bubble = document.createElement('div');
       bubble.className = `chat-bubble ${bubbleClass}`;
-      bubble.innerHTML = message; // Using innerHTML to render markdown (if any)
       
+      // Create markdown container for proper styling
+      const markdownContainer = document.createElement('div');
+      markdownContainer.className = 'markdown-content';
+      
+      // Parse markdown using marked.js (simple like test-marked.html)
+      try {
+          if (typeof marked !== 'undefined' && marked.parse) {
+              const rendered = marked.parse(message);
+              markdownContainer.innerHTML = rendered;
+              
+              // Add copy buttons to code blocks after rendering
+              addCopyButtonsToCodeBlocks(markdownContainer);
+          } else {
+              console.error('Marked.js library not available!');
+              markdownContainer.innerHTML = message;
+          }
+      } catch (error) {
+          console.error('Error parsing markdown:', error);
+          markdownContainer.innerHTML = message;
+      }
+      
+      bubble.appendChild(markdownContainer);
+      
+      // Add action buttons
+      const buttonContainer = document.createElement('div');
+      buttonContainer.className = 'message-buttons flex items-center space-x-1 mt-2 opacity-0 group-hover:opacity-100 transition-opacity';
+      
+      if (sender === 'user') {
+          // Edit and resend button for user messages
+          const editBtn = document.createElement('button');
+          editBtn.className = 'edit-resend-btn btn btn-xs btn-ghost';
+          editBtn.title = 'Edit and resend';
+          editBtn.innerHTML = '<i class="ti ti-edit"></i>';
+          buttonContainer.appendChild(editBtn);
+      } else {
+          // Copy answer button for agent messages
+          const copyBtn = document.createElement('button');
+          copyBtn.className = 'copy-answer-btn btn btn-xs btn-ghost';
+          copyBtn.title = 'Copy answer';
+          copyBtn.innerHTML = '<i class="ti ti-copy"></i>';
+          buttonContainer.appendChild(copyBtn);
+      }
+      
+      bubble.appendChild(buttonContainer);
+      messageElement.classList.add('group'); // For hover effects
       messageElement.appendChild(bubble);
       chatBody.appendChild(messageElement);
       chatBody.scrollTop = chatBody.scrollHeight;
@@ -188,7 +315,11 @@
           const response = await fetch('/api/agent/status');
           const data = await response.json();
           setAgentStatus(data.ready);
-          if (!data.ready) {
+          
+          if (data.ready) {
+              // Check if memory features are available
+              await checkMemoryFeatures();
+          } else {
               setTimeout(checkAgentStatusLoop, 2500); // Poll again
           }
       } catch (e) {
@@ -197,11 +328,52 @@
       }
   }
 
+  async function checkMemoryFeatures() {
+      try {
+          // Try to access memory features
+          const response = await fetch('/api/agent/sessions');
+          if (response.ok) {
+              isMemoryEnabled = true;
+              sessionIndicator.classList.remove('hidden');
+              await updateSessionInfo();
+              await loadSessions();
+          }
+      } catch (e) {
+          // Memory features not available, use basic mode
+          isMemoryEnabled = false;
+          sessionIndicator.classList.add('hidden');
+      }
+  }
+
   async function askAgent(question) {
     addMessage(question, 'user');
     chatInput.value = '';
     chatInput.disabled = true;
     chatSendBtn.disabled = true;
+    
+    // Create AbortController for this request
+    currentAbortController = new AbortController();
+    
+    // Show stop button, hide send button
+    chatSendBtn.classList.add('hidden');
+    stopGenerationBtn.classList.remove('hidden');
+
+    // If no current session and memory is enabled, start a new session
+    if (isMemoryEnabled && !currentSessionId) {
+      try {
+        const response = await fetch('/api/agent/sessions/new', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        if (data.success) {
+          currentSessionId = data.session_id;
+          console.log('Started new session:', currentSessionId);
+        }
+      } catch (error) {
+        console.error('Error starting new session:', error);
+      }
+    }
 
     // Create a new, empty message bubble for the agent's response
     const agentMessageElement = document.createElement('div');
@@ -223,7 +395,11 @@
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ question }),
+        body: JSON.stringify({ 
+          question,
+          sessionId: currentSessionId 
+        }),
+        signal: currentAbortController.signal
       });
 
       if (!response.ok) {
@@ -242,11 +418,36 @@
       while (true) {
         const { done, value } = await reader.read();
         if (done) {
+          // Process any remaining buffer content
+          if (buffer.trim()) {
+            const lines = buffer.split('\n\n');
+            for (const line of lines) {
+              if (line.startsWith('data: ')) {
+                const jsonStr = line.substring(6);
+                try {
+                  const event = JSON.parse(jsonStr);
+                  if (event.type === 'chunk' && event.content) {
+                    fullAnswer += event.content;
+                  } else if (event.type === 'sources' && event.sources) {
+                    sources = event.sources;
+                  } else if (event.type === 'final_data') {
+                    if (event.answer) fullAnswer = event.answer;
+                    if (event.sources) sources = event.sources;
+                  } else if (event.type === 'final') {
+                    if (event.answer) fullAnswer = event.answer;
+                    if (event.sources) sources = event.sources;
+                  }
+                } catch (e) {
+                  console.warn('Failed to parse remaining buffer:', line, e);
+                }
+              }
+            }
+          }
           break;
         }
 
         buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\\n\\n');
+        const lines = buffer.split('\n\n');
         buffer = lines.pop(); // Keep the last, potentially incomplete line
 
         for (const line of lines) {
@@ -257,13 +458,31 @@
 
                 if (event.type === 'chunk' && event.content) {
                     fullAnswer += event.content;
-                    markdownContainer.innerHTML = marked.parse(fullAnswer + '<span class="blinking-cursor"></span>');
+                    
+                    try {
+                        if (typeof marked !== 'undefined' && marked.parse) {
+                            const rendered = marked.parse(fullAnswer);
+                            markdownContainer.innerHTML = rendered + '<span class="blinking-cursor"></span>';
+                            
+                            // Add copy buttons to code blocks during streaming
+                            addCopyButtonsToCodeBlocks(markdownContainer);
+                        } else {
+                            markdownContainer.innerHTML = fullAnswer + '<span class="blinking-cursor"></span>';
+                        }
+                    } catch (error) {
+                        console.error('Error during streaming markdown:', error);
+                        markdownContainer.innerHTML = fullAnswer + '<span class="blinking-cursor"></span>';
+                    }
                     chatBody.scrollTop = chatBody.scrollHeight;
                 } else if (event.type === 'sources' && event.sources) {
                     sources = event.sources;
                 } else if (event.type === 'final_data') {
                     // In our new flow, final data is also handled via chunks and sources events
                     // But we can grab the final answer here if needed.
+                    if (event.answer) fullAnswer = event.answer;
+                    if (event.sources) sources = event.sources;
+                } else if (event.type === 'final') {
+                    // Handle final event type
                     if (event.answer) fullAnswer = event.answer;
                     if (event.sources) sources = event.sources;
                 } else if (event.type === 'error') {
@@ -276,8 +495,20 @@
         }
       }
 
-      // Final update to the bubble without the cursor
-      const finalMarkdown = marked.parse(fullAnswer);
+      // Final update to the bubble without the cursor (simple like test-marked.html)
+      let finalMarkdown;
+      try {
+          if (typeof marked !== 'undefined' && marked.parse) {
+              finalMarkdown = marked.parse(fullAnswer);
+          } else {
+              console.error('Marked.js not available');
+              finalMarkdown = fullAnswer;
+          }
+      } catch (error) {
+          console.error('Error parsing final markdown:', error);
+          finalMarkdown = fullAnswer;
+      }
+      
       let sourcesHtmlContent = '';
       if (sources && sources.length > 0) {
         let sourcesHtml = '<hr class="my-2 border-base-300/50"><div class="text-xs mt-2 opacity-70"><strong>Sources:</strong><ul class="list-disc list-inside">';
@@ -295,18 +526,42 @@
         }
       }
       markdownContainer.innerHTML = finalMarkdown + sourcesHtmlContent;
+      
+      // Add copy buttons to code blocks in final rendering
+      addCopyButtonsToCodeBlocks(markdownContainer);
+      
       chatBody.scrollTop = chatBody.scrollHeight;
+      
+      // Update session info if memory is enabled
+      if (isMemoryEnabled) {
+        updateSessionInfo();
+      }
+      
       saveState();
 
     } catch (error) {
       console.error('Error asking agent:', error);
+      
+      if (error.name === 'AbortError') {
+        // Request was aborted by user
+        agentBubble.classList.add('chat-bubble-warning');
+        agentBubble.innerHTML = `Generation stopped by user.`;
+      } else {
       agentBubble.classList.add('chat-bubble-error');
       agentBubble.innerHTML = `Sorry, I encountered an error: ${error.message}`;
+      }
       saveState();
     } finally {
       chatInput.disabled = false;
       chatSendBtn.disabled = false;
       chatInput.focus();
+      
+      // Restore button states
+      stopGenerationBtn.classList.add('hidden');
+      chatSendBtn.classList.remove('hidden');
+      
+      // Clear AbortController
+      currentAbortController = null;
     }
   }
 
@@ -314,6 +569,14 @@
     const question = chatInput.value.trim();
     if (question) {
       askAgent(question);
+    }
+  });
+
+  // Stop generation button event listener
+  stopGenerationBtn.addEventListener('click', () => {
+    if (currentAbortController) {
+      currentAbortController.abort();
+      console.log('Generation stopped by user');
     }
   });
 
@@ -331,16 +594,29 @@
     clearChatHistory();
   });
 
-  function clearChatHistory() {
-    chatBody.innerHTML = `
-        <div class="chat chat-start">
-            <div class="chat-bubble chat-bubble-primary">
-                <div class="markdown-content"><p>Hello! How can I help you with bioinformatics tools today?</p></div>
-            </div>
-        </div>
-    `;
-    saveState();
-  }
+  // Memory event listeners
+  sessionMenuBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    showSidebar();
+  });
+
+  closeSessionSidebar.addEventListener('click', () => {
+    hideSidebar();
+  });
+
+  newSessionBtn.addEventListener('click', () => {
+    startNewSession();
+  });
+
+  saveSessionBtn.addEventListener('click', () => {
+    saveCurrentSession();
+  });
+
+  cleanupSessionsBtn.addEventListener('click', () => {
+    cleanupOldSessions();
+  });
+
+
 
   // --- State Persistence ---
   function saveState() {
@@ -355,6 +631,11 @@
         height: agentChatPopup.style.height,
       },
       isOpen: !agentChatPopup.classList.contains('hidden'),
+      memory: {
+        enabled: isMemoryEnabled,
+        currentSessionId: currentSessionId,
+        sidebarOpen: !sessionSidebar.classList.contains('hidden')
+      }
     };
     localStorage.setItem('agentWidgetState', JSON.stringify(state));
   }
@@ -391,14 +672,575 @@
       agentIcon.classList.remove('ti-x');
       agentIcon.classList.add('ti-message-chatbot');
     }
+
+    // Restore memory state
+    if (state.memory) {
+      if (state.memory.currentSessionId) {
+        currentSessionId = state.memory.currentSessionId;
+      }
+      // Session panel state will be restored after memory features are checked
+    }
   }
 
-  // Initial status check and state load
+  // Memory Functions
+  async function updateSessionInfo() {
+      if (!isMemoryEnabled) return;
+      
+      try {
+          const response = await fetch('http://127.0.0.1:5111/status');
+          const data = await response.json();
+          const sessionId = data.current_session_id;
+          
+          if (sessionId) {
+              currentSessionId = sessionId;
+              sessionStatus.textContent = `Session: ${sessionId.slice(-8)}`;
+          } else {
+              sessionStatus.textContent = 'No active session';
+          }
+      } catch (error) {
+          console.error('Error getting session info:', error);
+          sessionStatus.textContent = 'Session status unknown';
+      }
+  }
+
+  function showSidebar() {
+      if (!isMemoryEnabled) return;
+      
+      sessionSidebar.classList.remove('hidden');
+      sidebarOverlay.classList.remove('hidden');
+      // 触发动画
+      setTimeout(() => {
+          sessionSidebar.classList.remove('-translate-x-full');
+      }, 10);
+      loadSessions();
+  }
+
+  function hideSidebar() {
+      sessionSidebar.classList.add('-translate-x-full');
+      setTimeout(() => {
+          sessionSidebar.classList.add('hidden');
+          sidebarOverlay.classList.add('hidden');
+      }, 300);
+  }
+
+  function getRelativeTime(dateString) {
+      const now = new Date();
+      const date = new Date(dateString);
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
+
+      if (diffMins < 1) return 'just now';
+      if (diffMins < 60) return `${diffMins}m ago`;
+      if (diffHours < 24) return `${diffHours}h ago`;
+      if (diffDays < 7) return `${diffDays}d ago`;
+      return date.toLocaleDateString();
+  }
+
+  async function loadSessions() {
+      if (!isMemoryEnabled) return;
+      
+      try {
+          sessionList.innerHTML = `
+              <div class="text-center py-8 opacity-60">
+                  <i class="ti ti-loading animate-spin text-2xl mb-2"></i>
+                  <p class="text-sm">Loading chat history...</p>
+              </div>
+          `;
+          
+          const response = await fetch('/api/agent/sessions');
+          const data = await response.json();
+          sessions = data.sessions || [];
+          
+          renderSessions();
+      } catch (error) {
+          console.error('Error loading sessions:', error);
+          sessionList.innerHTML = `
+              <div class="text-center py-8 text-error">
+                  <i class="ti ti-alert-circle text-2xl mb-2"></i>
+                  <p class="text-sm">Error loading chat history</p>
+              </div>
+          `;
+      }
+  }
+
+  function renderSessions() {
+      if (sessions.length === 0) {
+          sessionList.innerHTML = `
+              <div class="text-center py-8 opacity-60">
+                  <i class="ti ti-message-circle text-4xl mb-2"></i>
+                  <p class="text-sm">No chat history yet</p>
+                  <p class="text-xs">Start a conversation to see it here</p>
+              </div>
+          `;
+          return;
+      }
+
+      const sessionsHtml = sessions.map(session => {
+          const isActive = session.session_id === currentSessionId;
+          const title = session.title || 'New Conversation';
+          const createdDate = new Date(session.created_at).toLocaleDateString();
+          const relativeTime = getRelativeTime(session.last_updated);
+          
+          return `
+              <div class="session-item ${isActive ? 'bg-primary/10 border-primary' : 'hover:bg-base-200'} 
+                   border rounded-lg p-3 mb-2 cursor-pointer transition-all duration-200" 
+                   data-session-id="${session.session_id}">
+                  <div class="flex items-start justify-between">
+                      <div class="flex-1 min-w-0 ${!isActive ? 'load-session-trigger' : ''}" style="cursor: ${!isActive ? 'pointer' : 'default'}">
+                          <div class="font-medium text-sm truncate mb-1" title="${title}">
+                              ${isActive ? '<i class="ti ti-message-circle mr-1"></i>' : ''}${title}
+                          </div>
+                          <div class="text-xs opacity-60">${session.message_count} messages • ${relativeTime}</div>
+                      </div>
+                      <div class="flex gap-1 ml-2">
+                          <button class="btn btn-xs btn-ghost btn-circle delete-session opacity-60 hover:opacity-100" title="Delete">
+                              <i class="ti ti-trash text-xs"></i>
+                          </button>
+                      </div>
+                  </div>
+              </div>
+          `;
+      }).join('');
+
+      sessionList.innerHTML = sessionsHtml;
+
+      // Attach event listeners
+      sessionList.querySelectorAll('.load-session-trigger').forEach(trigger => {
+          trigger.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const sessionId = e.target.closest('.session-item').dataset.sessionId;
+              loadSession(sessionId);
+          });
+      });
+
+      sessionList.querySelectorAll('.delete-session').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const sessionId = e.target.closest('.session-item').dataset.sessionId;
+              deleteSession(sessionId);
+          });
+      });
+  }
+
+  async function startNewSession() {
+      if (!isMemoryEnabled) return;
+      
+      try {
+          const response = await fetch('/api/agent/sessions/new', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' }
+          });
+          const data = await response.json();
+          
+          if (data.success) {
+              currentSessionId = data.session_id;
+              sessionStatus.textContent = `Session: ${data.session_id.slice(-8)}`;
+              
+              // Clear chat and show new session message
+              chatBody.innerHTML = `
+                  <div class="chat chat-start">
+                      <div class="chat-bubble chat-bubble-success">
+                          <div class="markdown-content">
+                              <p>🆕 New session started! How can I help you with bioinformatics tools today?</p>
+                          </div>
+                      </div>
+                  </div>
+              `;
+              
+              await loadSessions();
+              hideSidebar();
+              saveState();
+          }
+      } catch (error) {
+          console.error('Error starting new session:', error);
+      }
+  }
+
+  async function loadSession(sessionId) {
+      if (!isMemoryEnabled) return;
+      
+      try {
+          const response = await fetch(`/api/agent/sessions/${sessionId}/load`, {
+              method: 'POST'
+          });
+          const data = await response.json();
+          
+          if (data.success) {
+              currentSessionId = sessionId;
+              sessionStatus.textContent = `Session: ${sessionId.slice(-8)}`;
+              
+              // Load conversation history
+              const historyResponse = await fetch('/api/agent/history');
+              const historyData = await historyResponse.json();
+              
+              chatBody.innerHTML = '';
+              if (historyData.history && historyData.history.length > 0) {
+                  historyData.history.forEach(turn => {
+                      addMessage(turn.content, turn.role);
+                  });
+              } else {
+                  chatBody.innerHTML = `
+                      <div class="chat chat-start">
+                          <div class="chat-bubble chat-bubble-primary">
+                              <div class="markdown-content">
+                                  <p>📂 Session loaded! Continue our conversation.</p>
+                              </div>
+                          </div>
+                      </div>
+                  `;
+              }
+              
+              await loadSessions();
+              hideSidebar();
+              saveState();
+          }
+      } catch (error) {
+          console.error('Error loading session:', error);
+      }
+  }
+
+  async function deleteSession(sessionId) {
+      if (!isMemoryEnabled) return;
+      
+      if (confirm(`Delete session ${sessionId.slice(-8)}? This cannot be undone.`)) {
+          try {
+              const response = await fetch(`/api/agent/sessions/${sessionId}`, {
+                  method: 'DELETE'
+              });
+              const data = await response.json();
+              
+              if (data.success) {
+                  if (sessionId === currentSessionId) {
+                      currentSessionId = null;
+                      sessionStatus.textContent = 'No active session';
+                      
+                      // Clear chat and show session deleted message
+                      chatBody.innerHTML = `
+                          <div class="chat chat-start">
+                              <div class="chat-bubble chat-bubble-warning">
+                                  <div class="markdown-content">
+                                      <p>🗑️ Session deleted. Start a new conversation!</p>
+                                  </div>
+                              </div>
+                          </div>
+                      `;
+                      saveState();
+                  }
+                  await loadSessions();
+              }
+          } catch (error) {
+              console.error('Error deleting session:', error);
+          }
+      }
+  }
+
+  async function saveCurrentSession() {
+      if (!isMemoryEnabled) return;
+      
+      try {
+          const response = await fetch('/api/agent/sessions/save', {
+              method: 'POST'
+          });
+          const data = await response.json();
+          
+          if (data.success) {
+              // Show brief success indicator
+              const originalText = saveSessionBtn.innerHTML;
+              saveSessionBtn.innerHTML = '<i class="ti ti-check"></i>';
+              saveSessionBtn.classList.add('btn-success');
+              
+              setTimeout(() => {
+                  saveSessionBtn.innerHTML = originalText;
+                  saveSessionBtn.classList.remove('btn-success');
+              }, 1500);
+          }
+      } catch (error) {
+          console.error('Error saving session:', error);
+      }
+  }
+
+  async function cleanupOldSessions() {
+      if (!isMemoryEnabled) return;
+      
+      const days = prompt('Keep sessions from how many days ago? (default: 30)', '30');
+      if (days === null) return;
+      
+      try {
+          const response = await fetch('/api/agent/sessions/cleanup', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ daysToKeep: parseInt(days) || 30 })
+          });
+          const data = await response.json();
+          
+          if (data.success) {
+              alert(`Cleaned up ${data.deleted_count} old sessions`);
+              await loadSessions();
+          }
+      } catch (error) {
+          console.error('Error cleaning up sessions:', error);
+      }
+  }
+
+  // Enhanced clear history function
+  function clearChatHistory() {
+      if (isMemoryEnabled) {
+          if (confirm('Clear current session history? This will clear the conversation but keep the session.')) {
+              fetch('/api/agent/clear-history', { method: 'POST' })
+                  .then(() => {
+                      chatBody.innerHTML = `
+                          <div class="chat chat-start">
+                              <div class="chat-bubble chat-bubble-primary">
+                                  <div class="markdown-content">
+                                      <p>🧹 Session cleared! Ready for a fresh conversation.</p>
+                                  </div>
+                              </div>
+                          </div>
+                      `;
+                      saveState();
+                  })
+                  .catch(error => console.error('Error clearing history:', error));
+          }
+      } else {
+          // Basic mode - just clear locally
+          chatBody.innerHTML = `
+              <div class="chat chat-start">
+                  <div class="chat-bubble chat-bubble-primary">
+                      <div class="markdown-content"><p>Hello! How can I help you with bioinformatics tools today?</p></div>
+                  </div>
+              </div>
+          `;
+          saveState();
+      }
+  }
+
+  // Check markdown library availability (simple like test-marked.html)
+  function checkMarkdownSupport() {
+    if (typeof marked !== 'undefined' && marked.parse) {
+      console.log('✅ Marked.js library loaded successfully');
+      if (typeof hljs !== 'undefined') {
+        console.log('✅ Highlight.js loaded - syntax highlighting enabled');
+      }
+      return true;
+    } else {
+      console.error('❌ Marked.js library not available');
+      return false;
+    }
+  }
+
+
+
+  // Debug function to compare original vs rendered text
+  window.debugMarkdown = function(originalText, renderedHtml) {
+    console.group('🔍 Markdown Debug');
+    console.log('📝 Original text:', originalText);
+    console.log('🎨 Rendered HTML:', renderedHtml);
+    console.log('📏 Original length:', originalText.length);
+    console.log('📏 Rendered length:', renderedHtml.length);
+    
+    // Check for common markdown patterns
+    const hasHeaders = /^#+\s/.test(originalText);
+    const hasBold = /\*\*.*?\*\*/.test(originalText);
+    const hasCode = /`.*?`/.test(originalText);
+    const hasCodeBlocks = /```/.test(originalText);
+    
+    console.log('🔍 Contains headers:', hasHeaders);
+    console.log('🔍 Contains bold:', hasBold);
+    console.log('🔍 Contains inline code:', hasCode);
+    console.log('🔍 Contains code blocks:', hasCodeBlocks);
+    console.groupEnd();
+  };
+
+  
+
+  // Initial status check and state load (simple like test-marked.html)
   document.addEventListener('DOMContentLoaded', () => {
+    // Simple initialization like test-marked.html
+    setTimeout(() => {
+      initializeMarked();
+      checkMarkdownSupport();
     loadState();
     checkAgentStatusLoop();
+    }, 100);
   });
 </script>
+
+<!-- Load highlight.js first, then marked.js (using different CDN) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<script>
+// Initialize marked.js (exactly like test-marked.html)
+function initializeMarked() {
+    if (typeof marked === 'undefined') {
+        console.error('Marked.js not available');
+        return false;
+    }
+    
+    // Configure marked.js with highlight.js (back to simple version)
+    marked.setOptions({
+        highlight: function(code, lang) {
+            if (typeof hljs !== 'undefined' && lang && hljs.getLanguage(lang)) {
+                try {
+                    return hljs.highlight(code, { language: lang, ignoreIllegals: true }).value;
+                } catch (error) {
+                    console.warn('Highlight.js error for language', lang, ':', error);
+                }
+            }
+            return code;
+        },
+        breaks: true,
+        gfm: true,
+        tables: true,
+        sanitize: false,
+        smartLists: true,
+        smartypants: true
+    });
+    
+    console.log('✅ Marked.js configured successfully');
+    return true;
+}
+
+  // Add copy buttons to code blocks after markdown rendering
+  function addCopyButtonsToCodeBlocks(container) {
+    const codeBlocks = container.querySelectorAll('pre code');
+    codeBlocks.forEach(codeElement => {
+      const preElement = codeElement.parentElement;
+      if (preElement && !preElement.querySelector('.copy-code-btn')) {
+        // Generate unique ID for this code block
+        const codeId = 'code-' + Math.random().toString(36).substr(2, 9);
+        codeElement.id = codeId;
+        
+        // Get language from class name
+        let lang = 'text';
+        const langMatch = codeElement.className.match(/language-(\S+)/);
+        if (langMatch) {
+          lang = langMatch[1];
+        }
+        
+        // Create code block container
+        const container = document.createElement('div');
+        container.className = 'code-block-container relative';
+        
+        // Create header with copy button
+        const header = document.createElement('div');
+        header.className = 'code-header flex justify-between items-center text-xs text-gray-400 px-3 py-2 bg-gray-800 rounded-t-lg';
+        header.innerHTML = `
+          <span>${lang}</span>
+          <button class="copy-code-btn btn btn-xs btn-ghost" data-code-id="${codeId}" title="Copy code">
+            <i class="ti ti-copy"></i>
+          </button>
+        `;
+        
+        // Wrap the pre element
+        preElement.parentElement.insertBefore(container, preElement);
+        container.appendChild(header);
+        container.appendChild(preElement);
+        
+        // Update pre element styles
+        preElement.style.margin = '0';
+        preElement.style.borderRadius = '0 0 0.5rem 0.5rem';
+      }
+    });
+  }
+
+  // Copy functionality
+  function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    } else {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'absolute';
+      textArea.style.left = '-999999px';
+      document.body.prepend(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+      } catch (error) {
+        console.error('Copy failed:', error);
+      } finally {
+        textArea.remove();
+      }
+    }
+  }
+
+  // Event delegation for copy buttons
+  document.addEventListener('click', (e) => {
+    // Copy code button
+    if (e.target.closest('.copy-code-btn')) {
+      const btn = e.target.closest('.copy-code-btn');
+      const codeId = btn.getAttribute('data-code-id');
+      const codeElement = document.getElementById(codeId);
+      if (codeElement) {
+        const code = codeElement.textContent || codeElement.innerText;
+        copyToClipboard(code).then(() => {
+          // Visual feedback
+          const originalIcon = btn.innerHTML;
+          btn.innerHTML = '<i class="ti ti-check"></i>';
+          btn.classList.add('btn-success');
+          setTimeout(() => {
+            btn.innerHTML = originalIcon;
+            btn.classList.remove('btn-success');
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy code:', err);
+        });
+      }
+    }
+    
+    // Copy full answer button
+    if (e.target.closest('.copy-answer-btn')) {
+      const btn = e.target.closest('.copy-answer-btn');
+      const chatBubble = btn.closest('.chat-bubble');
+      if (chatBubble) {
+        const markdownContent = chatBubble.querySelector('.markdown-content');
+        const text = markdownContent ? markdownContent.textContent || markdownContent.innerText : chatBubble.textContent || chatBubble.innerText;
+        copyToClipboard(text).then(() => {
+          // Visual feedback
+          const originalIcon = btn.innerHTML;
+          btn.innerHTML = '<i class="ti ti-check"></i>';
+          btn.classList.add('btn-success');
+          setTimeout(() => {
+            btn.innerHTML = originalIcon;
+            btn.classList.remove('btn-success');
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy answer:', err);
+        });
+      }
+    }
+    
+    // Edit and resend button
+    if (e.target.closest('.edit-resend-btn')) {
+      const btn = e.target.closest('.edit-resend-btn');
+      const userBubble = btn.closest('.chat-bubble');
+      if (userBubble) {
+        const originalText = userBubble.textContent || userBubble.innerText;
+        chatInput.value = originalText.trim();
+        chatInput.focus();
+        chatInput.select();
+      }
+    }
+  });
+
+  // Simple test function (like test-marked.html)
+  window.testMarkdown = function(text) {
+    try {
+      const result = marked.parse(text);
+      console.log('Test result:', result);
+      return result;
+    } catch (error) {
+      console.error('Test failed:', error);
+      return `<p>Error: ${error.message}</p>`;
+    }
+  };
+</script>
+
 <style>
 .resize-handle {
     position: absolute;
@@ -529,7 +1371,8 @@
 }
 
 /* ===== CODE BLOCKS ===== */
-.chat-bubble pre {
+.chat-bubble pre,
+.markdown-content pre {
   background-color: #1e293b;
   color: #e2e8f0;
   padding: 0.75rem;
@@ -540,9 +1383,26 @@
   max-width: 100%;
   margin: 0.75rem 0;
   border: 1px solid rgba(255,255,255,0.1);
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.875rem;
 }
 
-.chat-bubble pre code {
+/* Highlight.js syntax highlighting styles */
+.chat-bubble .hljs,
+.markdown-content .hljs {
+  background: #1e293b !important;
+  color: #e2e8f0 !important;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.875rem;
+}
+
+
+
+.chat-bubble pre code,
+.markdown-content pre code {
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 0.875rem;
   background-color: transparent;
@@ -562,16 +1422,59 @@
   border: 1px solid rgba(255,255,255,0.1);
 }
 
+/* ===== CODE BLOCK CONTAINER WITH COPY BUTTON ===== */
+.code-block-container {
+  margin: 0.75rem 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background-color: #0f172a;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.copy-code-btn {
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.copy-code-btn:hover {
+  opacity: 1;
+}
+
+/* ===== MESSAGE ACTION BUTTONS ===== */
+.message-buttons {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.group:hover .message-buttons {
+  opacity: 1;
+}
+
+.message-buttons .btn {
+  font-size: 0.75rem;
+  padding: 0.25rem;
+  min-height: auto;
+}
+
 /* ===== BLOCKQUOTES ===== */
 .chat-bubble blockquote,
 .markdown-content blockquote {
   border-left: 4px solid #3b82f6;
-  padding-left: 1rem;
+  padding: 0.5rem 1rem;
   margin: 0.75rem 0;
   opacity: 0.9;
   font-style: italic;
-  background-color: rgba(59, 130, 246, 0.05);
-  padding: 0.5rem 1rem;
+  background-color: rgba(59, 130, 246, 0.1);
   border-radius: 0 0.25rem 0.25rem 0;
 }
 
@@ -657,3 +1560,6 @@
   margin-top: 0;
 }
 </style> 
+
+
+

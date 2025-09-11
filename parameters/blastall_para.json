@@ -1,0 +1,310 @@
+[
+    {
+        "category": "arguments:",
+        "short": "-p",
+        "long": "Program Name [String]",
+        "needs_input": true,
+        "description": ""
+    },
+    {
+        "category": "arguments:",
+        "short": "-d",
+        "long": "Database [String]",
+        "needs_input": true,
+        "description": "    default = nr"
+    },
+    {
+        "category": "arguments:",
+        "short": "-i",
+        "long": "Query File [File In]",
+        "needs_input": true,
+        "description": "    default = stdin"
+    },
+    {
+        "category": "arguments:",
+        "short": "-e",
+        "long": "Expectation value (E) [Real]",
+        "needs_input": true,
+        "description": "    default = 10.0"
+    },
+    {
+        "category": "arguments:",
+        "short": "-m",
+        "long": "alignment view options:\n0 = pairwise,\n1 = query-anchored showing identities,\n2 = query-anchored no identities,\n3 = flat query-anchored, show identities,\n4 = flat query-anchored, no identities,\n5 = query-anchored no identities and blunt ends,\n6 = flat query-anchored, no identities and blunt ends,\n7 = XML Blast output,\n8 = tabular, \n9 tabular with comment lines\n10 ASN, text\n11 ASN, binary [Integer]",
+        "needs_input": true,
+        "description": "    default = 0\n    range from 0 to 11"
+    },
+    {
+        "category": "arguments:",
+        "short": "-o",
+        "long": "BLAST report Output File [File Out]  Optional",
+        "needs_input": true,
+        "description": "    default = stdout"
+    },
+    {
+        "category": "arguments:",
+        "short": "-F",
+        "long": "Filter query sequence (DUST with blastn, SEG with others) [String]",
+        "needs_input": true,
+        "description": "    default = T"
+    },
+    {
+        "category": "arguments:",
+        "short": "-G",
+        "long": "Cost to open a gap (-1 invokes default behavior) [Integer]",
+        "needs_input": true,
+        "description": "    default = -1"
+    },
+    {
+        "category": "arguments:",
+        "short": "-E",
+        "long": "Cost to extend a gap (-1 invokes default behavior) [Integer]",
+        "needs_input": true,
+        "description": "    default = -1"
+    },
+    {
+        "category": "arguments:",
+        "short": "-X",
+        "long": "X dropoff value for gapped alignment (in bits) (zero invokes default behavior)\n      blastn 30, megablast 20, tblastx 0, all others 15 [Integer]",
+        "needs_input": true,
+        "description": "    default = 0"
+    },
+    {
+        "category": "arguments:",
+        "short": "-I",
+        "long": "Show GI's in deflines [T/F]",
+        "needs_input": true,
+        "description": "    default = F"
+    },
+    {
+        "category": "arguments:",
+        "short": "-q",
+        "long": "Penalty for a nucleotide mismatch (blastn only) [Integer]",
+        "needs_input": true,
+        "description": "    default = -3"
+    },
+    {
+        "category": "arguments:",
+        "short": "-r",
+        "long": "Reward for a nucleotide match (blastn only) [Integer]",
+        "needs_input": true,
+        "description": "    default = 1"
+    },
+    {
+        "category": "arguments:",
+        "short": "-v",
+        "long": "Number of database sequences to show one-line descriptions for (V) [Integer]",
+        "needs_input": true,
+        "description": "    default = 500"
+    },
+    {
+        "category": "arguments:",
+        "short": "-b",
+        "long": "Number of database sequence to show alignments for (B) [Integer]",
+        "needs_input": true,
+        "description": "    default = 250"
+    },
+    {
+        "category": "arguments:",
+        "short": "-f",
+        "long": "Threshold for extending hits, default if zero\n      blastp 11, blastn 0, blastx 12, tblastn 13\n      tblastx 13, megablast 0 [Real]",
+        "needs_input": true,
+        "description": "    default = 0"
+    },
+    {
+        "category": "arguments:",
+        "short": "-g",
+        "long": "Perform gapped alignment (not available with tblastx) [T/F]",
+        "needs_input": true,
+        "description": "    default = T"
+    },
+    {
+        "category": "arguments:",
+        "short": "-Q",
+        "long": "Query Genetic code to use [Integer]",
+        "needs_input": true,
+        "description": "    default = 1"
+    },
+    {
+        "category": "arguments:",
+        "short": "-D",
+        "long": "DB Genetic code (for tblast[nx] only) [Integer]",
+        "needs_input": true,
+        "description": "    default = 1"
+    },
+    {
+        "category": "arguments:",
+        "short": "-a",
+        "long": "Number of processors to use [Integer]",
+        "needs_input": true,
+        "description": "    default = 1"
+    },
+    {
+        "category": "arguments:",
+        "short": "-O",
+        "long": "SeqAlign file [File Out]  Optional",
+        "needs_input": true,
+        "description": ""
+    },
+    {
+        "category": "arguments:",
+        "short": "-J",
+        "long": "Believe the query defline [T/F]",
+        "needs_input": true,
+        "description": "    default = F"
+    },
+    {
+        "category": "arguments:",
+        "short": "-M",
+        "long": "Matrix [String]",
+        "needs_input": true,
+        "description": "    default = BLOSUM62"
+    },
+    {
+        "category": "arguments:",
+        "short": "-W",
+        "long": "Word size, default if zero (blastn 11, megablast 28, all others 3) [Integer]",
+        "needs_input": true,
+        "description": "    default = 0"
+    },
+    {
+        "category": "arguments:",
+        "short": "-z",
+        "long": "Effective length of the database (use zero for the real size) [Real]",
+        "needs_input": true,
+        "description": "    default = 0"
+    },
+    {
+        "category": "arguments:",
+        "short": "-K",
+        "long": "Number of best hits from a region to keep. Off by default.\nIf used a value of 100 is recommended.  Very high values of -v or -b is also suggested [Integer]",
+        "needs_input": true,
+        "description": "    default = 0"
+    },
+    {
+        "category": "arguments:",
+        "short": "-P",
+        "long": "0 for multiple hit, 1 for single hit (does not apply to blastn) [Integer]",
+        "needs_input": true,
+        "description": "    default = 0"
+    },
+    {
+        "category": "arguments:",
+        "short": "-Y",
+        "long": "Effective length of the search space (use zero for the real size) [Real]",
+        "needs_input": true,
+        "description": "    default = 0"
+    },
+    {
+        "category": "arguments:",
+        "short": "-S",
+        "long": "Query strands to search against database (for blast[nx], and tblastx)\n       3 is both, 1 is top, 2 is bottom [Integer]",
+        "needs_input": true,
+        "description": "    default = 3"
+    },
+    {
+        "category": "arguments:",
+        "short": "-T",
+        "long": "Produce HTML output [T/F]",
+        "needs_input": true,
+        "description": "    default = F"
+    },
+    {
+        "category": "arguments:",
+        "short": "-l",
+        "long": "Restrict search of database to list of GI's [String]  Optional",
+        "needs_input": true,
+        "description": ""
+    },
+    {
+        "category": "arguments:",
+        "short": "-U",
+        "long": "Use lower case filtering of FASTA sequence [T/F]  Optional",
+        "needs_input": true,
+        "description": ""
+    },
+    {
+        "category": "arguments:",
+        "short": "-y",
+        "long": "X dropoff value for ungapped extensions in bits (0.0 invokes default behavior)\n      blastn 20, megablast 10, all others 7 [Real]",
+        "needs_input": true,
+        "description": "    default = 0.0"
+    },
+    {
+        "category": "arguments:",
+        "short": "-Z",
+        "long": "X dropoff value for final gapped alignment in bits (0.0 invokes default behavior)\n      blastn/megablast 100, tblastx 0, all others 25 [Integer]",
+        "needs_input": true,
+        "description": "    default = 0"
+    },
+    {
+        "category": "arguments:",
+        "short": "-R",
+        "long": "PSI-TBLASTN checkpoint file [File In]  Optional",
+        "needs_input": true,
+        "description": ""
+    },
+    {
+        "category": "arguments:",
+        "short": "-n",
+        "long": "MegaBlast search [T/F]",
+        "needs_input": true,
+        "description": "    default = F"
+    },
+    {
+        "category": "arguments:",
+        "short": "-L",
+        "long": "Location on query sequence [String]  Optional",
+        "needs_input": true,
+        "description": ""
+    },
+    {
+        "category": "arguments:",
+        "short": "-A",
+        "long": "Multiple Hits window size, default if zero (blastn/megablast 0, all others 40 [Integer]",
+        "needs_input": true,
+        "description": "    default = 0"
+    },
+    {
+        "category": "arguments:",
+        "short": "-w",
+        "long": "Frame shift penalty (OOF algorithm for blastx) [Integer]",
+        "needs_input": true,
+        "description": "    default = 0"
+    },
+    {
+        "category": "arguments:",
+        "short": "-t",
+        "long": "Length of the largest intron allowed in a translated nucleotide sequence when linking multiple distinct alignments. (0 invokes default behavior; a negative value disables linking.) [Integer]",
+        "needs_input": true,
+        "description": "    default = 0"
+    },
+    {
+        "category": "arguments:",
+        "short": "-B",
+        "long": "Number of concatenated queries, for blastn and tblastn [Integer]  Optional",
+        "needs_input": true,
+        "description": "    default = 0"
+    },
+    {
+        "category": "arguments:",
+        "short": "-V",
+        "long": "Force use of the legacy BLAST engine [T/F]  Optional",
+        "needs_input": true,
+        "description": "    default = F"
+    },
+    {
+        "category": "arguments:",
+        "short": "-C",
+        "long": "Use composition-based score adjustments for blastp or tblastn:\n      As first character:\n      D or d: default (equivalent to T)\n      0 or F or f: no composition-based statistics\n      2 or T or t: Composition-based score adjustments as in Bioinformatics 21:902-911,\n      1: Composition-based statistics as in NAR 29:2994-3005, 2001\n          2005, conditioned on sequence properties\n      3: Composition-based score adjustment as in Bioinformatics 21:902-911,\n          2005, unconditionally\n      For programs other than tblastn, must either be absent or be D, F or 0.\n           As second character, if first character is equivalent to 1, 2, or 3:\n      U or u: unified p-value combining alignment p-value and compositional p-value in round 1 only",
+        "needs_input": true,
+        "description": "    default = D"
+    },
+    {
+        "category": "arguments:",
+        "short": "-s",
+        "long": "Compute locally optimal Smith-Waterman alignments (This option is only\n      available for gapped tblastn.) [T/F]",
+        "needs_input": true,
+        "description": "    default = F"
+    }
+]

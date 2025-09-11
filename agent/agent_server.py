@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 
 # Import new Agent system
-from bioinfo_agent import BioinfoAgent
+from bioinfo_agent_v2 import BioinfoAgentV2 as BioinfoAgent
 from document_processor import DocumentProcessor
 
 # Configure logging
@@ -67,8 +67,9 @@ def initialize_agent():
                 logging.error("Failed to ensure vector store!")
                 sys.exit(1)
             
-            # Initialize Agent
-            agent = BioinfoAgent()
+            # Initialize Agent with specified memory store path
+            memory_store_path = r"D:\file\MetaDock_Agent_dev\MetaDock_dv\agent\memory_store"
+            agent = BioinfoAgent(memory_store_path=memory_store_path)
             if agent.initialize():
                 logging.info("BioinfoAgent initialized successfully!")
                 
@@ -94,13 +95,28 @@ def ask():
         return jsonify({"error": "Agent is not initialized."}), 503
 
     question = request.json['question']
-    logging.info(f"Received streaming question: {question}")
+    session_id = request.json.get('sessionId')
+    
+    logging.info(f"Received streaming question: {question}, sessionId: {session_id}")
 
     def generate():
         try:
+            # Handle session management
+            if session_id:
+                # Try to load existing session
+                success = agent.load_session(session_id)
+                if not success:
+                    logging.warning(f"Failed to load session {session_id}, continuing with current session")
+            else:
+                # No session ID provided, start a new session if none exists
+                if not agent.session_memory.current_session_id:
+                    new_session_id = agent.start_new_session()
+                    logging.info(f"Started new session: {new_session_id}")
+            
             for chunk in agent.ask_stream(question):
                 # Format as Server-Sent Event (SSE)
-                yield f"data: {chunk}\\n\\n"
+                # chunk is already a JSON string from json.dumps()
+                yield f"data: {chunk}\n\n"
         except Exception as e:
             logging.error(f"Error during stream generation: {e}", exc_info=True)
             error_message = json.dumps({"type": "error", "error": "An internal error occurred during streaming."})
@@ -199,6 +215,74 @@ def debug_info():
         debug_data["system_status"] = agent.get_system_status()
     
     return jsonify(debug_data)
+
+# === Session Management Endpoints ===
+
+@app.route('/sessions', methods=['GET'])
+def get_sessions():
+    """Get list of all sessions"""
+    if agent and agent.is_initialized:
+        sessions = agent.get_session_list()
+        return jsonify({"sessions": sessions})
+    else:
+        return jsonify({"error": "Agent is not initialized."}), 503
+
+@app.route('/sessions/new', methods=['POST'])
+def start_new_session():
+    """Start a new session"""
+    if agent and agent.is_initialized:
+        session_id = request.json.get('session_id') if request.json else None
+        new_session_id = agent.start_new_session(session_id)
+        return jsonify({"success": True, "session_id": new_session_id})
+    else:
+        return jsonify({"error": "Agent is not initialized."}), 503
+
+@app.route('/sessions/<session_id>/load', methods=['POST'])
+def load_session(session_id):
+    """Load an existing session"""
+    if agent and agent.is_initialized:
+        success = agent.load_session(session_id)
+        if success:
+            return jsonify({"success": True, "message": f"Session {session_id} loaded"})
+        else:
+            return jsonify({"success": False, "message": "Session not found"}), 404
+    else:
+        return jsonify({"error": "Agent is not initialized."}), 503
+
+@app.route('/sessions/<session_id>', methods=['DELETE'])
+def delete_session(session_id):
+    """Delete a session"""
+    if agent and agent.is_initialized:
+        success = agent.delete_session(session_id)
+        if success:
+            return jsonify({"success": True, "message": f"Session {session_id} deleted"})
+        else:
+            return jsonify({"success": False, "message": "Session not found"}), 404
+    else:
+        return jsonify({"error": "Agent is not initialized."}), 503
+
+@app.route('/sessions/save', methods=['POST'])
+def save_current_session():
+    """Save the current session"""
+    if agent and agent.is_initialized:
+        agent.save_current_session()
+        return jsonify({"success": True, "message": "Current session saved"})
+    else:
+        return jsonify({"error": "Agent is not initialized."}), 503
+
+@app.route('/sessions/cleanup', methods=['POST'])
+def cleanup_sessions():
+    """Clean up old sessions"""
+    if agent and agent.is_initialized:
+        days_to_keep = request.json.get('days_to_keep', 30) if request.json else 30
+        deleted_count = agent.cleanup_old_sessions(days_to_keep)
+        return jsonify({
+            "success": True, 
+            "message": f"Cleaned up {deleted_count} old sessions",
+            "deleted_count": deleted_count
+        })
+    else:
+        return jsonify({"error": "Agent is not initialized."}), 503
 
 if __name__ == '__main__':
     initialize_agent()

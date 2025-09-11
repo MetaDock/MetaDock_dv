@@ -10,6 +10,108 @@
         Command Builder
       </h2>
       
+      <!-- Execution Mode Selection -->
+      <div class="form-control mb-4">
+        <label class="label">
+          <span class="label-text font-semibold">Execution Mode</span>
+        </label>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="flex items-center">
+            <label class="cursor-pointer flex items-center">
+              <input type="radio" name="execution-mode" value="direct" class="radio radio-primary" checked>
+              <span class="label-text ml-2">
+                <i class="ti ti-server mr-1"></i>
+                Direct Execution
+              </span>
+            </label>
+            <button 
+              class="btn btn-circle btn-sm ml-2 tooltip tooltip-top"
+              data-tip="Execute commands directly on the local server. Suitable for small to medium workloads that don't require high-performance computing resources."
+            >
+              <i class="ti ti-info-circle text-lg"></i>
+            </button>
+          </div>
+          <div class="flex items-center">
+            <label class="cursor-pointer flex items-center">
+              <input type="radio" name="execution-mode" value="cluster" class="radio radio-primary">
+              <span class="label-text ml-2">
+                <i class="ti ti-cloud-computing mr-1"></i>
+                Cluster Execution (SLURM)
+              </span>
+            </label>
+            <button 
+              class="btn btn-circle btn-sm ml-2 tooltip tooltip-top"
+              data-tip="Submit jobs to SLURM cluster for high-performance computing. Ideal for resource-intensive tasks requiring specific CPU, memory, or time allocations."
+            >
+              <i class="ti ti-info-circle text-lg"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cluster Configuration (hidden by default) -->
+      <div id="cluster-config" class="bg-base-300 rounded-lg p-4 mb-4" style="display: none;">
+          <h3 class="font-semibold mb-3">
+            <i class="ti ti-settings mr-2"></i>
+            SLURM Cluster Configuration
+          </h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Partition</span>
+              </label>
+              <select id="cluster-partition" class="select select-bordered select-sm">
+                <option value="cpu">cpu</option>
+                <option value="gpu">gpu</option>
+                <option value="memory">memory</option>
+                <option value="compute">compute</option>
+              </select>
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Cluster Name</span>
+              </label>
+              <input type="text" id="cluster-name" class="input input-bordered input-sm" value="bioinf" placeholder="Cluster name">
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Nodes</span>
+              </label>
+              <input type="number" id="cluster-nodes" class="input input-bordered input-sm" value="1" min="1" max="10">
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">CPUs per Task</span>
+              </label>
+              <input type="number" id="cluster-cpus" class="input input-bordered input-sm" value="24" min="1" max="128">
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Memory</span>
+              </label>
+              <input type="text" id="cluster-memory" class="input input-bordered input-sm" value="64G" placeholder="e.g., 64G, 128G">
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Time Limit</span>
+              </label>
+              <input type="text" id="cluster-time" class="input input-bordered input-sm" value="06:00:00" placeholder="HH:MM:SS or DD-HH:MM:SS">
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Number of Tasks</span>
+              </label>
+              <input type="number" id="cluster-ntasks" class="input input-bordered input-sm" value="1" min="1">
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Threads per Core</span>
+              </label>
+              <input type="number" id="cluster-threads" class="input input-bordered input-sm" value="1" min="1" max="4">
+            </div>
+          </div>
+      </div>
+      
       <div class="form-control">
         <label class="label">
           <span class="label-text">Current Command</span>
@@ -460,14 +562,7 @@
     `).join('')
   }
 
-  const copyToClipboard = async (text) => {
-    try {
-      await navigator.clipboard.writeText(text)
-      showToast('✅ Copied to clipboard')
-    } catch {
-      showToast('❌ Copy failed', 'error')
-    }
-  }
+
 
   const removeFile = (filePath) => {
     let files = JSON.parse(localStorage.getItem('<%= toolName %>_selectedFiles') || '[]')
@@ -477,29 +572,148 @@
     showToast('🗑️ File removed')
   }
 
+  // Cluster configuration management
+  const toggleClusterConfig = () => {
+    const clusterConfig = document.getElementById('cluster-config');
+    const clusterRadio = document.querySelector('input[name="execution-mode"][value="cluster"]');
+    
+    if (clusterRadio.checked) {
+      clusterConfig.style.display = 'block';
+    } else {
+      clusterConfig.style.display = 'none';
+    }
+  }
+
+  // Build SLURM command
+  const buildSlurmCommand = (originalCommand) => {
+    const partition = document.getElementById('cluster-partition').value;
+    const clusterName = document.getElementById('cluster-name').value;
+    const nodes = document.getElementById('cluster-nodes').value;
+    const cpus = document.getElementById('cluster-cpus').value;
+    const memory = document.getElementById('cluster-memory').value;
+    const time = document.getElementById('cluster-time').value;
+    const ntasks = document.getElementById('cluster-ntasks').value;
+    const threads = document.getElementById('cluster-threads').value;
+
+    const slurmParams = [
+      '--immediate',
+      '--pty',
+      `--partition=${partition}`,
+      `--cluster=${clusterName}`,
+      `--ntasks=${ntasks}`,
+      `--nodes=${nodes}`,
+      `--cpus-per-task=${cpus}`,
+      `--threads-per-core=${threads}`,
+      `--mem=${memory}`,
+      `--time=${time}`
+    ];
+
+    return `srun ${slurmParams.join(' ')} ${originalCommand}`;
+  }
+
+  // Save cluster configuration
+  const saveClusterConfig = () => {
+    const config = {
+      partition: document.getElementById('cluster-partition').value,
+      clusterName: document.getElementById('cluster-name').value,
+      nodes: document.getElementById('cluster-nodes').value,
+      cpus: document.getElementById('cluster-cpus').value,
+      memory: document.getElementById('cluster-memory').value,
+      time: document.getElementById('cluster-time').value,
+      ntasks: document.getElementById('cluster-ntasks').value,
+      threads: document.getElementById('cluster-threads').value
+    };
+    localStorage.setItem('slurm_cluster_config', JSON.stringify(config));
+  }
+
+  // Restore cluster configuration
+  const restoreClusterConfig = () => {
+    const savedConfig = localStorage.getItem('slurm_cluster_config');
+    if (savedConfig) {
+      const config = JSON.parse(savedConfig);
+      document.getElementById('cluster-partition').value = config.partition || 'cpu';
+      document.getElementById('cluster-name').value = config.clusterName || 'bioinf';
+      document.getElementById('cluster-nodes').value = config.nodes || '1';
+      document.getElementById('cluster-cpus').value = config.cpus || '24';
+      document.getElementById('cluster-memory').value = config.memory || '64G';
+      document.getElementById('cluster-time').value = config.time || '06:00:00';
+      document.getElementById('cluster-ntasks').value = config.ntasks || '1';
+      document.getElementById('cluster-threads').value = config.threads || '1';
+    }
+  }
+
   // Add event listener to save command when manually edited
   document.addEventListener('DOMContentLoaded', () => {
     const commandInput = document.getElementById('<%= toolName %>-input');
     commandInput.addEventListener('input', saveCommand);
     restoreCommand();
+    restoreClusterConfig();
     renderParameters();
     refreshFileTable();
+
+    // Initialize cluster config display state
+    toggleClusterConfig();
+
+    // Handle execution mode change
+    const executionModeRadios = document.querySelectorAll('input[name="execution-mode"]');
+    executionModeRadios.forEach(radio => {
+      radio.addEventListener('change', toggleClusterConfig);
+    });
+
+    // Handle cluster configuration changes
+    const clusterInputs = document.querySelectorAll('#cluster-config input, #cluster-config select');
+    clusterInputs.forEach(input => {
+      input.addEventListener('change', saveClusterConfig);
+    });
     
     document.getElementById('submit-command').addEventListener('click', async () => {
-      const command = commandInput.value;
+      const originalCommand = commandInput.value;
+      const executionMode = document.querySelector('input[name="execution-mode"]:checked').value;
       const resultDiv = document.getElementById('command-result');
       
+      let finalCommand = originalCommand;
+      let endpoint = '<%= commandRoute %>';
+      
+      if (executionMode === 'cluster') {
+        // Use cluster execution route
+        endpoint = '<%= commandRoute %>/cluster';
+        finalCommand = buildSlurmCommand(originalCommand);
+        saveClusterConfig(); // Save current cluster configuration
+      }
+      
       try {
-        resultDiv.innerHTML = `<pre class="text-warning"><i class="ti ti-loader animate-spin"></i> Executing...</pre>`
+        resultDiv.innerHTML = `<pre class="text-warning"><i class="ti ti-loader animate-spin"></i> ${executionMode === 'cluster' ? 'Submitting cluster job...' : 'Executing...'}</pre>`
         
-        const response = await fetch('<%= commandRoute %>', {
+        const requestBody = executionMode === 'cluster' 
+          ? { 
+              command: originalCommand,
+              clusterConfig: {
+                partition: document.getElementById('cluster-partition').value,
+                clusterName: document.getElementById('cluster-name').value,
+                nodes: document.getElementById('cluster-nodes').value,
+                cpus: document.getElementById('cluster-cpus').value,
+                memory: document.getElementById('cluster-memory').value,
+                time: document.getElementById('cluster-time').value,
+                ntasks: document.getElementById('cluster-ntasks').value,
+                threads: document.getElementById('cluster-threads').value
+              }
+            }
+          : { command: originalCommand };
+        
+        const response = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ command })
+          body: JSON.stringify(requestBody)
         })
         
-        const { output } = await response.json()
-        resultDiv.innerHTML = `<pre class="text-success">${output}</pre>`
+        const data = await response.json();
+        const output = data.output || data.result || 'Execution completed';
+        
+        if (executionMode === 'cluster') {
+          resultDiv.innerHTML = `<pre class="text-success">Cluster job submitted successfully!\n\nFinal command:\n${finalCommand}\n\n${output}</pre>`
+        } else {
+          resultDiv.innerHTML = `<pre class="text-success">${output}</pre>`
+        }
       } catch (error) {
         resultDiv.innerHTML = `<pre class="text-error">Execution failed: ${error.message}</pre>`
       }

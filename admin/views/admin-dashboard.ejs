@@ -103,6 +103,68 @@
         border-color: #3b82f6;
         box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
     }
+    
+    /* Loading dots animation */
+    .loading-dots {
+        display: inline-block;
+    }
+    
+    .loading-dots .dot {
+        animation: loading-dots 1.4s infinite ease-in-out both;
+        display: inline-block;
+    }
+    
+    .loading-dots .dot:nth-child(1) { animation-delay: -0.32s; }
+    .loading-dots .dot:nth-child(2) { animation-delay: -0.16s; }
+    .loading-dots .dot:nth-child(3) { animation-delay: 0s; }
+    
+    @keyframes loading-dots {
+        0%, 80%, 100% {
+            transform: scale(0.8);
+            opacity: 0.5;
+        }
+        40% {
+            transform: scale(1.2);
+            opacity: 1;
+        }
+    }
+    
+    /* Progress step animations */
+    .step-active {
+        opacity: 1 !important;
+        animation: pulse 2s infinite;
+    }
+    
+    .step-completed {
+        opacity: 1 !important;
+    }
+    
+    .step-completed .step-icon {
+        display: none;
+    }
+    
+    .step-completed::before {
+        content: "✅";
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.7;
+        }
+    }
+    
+    /* Button loading state */
+    .btn-loading {
+        pointer-events: none;
+        opacity: 0.7;
+    }
 </style>
 
 <main class="container mx-auto p-6 space-y-8">
@@ -227,6 +289,38 @@ Annotation:
           </div>
         </div>
         
+        <!-- Parameter Extraction Method Selection -->
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Parameter Extraction Method</span>
+          </label>
+          <div class="flex gap-4">
+            <label class="label cursor-pointer">
+              <input type="radio" name="extractionMethod" value="regex" class="radio radio-secondary" checked>
+              <span class="label-text ml-2">Regular Expression (Fast)</span>
+            </label>
+            <label class="label cursor-pointer">
+              <input type="radio" name="extractionMethod" value="llm" class="radio radio-secondary">
+              <span class="label-text ml-2">LLM Extraction (More Accurate)</span>
+            </label>
+          </div>
+          
+          <!-- Method Description -->
+          <div class="mt-2">
+            <div id="regexMethodDesc" class="alert alert-info text-sm">
+              <div>
+                <strong>Regular Expression:</strong> Fast processing using pattern matching. Works well with standard help formats but may miss complex parameter structures.
+              </div>
+            </div>
+            <div id="llmMethodDesc" class="alert alert-warning text-sm hidden">
+              <div>
+                <strong>LLM Extraction:</strong> Uses AI to understand and extract parameters more accurately. Handles complex formats but requires API key and takes longer to process.
+                <br><small class="text-xs mt-1 block">⚠️ Requires DASHSCOPE_API_KEY environment variable to be set for Qianwen API access.</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <!-- Local File Upload -->
         <div id="localFileSection" class="form-control">
           <label class="label">
@@ -324,10 +418,59 @@ Annotation:
           </div>
         </div>
         
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="btn btn-primary" id="submitBtn">
           <i class="ti ti-plus mr-2"></i>
           Add Tool
         </button>
+        
+        <!-- Progress indicator for LLM processing -->
+        <div id="llmProgress" class="hidden mt-4">
+          <div class="alert alert-info">
+            <div>
+              <div class="font-semibold">
+                <span id="progressText">LLM Analyzing Parameters</span>
+                <span class="loading-dots">
+                  <span class="dot">.</span>
+                  <span class="dot">.</span>
+                  <span class="dot">.</span>
+                </span>
+              </div>
+              <div class="text-sm mt-1" id="progressSubtext">This may take a few minutes, please be patient</div>
+              
+              <!-- Progress bar -->
+              <div class="mt-3">
+                <div class="flex justify-between text-xs mb-1">
+                  <span>Processing Progress</span>
+                  <span id="progressPercent">0%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div class="bg-blue-600 h-2 rounded-full transition-all duration-500 ease-out" 
+                       id="progressBar" style="width: 0%"></div>
+                </div>
+              </div>
+              
+              <!-- Processing steps -->
+              <div class="mt-3 text-xs">
+                <div class="flex items-center" id="step1">
+                  <div class="loading loading-spinner loading-xs mr-2 step-icon"></div>
+                  <span>Reading help file...</span>
+                </div>
+                <div class="flex items-center mt-1 opacity-50" id="step2">
+                  <div class="w-4 h-4 mr-2 flex items-center justify-center step-icon">⏳</div>
+                  <span>Analyzing parameter structure...</span>
+                </div>
+                <div class="flex items-center mt-1 opacity-50" id="step3">
+                  <div class="w-4 h-4 mr-2 flex items-center justify-center step-icon">⏳</div>
+                  <span>Extracting parameter information...</span>
+                </div>
+                <div class="flex items-center mt-1 opacity-50" id="step4">
+                  <div class="w-4 h-4 mr-2 flex items-center justify-center step-icon">⏳</div>
+                  <span>Generating JSON files...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </form>
     </div>
   </div>
@@ -401,6 +544,22 @@ Annotation:
         document.querySelector('input[name="helpFile"]').required = false;
         // Load initial directory when switching to remote
         loadRemoteDirectory(currentDirectory);
+      }
+    });
+  });
+
+  // Handle extraction method selection
+  document.querySelectorAll('input[name="extractionMethod"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+      const regexDesc = document.getElementById('regexMethodDesc');
+      const llmDesc = document.getElementById('llmMethodDesc');
+      
+      if (this.value === 'regex') {
+        regexDesc.classList.remove('hidden');
+        llmDesc.classList.add('hidden');
+      } else {
+        regexDesc.classList.add('hidden');
+        llmDesc.classList.remove('hidden');
       }
     });
   });
@@ -683,12 +842,126 @@ Annotation:
     document.getElementById('selectedFileName').textContent = '';
   }
 
+  // Progress management functions
+  function showLLMProgress() {
+    document.getElementById('llmProgress').classList.remove('hidden');
+    document.getElementById('submitBtn').classList.add('btn-loading');
+    document.getElementById('submitBtn').disabled = true;
+    
+    // Start progress simulation
+    simulateProgress();
+  }
+  
+  function hideLLMProgress() {
+    document.getElementById('llmProgress').classList.add('hidden');
+    document.getElementById('submitBtn').classList.remove('btn-loading');
+    document.getElementById('submitBtn').disabled = false;
+    
+    // Reset progress
+    resetProgress();
+  }
+  
+  function simulateProgress() {
+    const progressBar = document.getElementById('progressBar');
+    const progressPercent = document.getElementById('progressPercent');
+    let progress = 0;
+    
+    // Step 1: Reading file (0-20%)
+    setTimeout(() => {
+      updateStep(1, 'active');
+      animateProgress(20, 2000);
+    }, 500);
+    
+    // Step 2: Analyzing structure (20-50%)
+    setTimeout(() => {
+      updateStep(1, 'completed');
+      updateStep(2, 'active');
+      animateProgress(50, 3000);
+    }, 3000);
+    
+    // Step 3: Extracting parameters (50-80%)
+    setTimeout(() => {
+      updateStep(2, 'completed');
+      updateStep(3, 'active');
+      animateProgress(80, 4000);
+    }, 8000);
+    
+    // Step 4: Generating files (80-95%)
+    setTimeout(() => {
+      updateStep(3, 'completed');
+      updateStep(4, 'active');
+      animateProgress(95, 2000);
+    }, 15000);
+  }
+  
+  function animateProgress(targetPercent, duration) {
+    const progressBar = document.getElementById('progressBar');
+    const progressPercent = document.getElementById('progressPercent');
+    const startPercent = parseInt(progressBar.style.width) || 0;
+    const startTime = Date.now();
+    
+    function updateProgress() {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const currentPercent = startPercent + (targetPercent - startPercent) * progress;
+      
+      progressBar.style.width = currentPercent + '%';
+      progressPercent.textContent = Math.round(currentPercent) + '%';
+      
+      if (progress < 1) {
+        requestAnimationFrame(updateProgress);
+      }
+    }
+    
+    requestAnimationFrame(updateProgress);
+  }
+  
+  function updateStep(stepNumber, state) {
+    const step = document.getElementById(`step${stepNumber}`);
+    step.classList.remove('step-active', 'step-completed');
+    
+    if (state === 'active') {
+      step.classList.add('step-active');
+      step.style.opacity = '1';
+    } else if (state === 'completed') {
+      step.classList.add('step-completed');
+      step.style.opacity = '1';
+      // The CSS will handle hiding the icon and showing the checkmark
+    }
+  }
+  
+  function resetProgress() {
+    // Reset progress bar
+    document.getElementById('progressBar').style.width = '0%';
+    document.getElementById('progressPercent').textContent = '0%';
+    
+    // Reset all steps
+    for (let i = 1; i <= 4; i++) {
+      const step = document.getElementById(`step${i}`);
+      step.classList.remove('step-active', 'step-completed');
+      step.style.opacity = i === 1 ? '1' : '0.5';
+      
+      // Reset icons - show the step-icon and hide any checkmarks
+      const stepIcon = step.querySelector('.step-icon');
+      if (stepIcon) {
+        stepIcon.style.display = i === 1 ? 'inline-block' : 'flex';
+        if (stepIcon.classList.contains('loading')) {
+          stepIcon.style.display = 'inline-block';
+        }
+        if (!stepIcon.classList.contains('loading')) {
+          stepIcon.textContent = '⏳';
+        }
+      }
+    }
+  }
+
   // Handle form submission
   document.getElementById('addToolForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const formData = new FormData(e.target);
     const fileSource = formData.get('fileSource');
+    const extractionMethod = formData.get('extractionMethod');
     
     // Validate form based on file source
     if (fileSource === 'local') {
@@ -706,6 +979,14 @@ Annotation:
       formData.append('remoteHelpPath', selectedRemotePath);
     }
     
+    // Show progress for LLM extraction
+    if (extractionMethod === 'llm') {
+      showLLMProgress();
+      showToast('🤖 Starting LLM analysis...', 'info');
+    } else {
+      showToast('⚡ Processing with regex...', 'info');
+    }
+    
     try {
       const response = await fetch('/admin/upload-help', {
         method: 'POST',
@@ -714,14 +995,30 @@ Annotation:
       
       const result = await response.json();
       
+      // Hide progress indicator
+      if (extractionMethod === 'llm') {
+        // Complete all steps
+        updateStep(4, 'completed');
+        animateProgress(100, 500);
+        
+        setTimeout(() => {
+          hideLLMProgress();
+        }, 1500);
+      }
+      
       if (result.success) {
-        showToast('✅ Tool added successfully');
+        const methodText = extractionMethod === 'llm' ? 'LLM extraction' : 'regex extraction';
+        showToast(`✅ Tool added successfully using ${methodText}`);
         // Reload page to show new tool
-        setTimeout(() => window.location.reload(), 1000);
+        setTimeout(() => window.location.reload(), 2000);
       } else {
         showToast('❌ Failed to add tool: ' + result.error, 'error');
       }
     } catch (error) {
+      // Hide progress on error
+      if (extractionMethod === 'llm') {
+        hideLLMProgress();
+      }
       showToast('❌ Error: ' + error.message, 'error');
     }
   });

@@ -33,6 +33,17 @@ from agent_client import llm
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# NOTE: This module now includes comprehensive LLM output logging for debugging
+# All major LLM interactions will print their prompts and raw outputs to console
+# Look for the following debugging markers in logs:
+# 🤖 RAG ANSWER - Document-based responses
+# 🤖 GENERAL LLM - Direct LLM responses
+# 🤖 WEB SEARCH LLM - Web search-based responses  
+# 🤖 TITLE GENERATION - Session title creation
+# 🤖 ROUTING DECISION - Query routing decisions
+# 📚 DOCUMENT RETRIEVAL - Vector store searches
+# 📄 Document grading - Document relevance scoring
+
 
 class RouteQuery(BaseModel):
     """Query routing data model"""
@@ -44,8 +55,8 @@ class RouteQuery(BaseModel):
 
 class GradeDocuments(BaseModel):
     """Document relevance scoring data model"""
-    binary_score: str = Field(
-        description="Whether the document is relevant to the question, 'yes' or 'no'"
+    score: float = Field(
+        description="Relevance score between 0.0 (not relevant) and 1.0 (very relevant)."
     )
 
 
@@ -167,18 +178,22 @@ Only answer with the chosen type, no explanation needed."""),
         # Document grading prompt
         if self.supports_structured_output:
             self.grade_prompt = ChatPromptTemplate.from_messages([
-                ("system", """You are an expert at evaluating the relevance of retrieved documents to user questions.
-If the document contains keywords or semantic content related to the user question, grade it as relevant.
-This doesn't need to be a strict test. The goal is to filter out obviously wrong retrievals.
-Give a binary score 'yes' or 'no' to indicate whether the document is relevant to the question."""),
+                ("system", """You are an expert at evaluating the relevance of a retrieved document to a user question.
+Your goal is to filter out documents that are not relevant.
+Score the relevance on a scale from 0.0 to 1.0, where 0.0 is completely irrelevant and 1.0 is highly relevant.
+A document is relevant if it contains specific information that can directly help answer the user's question.
+General mentions of keywords are not enough for a high score.
+For example, if the user asks about running a workflow on the platform, a document detailing the parameters of a specific tool (like 'pyani') is NOT relevant."""),
                 ("human", "Retrieved document: \n\n {document} \n\n User question: {question}"),
             ])
         else:
             self.grade_prompt = ChatPromptTemplate.from_messages([
-                ("system", """You are an expert at evaluating the relevance of retrieved documents to user questions.
-If the document contains keywords or semantic content related to the user question, grade it as relevant.
-This doesn't need to be a strict test. The goal is to filter out obviously wrong retrievals.
-Please answer 'yes' (relevant) or 'no' (not relevant). Only answer yes or no, no explanation needed."""),
+                ("system", """You are an expert at evaluating the relevance of a retrieved document to a user question.
+Your goal is to filter out documents that are not relevant.
+Please provide a relevance score from 0.0 to 1.0.
+A document is relevant if it contains specific information that can directly help answer the user's question.
+For example, if the user asks about running a workflow on the platform, a document detailing a specific tool's parameters is NOT relevant.
+Only provide the numerical score, with no explanation."""),
                 ("human", "Retrieved document: \n\n {document} \n\n User question: {question}"),
             ])
         
@@ -244,6 +259,23 @@ Focus on core functionality and use cases of bioinformatics tools."""),
 - Clear and educational explanations
 - Focus on practical, actionable advice
 - Use examples when helpful
+- Remember information from our conversation history
+
+**Important:** Pay attention to the conversation history below to maintain context and remember user preferences, names, and previous discussions.
+
+{conversation_history}
+
+**IMPORTANT: You MUST use proper Markdown formatting in your response.**
+
+Required Markdown formatting standards:
+- Use `#` for main headings, `##` for subheadings, `###` for sub-subheadings
+- Use `-` for unordered lists, `1.` for ordered lists
+- Use `**text**` for bold emphasis, `*text*` for italic emphasis
+- Use ``` for code blocks with language specification (e.g., ```bash), `text` for inline code
+- Use `[link text](URL)` for links
+- Use `>` for blockquotes
+- Use `|` for tables if needed
+- Ensure proper spacing between elements
 
 When users ask about your identity, introduce yourself as the MetaDock Bioinformatics Assistant and explain how you can help them with their research and analysis needs."""),
             ("human", "{question}"),
@@ -260,11 +292,19 @@ Your answer should provide current and relevant information, especially for:
 - Installation and troubleshooting guides
 - Software compatibility and system requirements
 
-Format your response in clear, structured Markdown with:
-1. **Summary**: Brief overview of the current information
-2. **Key Points**: Main findings from the search results
-3. **Sources**: List the relevant URLs and publications mentioned
-4. **Recommendations**: Practical advice if applicable
+**IMPORTANT: You MUST use proper Markdown formatting in your response.**
+
+Required Markdown formatting standards:
+- Use `#` for main headings, `##` for subheadings, `###` for sub-subheadings
+- Use `-` for unordered lists, `1.` for ordered lists
+- Use `**text**` for bold emphasis, `*text*` for italic emphasis
+- Use ``` for code blocks, `text` for inline code
+- Use `[link text](URL)` for links
+- Use `>` for blockquotes
+- Use `|` for tables if needed
+- Ensure proper spacing between elements
+
+Organize your content logically and make it easy to read using these Markdown elements.
 
 ---
 
@@ -285,12 +325,27 @@ Please provide an informative answer based on the search results above."""),
         self.rag_prompt = ChatPromptTemplate.from_messages([
             ("system", """You are the MetaDock Bioinformatics Assistant. Answer user questions based on the following context information from our comprehensive bioinformatics tool database.
 
-Your answer must follow this Markdown format to ensure structured and informative content:
+**Important:** Pay attention to the conversation history to maintain context and remember user preferences, names, and previous discussions.
 
-1. **Overview**: First, summarize the main functionality of the tool in a few sentences.
-2. **Key Features**: Use numbered lists to detail the key features of the tool. For each feature, you can use sublists or paragraphs to elaborate.
-3. **References**: If the context contains literature references, DOIs, or project links, list them in this section.
-4. **Example Commands**: If available, provide one or more example commands using Markdown code blocks. Code blocks should be properly formatted with appropriate indentation and line breaks.
+{conversation_history}
+
+**IMPORTANT: You MUST use proper Markdown formatting in your response.**
+
+Required Markdown formatting standards:
+- Use `#` for main headings, `##` for subheadings, `###` for sub-subheadings
+- Use `-` for unordered lists, `1.` for ordered lists  
+- Use `**text**` for bold emphasis, `*text*` for italic emphasis, never use single `**` or `*` 
+- Use ``` for code blocks with language specification (e.g., ```bash), `text` for inline code
+- Use `[link text](URL)` for links
+- Use `>` for blockquotes
+- Use `|` for tables if needed
+- Ensure proper spacing between elements
+
+When helpful, your content may include:
+- An overview of the tool or concept
+- Key features or important points
+- Relevant references or documentation links  
+- Example commands or usage patterns
 
 ---
 
@@ -303,7 +358,7 @@ Question: {question}
 
 ---
 
-Please strictly follow the above format to generate the answer. If there's no information for a section (e.g., "Example Commands"), please omit that part."""),
+Please provide a helpful and informative answer based on the available context."""),
             ("human", "{question}"),
         ])
     
@@ -347,6 +402,15 @@ Please strictly follow the above format to generate the answer. If there's no in
                 if self.supports_structured_output:
                     chain = self.route_prompt | self.router_llm
                     result = chain.invoke({"question": question})
+                    
+                    # Print routing for debugging
+                    logger.info("=" * 80)
+                    logger.info("🤖 ROUTING DECISION - Structured Output:")
+                    logger.info("Question: %s", question)
+                    logger.info("Raw LLM Result: %s", result)
+                    logger.info("Selected Datasource: %s", result.datasource)
+                    logger.info("=" * 80)
+                    
                     return result.datasource
                 else:
                     # Use text parsing
@@ -356,11 +420,21 @@ Please strictly follow the above format to generate the answer. If there's no in
                     # Parse text result
                     result_lower = result.lower()
                     if "vectorstore" in result_lower or "vector" in result_lower:
-                        return "vectorstore"
+                        final_route = "vectorstore"
                     elif "web_search" in result_lower or "web search" in result_lower:
-                        return "web_search"
+                        final_route = "web_search"
                     else:
-                        return "general_llm"
+                        final_route = "general_llm"
+                    
+                    # Print routing for debugging
+                    logger.info("=" * 80)
+                    logger.info("🤖 ROUTING DECISION - Text Parsing:")
+                    logger.info("Question: %s", question)
+                    logger.info("Raw LLM Result: '%s'", result)
+                    logger.info("Parsed Route: %s", final_route)
+                    logger.info("=" * 80)
+                    
+                    return final_route
                         
             except Exception as e:
                 logger.warning("Question routing attempt %d failed: %s", attempt + 1, str(e))
@@ -384,18 +458,46 @@ Please strictly follow the above format to generate the answer. If there's no in
             # Check if specific tool is mentioned
             target_tool = None
             for tool in self.available_tools:
-                if tool.lower() in question.lower():
+                # Use word boundaries to avoid partial matches (e.g., 'ani' in 'pyani')
+                if re.search(r'\b' + re.escape(tool.lower()) + r'\b', question.lower()):
                     target_tool = tool
                     break
             
-            # Retrieve documents
-            docs = self.vector_store.similarity_search(question, k=k)
+            # Apply metadata filter if a specific tool is mentioned
+            search_filter = None
+            if target_tool:
+                search_filter = {'tool_name': target_tool}
+                logger.info(f"Applying metadata filter for tool '{target_tool}'")
+
+            # Retrieve documents using the filter
+            docs = self.vector_store.similarity_search(question, k=k, filter=search_filter)
+            
+            # If the filtered search returns no results, try a broader search as a fallback
+            if not docs and target_tool:
+                logger.warning(f"Filtered search for tool '{target_tool}' yielded no results. Performing a broader search.")
+                docs = self.vector_store.similarity_search(question, k=k)
+
+            # Print document retrieval for debugging
+            logger.info("=" * 60)
+            logger.info("📚 DOCUMENT RETRIEVAL:")
+            logger.info("Question: %s", question)
+            logger.info("Retrieved %d documents", len(docs))
+            if target_tool:
+                logger.info("Target tool detected: %s", target_tool)
+            for i, doc in enumerate(docs):
+                logger.info("  Doc %d: %s... (source: %s)", i+1, 
+                           doc.page_content[:100], 
+                           doc.metadata.get("source", "unknown"))
+            logger.info("=" * 60)
             
             # If target tool specified, prioritize related documents
             if target_tool:
                 filtered_docs = [doc for doc in docs if doc.metadata.get("tool_name") == target_tool]
                 if filtered_docs:
-                    return filtered_docs[:3] + [doc for doc in docs if doc not in filtered_docs][:2]
+                    final_docs = filtered_docs[:3] + [doc for doc in docs if doc not in filtered_docs][:2]
+                    logger.info("🎯 Prioritized docs for tool %s: %d tool-specific + %d general", 
+                               target_tool, len(filtered_docs[:3]), len(final_docs) - len(filtered_docs[:3]))
+                    return final_docs
             
             return docs
             
@@ -404,14 +506,15 @@ Please strictly follow the above format to generate the answer. If there's no in
             return []
     
     def grade_documents(self, question: str, documents: List[Document]) -> List[Document]:
-        """Grade and filter documents"""
+        """Grade and filter documents based on a relevance score"""
         if not documents:
             return []
         
+        relevance_threshold = 0.8  # Set a relevance threshold
         filtered_docs = []
         
         for doc in documents:
-            max_retries = 2  # Fewer retries for document grading to avoid delays
+            max_retries = 2
             success = False
             
             for attempt in range(max_retries):
@@ -422,20 +525,49 @@ Please strictly follow the above format to generate the answer. If there's no in
                             "question": question,
                             "document": doc.page_content
                         })
-                        if result.binary_score == "yes":
+                        score = result.score
+                        logger.info("=" * 60)
+                        logger.info("====== DOCUMENT RELEVANCE SCORE ======")
+                        logger.info(f"  - Question: {question}")
+                        logger.info(f"  - Document: {doc.metadata.get('source', 'unknown')}")
+                        logger.info(f"  - Score: {score:.4f}")
+                        if score >= relevance_threshold:
                             filtered_docs.append(doc)
+                            logger.info("  - Decision: RELEVANT")
+                        else:
+                            logger.info("  - Decision: NOT RELEVANT")
+                        logger.info("=" * 60)
                     else:
                         # Use text parsing
                         chain = self.grade_prompt | self.doc_grader_llm | StrOutputParser()
-                        result = chain.invoke({
+                        result_str = chain.invoke({
                             "question": question,
                             "document": doc.page_content
                         })
                         
-                        # Parse text result
-                        result_lower = result.lower()
-                        if "yes" in result_lower or "relevant" in result_lower:
+                        # Parse float score from text result
+                        try:
+                            score_match = re.search(r"(\d\.\d+)", result_str)
+                            if score_match:
+                                score = float(score_match.group(1))
+                            else:
+                                score = 0.0 # Default to not relevant if no score found
+                        except (ValueError, IndexError):
+                            score = 0.0
+                            logger.warning(f"Could not parse score from LLM output: '{result_str}'")
+
+                        logger.info("=" * 60)
+                        logger.info("====== DOCUMENT RELEVANCE SCORE ======")
+                        logger.info(f"  - Question: {question}")
+                        logger.info(f"  - Document: {doc.metadata.get('source', 'unknown')}")
+                        logger.info(f"  - Raw LLM Output: '{result_str.strip()}'")
+                        logger.info(f"  - Parsed Score: {score:.4f}")
+                        if score >= relevance_threshold:
                             filtered_docs.append(doc)
+                            logger.info("  - Decision: RELEVANT")
+                        else:
+                            logger.info("  - Decision: NOT RELEVANT")
+                        logger.info("=" * 60)
                     
                     success = True
                     break
@@ -444,16 +576,15 @@ Please strictly follow the above format to generate the answer. If there's no in
                     logger.warning("Document grading attempt %d failed: %s", attempt + 1, str(e))
                     if attempt < max_retries - 1:
                         import time
-                        time.sleep(0.5)  # Short delay for document grading
+                        time.sleep(0.5)
             
-            # If all attempts fail, keep the document (fail-safe approach)
+            # If all attempts fail, discard the document
             if not success:
-                logger.warning("Document grading failed for all attempts, keeping document")
-                filtered_docs.append(doc)
+                logger.warning("Document grading failed for all attempts, discarding document")
         
         return filtered_docs
     
-    def generate_answer(self, question: str, documents: List[Document]) -> str:
+    def generate_answer(self, question: str, documents: List[Document], conversation_history: List[Dict] = None) -> str:
         """Generate answer based on documents"""
         if not documents:
             return "Sorry, I couldn't find relevant documents to answer your question."
@@ -464,12 +595,37 @@ Please strictly follow the above format to generate the answer. If there's no in
         for attempt in range(max_retries):
             try:
                 context = "\n\n".join([doc.page_content for doc in documents])
+                
+                # Format conversation history for prompt
+                history_text = ""
+                if conversation_history:
+                    history_text = "Previous conversation:\n"
+                    for turn in conversation_history[-5:]:  # Last 5 turns for context
+                        role = turn.get('role', 'user')
+                        content = turn.get('content', '')
+                        history_text += f"{role.title()}: {content}\n"
+                    history_text += "\nCurrent question:\n"
+                else:
+                    history_text = "No previous conversation.\n\nQuestion:\n"
+                
                 chain = self.rag_prompt | llm | StrOutputParser()
                 
-                return chain.invoke({
+                answer = chain.invoke({
                     "context": context,
-                    "question": question
+                    "question": question,
+                    "conversation_history": history_text
                 })
+                
+                # Print raw LLM output to console for debugging
+                logger.info("=" * 80)
+                logger.info("🤖 RAG ANSWER - Raw LLM Output:")
+                logger.info("Question: %s", question[:100] + "..." if len(question) > 100 else question)
+                logger.info("Answer Length: %d characters", len(answer))
+                logger.info("Raw Answer:")
+                logger.info("%s", answer)
+                logger.info("=" * 80)
+                
+                return answer
                 
             except Exception as e:
                 logger.warning("Answer generation attempt %d failed: %s", attempt + 1, str(e))
@@ -708,6 +864,17 @@ Please strictly follow the above format to generate the answer. If there's no in
                     "question": question,
                     "search_results": formatted_results
                 })
+                
+                # Print web search answer generation for debugging
+                logger.info("=" * 80)
+                logger.info("🤖 WEB SEARCH ANSWER - Raw LLM Output:")
+                logger.info("Question: %s", question[:100] + "..." if len(question) > 100 else question)
+                logger.info("Search Results Count: %d", len(search_results))
+                logger.info("Answer Length: %d characters", len(answer))
+                logger.info("Raw Answer:")
+                logger.info("%s", answer)
+                logger.info("=" * 80)
+                
                 return answer
             except Exception as e:
                 logger.warning("Web search answer generation attempt %d failed: %s", attempt + 1, str(e))
@@ -724,7 +891,17 @@ Please strictly follow the above format to generate the answer. If there's no in
         for attempt in range(max_retries):
             try:
                 chain = self.rewrite_prompt | llm | StrOutputParser()
-                return chain.invoke({"question": question})
+                rewritten_question = chain.invoke({"question": question})
+                
+                # Print question rewriting for debugging
+                logger.info("=" * 80)
+                logger.info("🤖 QUESTION REWRITING - Raw LLM Output:")
+                logger.info("Original Question: %s", question)
+                logger.info("Rewritten Question:")
+                logger.info("%s", rewritten_question)
+                logger.info("=" * 80)
+                
+                return rewritten_question
             except Exception as e:
                 logger.warning("Question rewriting attempt %d failed: %s", attempt + 1, str(e))
                 if attempt < max_retries - 1:
@@ -735,7 +912,157 @@ Please strictly follow the above format to generate the answer. If there's no in
         logger.warning("Question rewriting failed for all attempts, using original question")
         return question
     
-    def ask_question(self, question: str, max_iterations: int = 3) -> Dict[str, Any]:
+    def generate_session_title(self, first_question: str, first_answer: str) -> str:
+        """
+        Generate session title based on first conversation
+        
+        Args:
+            first_question: User's first question
+            first_answer: Agent's first answer
+            
+        Returns:
+            Generated session title
+        """
+        try:
+            logger.info(f"Generating title for question: '{first_question[:50]}...'")
+            logger.info(f"Answer summary for title: '{first_answer[:100]}...'")
+            
+            # Create title generation prompt
+            title_prompt = ChatPromptTemplate.from_messages([
+                ("system", """Generate a concise conversation title based ONLY on the user's actual question and the assistant's response content. Do NOT use any system messages or instructions.
+
+Requirements:
+- Extract the main topic from the user's question and assistant's answer
+- Title should be concise and clear, maximum 20 characters
+- Focus on the specific bioinformatics tool, technique, or concept discussed
+- Use Chinese for Chinese conversations, English for English conversations
+- No punctuation marks
+- Highlight the key bioinformatics element
+
+Examples based on actual Q&A content:
+- If user asks "How to use FastQC?" and answer explains FastQC usage → "FastQC质控分析" or "FastQC Analysis"
+- If user asks "What is genome assembly?" and answer explains assembly → "基因组组装" or "Genome Assembly"  
+- If user asks "BLAST search help" and answer provides BLAST guidance → "BLAST比对" or "BLAST Search"
+- If user asks "RNA-seq workflow" and answer describes the process → "RNA测序流程" or "RNA-seq Pipeline"
+
+USER'S ACTUAL QUESTION: {question}
+ASSISTANT'S ACTUAL ANSWER: {answer_summary}
+
+Generate title based on the actual conversation content above:"""),
+                ("human", "Generate title")
+            ])
+            
+            # Take the first 200 characters of the answer as summary
+            answer_summary = first_answer[:200] + "..." if len(first_answer) > 200 else first_answer
+            
+            logger.info(f"Calling LLM for title generation...")
+            
+            chain = title_prompt | llm | StrOutputParser()
+            title = chain.invoke({
+                "question": first_question,
+                "answer_summary": answer_summary
+            })
+            
+            # Print title generation for debugging
+            logger.info("=" * 80)
+            logger.info("🤖 TITLE GENERATION - Raw LLM Output:")
+            logger.info("Question: %s", first_question[:100] + "..." if len(first_question) > 100 else first_question)
+            logger.info("Answer Summary: %s", answer_summary[:100] + "..." if len(answer_summary) > 100 else answer_summary)
+            logger.info("Raw Title Generated:")
+            logger.info("'%s'", title)
+            logger.info("Title Length: %d characters", len(title))
+            logger.info("=" * 80)
+            
+            logger.info(f"LLM returned title: '{title}'")
+            
+            # Clean title, remove extra quotes and punctuation
+            title = title.strip().strip('"').strip("'").strip("。").strip("！").strip("？")
+            
+            # If title is too long, let LLM summarize it instead of truncating
+            if len(title) > 20:
+                logger.info(f"Title too long ({len(title)} chars): '{title}', asking LLM to summarize")
+                title = self._summarize_long_title(title, first_question)
+            
+            final_title = title or "New Chat"
+            logger.info(f"Final processed title: '{final_title}'")
+            
+            return final_title
+            
+        except Exception as e:
+            logger.error(f"Error generating session title: {e}", exc_info=True)
+            return "New Chat"
+    
+    def _summarize_long_title(self, long_title: str, user_question: str) -> str:
+        """
+        Summarize a long title to make it concise
+        
+        Args:
+            long_title: The original long title
+            user_question: User's original question for context
+            
+        Returns:
+            Summarized title within 20 characters
+        """
+        try:
+            logger.info(f"Summarizing long title: '{long_title}'")
+            
+            # Create title summarization prompt
+            summarize_prompt = ChatPromptTemplate.from_messages([
+                ("system", """You need to create a much shorter version of the given title while keeping its core meaning.
+
+Requirements:
+- Maximum 20 characters (very important!)
+- Keep the most important keywords
+- Maintain the original language (Chinese/English)
+- Focus on the main tool or concept
+- No punctuation marks
+
+Examples:
+- "FastQC质量控制分析工具使用指南" → "FastQC质控"
+- "Complete Guide to Genome Assembly Methods" → "Genome Assembly" 
+- "RNA序列分析流程详细步骤说明" → "RNA测序流程"
+- "BLAST Sequence Alignment Tutorial" → "BLAST比对"
+
+Original title: {long_title}
+User question context: {user_question}
+
+Create a concise title (max 20 characters):"""),
+                ("human", "Summarize the title")
+            ])
+            
+            chain = summarize_prompt | llm | StrOutputParser()
+            short_title = chain.invoke({
+                "long_title": long_title,
+                "user_question": user_question[:100]  # First 100 chars for context
+            })
+            
+            # Print title summarization for debugging
+            logger.info("=" * 80)
+            logger.info("🤖 TITLE SUMMARIZATION - Raw LLM Output:")
+            logger.info("Original Long Title: '%s' (%d chars)", long_title, len(long_title))
+            logger.info("User Question Context: %s", user_question[:100] + "..." if len(user_question) > 100 else user_question)
+            logger.info("Raw Summarized Title:")
+            logger.info("'%s'", short_title)
+            logger.info("Summary Length: %d characters", len(short_title))
+            logger.info("=" * 80)
+            
+            # Clean the result
+            short_title = short_title.strip().strip('"').strip("'").strip("。").strip("！").strip("？")
+            
+            # Final safety check - if still too long, truncate
+            if len(short_title) > 20:
+                logger.warning(f"LLM summary still too long: '{short_title}', truncating")
+                short_title = short_title[:20]
+            
+            logger.info(f"Summarized title: '{long_title}' → '{short_title}'")
+            return short_title
+            
+        except Exception as e:
+            logger.error(f"Error summarizing title: {e}", exc_info=True)
+            # Fallback: simple truncation if LLM fails
+            return long_title[:20]
+    
+    def ask_question(self, question: str, max_iterations: int = 3, conversation_history: List[Dict] = None) -> Dict[str, Any]:
         """Ask question (simplified version, without LangGraph)"""
         steps = []
         current_question = question
@@ -829,7 +1156,7 @@ Please strictly follow the above format to generate the answer. If there's no in
                     filtered_docs = documents
             
             # 4. Generate answer
-            answer = self.generate_answer(current_question, filtered_docs)
+            answer = self.generate_answer(current_question, filtered_docs, conversation_history)
             
             # 5. Check hallucination
             is_grounded = self.check_hallucination(filtered_docs, answer)
@@ -866,7 +1193,7 @@ Please strictly follow the above format to generate the answer. If there's no in
             "question": question
         }
     
-    def stream_answer(self, question: str):
+    def stream_answer(self, question: str, conversation_history: List[Dict] = None):
         """Stream answer to question"""
         steps = []
         current_question = question
@@ -890,14 +1217,46 @@ Please strictly follow the above format to generate the answer. If there's no in
         if route == "general_llm":
             yield {"type": "step", "content": "Using MetaDock Assistant...", "steps": steps}
             try:
-                # Use general prompt with MetaDock identity
-                prompt = self.general_prompt.format(question=current_question)
+                # Format conversation history for prompt
+                history_text = ""
+                if conversation_history:
+                    history_text = "Previous conversation:\n"
+                    for turn in conversation_history[-10:]:  # Last 10 turns
+                        role = turn.get('role', 'user')
+                        content = turn.get('content', '')
+                        history_text += f"{role.title()}: {content}\n"
+                    history_text += "\nCurrent question:\n"
+                else:
+                    history_text = "No previous conversation.\n\nQuestion:\n"
+                
+                # Use general prompt with MetaDock identity and conversation history
+                prompt = self.general_prompt.format(
+                    question=current_question,
+                    conversation_history=history_text
+                )
+                
+                # Print prompt for debugging
+                logger.info("=" * 80)
+                logger.info("🤖 GENERAL LLM - Prompt:")
+                logger.info("Question: %s", current_question[:100] + "..." if len(current_question) > 100 else current_question)
+                logger.info("Prompt Length: %d characters", len(prompt))
+                logger.info("Full Prompt:")
+                logger.info("%s", prompt)
+                logger.info("-" * 40)
+                
                 full_answer = ""
                 for chunk in llm.stream(prompt):
                     content = chunk.content if hasattr(chunk, 'content') else str(chunk)
                     if content:
                         full_answer += content
                         yield {"type": "chunk", "content": content}
+                
+                # Print final answer for debugging
+                logger.info("🤖 GENERAL LLM - Final Answer:")
+                logger.info("Answer Length: %d characters", len(full_answer))
+                logger.info("Raw Answer:")
+                logger.info("%s", full_answer)
+                logger.info("=" * 80)
                 
                 yield {"type": "final", "answer": full_answer, "sources": [], "steps": steps}
                 return
@@ -932,12 +1291,30 @@ Please strictly follow the above format to generate the answer. If there's no in
                     question=current_question,
                     search_results=formatted_results
                 )
+                
+                # Print web search prompt for debugging
+                logger.info("=" * 80)
+                logger.info("🤖 WEB SEARCH LLM - Prompt:")
+                logger.info("Question: %s", current_question[:100] + "..." if len(current_question) > 100 else current_question)
+                logger.info("Search Results Count: %d", len(search_results))
+                logger.info("Prompt Length: %d characters", len(prompt))
+                logger.info("Full Prompt:")
+                logger.info("%s", prompt[:1000] + "..." if len(prompt) > 1000 else prompt)
+                logger.info("-" * 40)
+                
                 full_answer = ""
                 for chunk in llm.stream(prompt):
                     content = chunk.content if hasattr(chunk, 'content') else str(chunk)
                     if content:
                         full_answer += content
                         yield {"type": "chunk", "content": content}
+                
+                # Print web search final answer for debugging
+                logger.info("🤖 WEB SEARCH LLM - Final Answer:")
+                logger.info("Answer Length: %d characters", len(full_answer))
+                logger.info("Raw Answer:")
+                logger.info("%s", full_answer)
+                logger.info("=" * 80)
                 
                 # Format sources from search results
                 sources = []
@@ -988,7 +1365,35 @@ Please strictly follow the above format to generate the answer. If there's no in
         for attempt in range(max_retries):
             try:
                 context = "\n\n".join([doc.page_content for doc in filtered_docs])
-                prompt = self.rag_prompt.format(context=context, question=current_question)
+                
+                # Format conversation history for prompt
+                history_text = ""
+                if conversation_history:
+                    history_text = "Previous conversation:\n"
+                    for turn in conversation_history[-5:]:  # Last 5 turns for context
+                        role = turn.get('role', 'user')
+                        content = turn.get('content', '')
+                        history_text += f"{role.title()}: {content}\n"
+                    history_text += "\nCurrent question:\n"
+                else:
+                    history_text = "No previous conversation.\n\nQuestion:\n"
+                
+                prompt = self.rag_prompt.format(
+                    context=context, 
+                    question=current_question,
+                    conversation_history=history_text
+                )
+                
+                # Print RAG streaming prompt for debugging
+                logger.info("=" * 80)
+                logger.info("🤖 RAG STREAMING - Prompt:")
+                logger.info("Question: %s", current_question[:100] + "..." if len(current_question) > 100 else current_question)
+                logger.info("Context Length: %d characters", len(context))
+                logger.info("Documents Used: %d", len(filtered_docs))
+                logger.info("Prompt Length: %d characters", len(prompt))
+                logger.info("Full Prompt (first 1000 chars):")
+                logger.info("%s", prompt[:1000] + "..." if len(prompt) > 1000 else prompt)
+                logger.info("-" * 40)
                 
                 full_answer = ""
                 for chunk in llm.stream(prompt):
@@ -996,6 +1401,13 @@ Please strictly follow the above format to generate the answer. If there's no in
                     if content:
                         full_answer += content
                         yield {"type": "chunk", "content": content}
+                
+                # Print RAG streaming final answer for debugging
+                logger.info("🤖 RAG STREAMING - Final Answer:")
+                logger.info("Answer Length: %d characters", len(full_answer))
+                logger.info("Raw Answer:")
+                logger.info("%s", full_answer)
+                logger.info("=" * 80)
                 
                 yield {"type": "final", "answer": full_answer, "sources": unique_sources, "steps": steps}
                 return

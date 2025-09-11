@@ -11,6 +11,7 @@ from pathlib import Path
 
 from adaptive_rag import AdaptiveRAG
 from document_processor import DocumentProcessor
+from session_memory import SessionMemory
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -21,24 +22,33 @@ class BioinfoAgentV2:
     """Upgraded bioinformatics tool Q&A Agent"""
     
     def __init__(self, 
-                 docs_path: str = "../help_pages_for_test", 
-                 vector_store_path: str = "./vector_store"):
+                 docs_path: List[str] = None, 
+                 vector_store_path: str = "./vector_store",
+                 memory_store_path: str = "./memory_store"):
         """
         Initialize Agent
         
         Args:
-            docs_path: Document path
+            docs_path: List of document paths (optional, uses default from DocumentProcessor)
             vector_store_path: Vector store path
+            memory_store_path: Memory store path
         """
         self.docs_path = docs_path
         self.vector_store_path = vector_store_path
-        self.conversation_history: List[Dict[str, Any]] = []
+        self.memory_store_path = memory_store_path
         self.is_initialized = False
         self.available_tools: List[str] = []
         
         # Initialize document processor and RAG system
-        self.document_processor = DocumentProcessor(docs_path, vector_store_path)
+        if docs_path:
+            self.document_processor = DocumentProcessor(docs_path, vector_store_path)
+        else:
+            self.document_processor = DocumentProcessor(vector_store_path=vector_store_path)
         self.adaptive_rag = AdaptiveRAG(vector_store_path)
+        
+        # Initialize session memory system
+        self.session_memory = SessionMemory(memory_store_path)
+        self.current_session_id: Optional[str] = None
         
     def ensure_vector_store(self) -> bool:
         """
@@ -112,22 +122,17 @@ class BioinfoAgentV2:
     
     def add_to_history(self, role: str, content: str, sources: List[Dict] = None, steps: List[str] = None):
         """Add to conversation history"""
-        entry = {
-            "role": role,
-            "content": content,
-            "timestamp": datetime.now().isoformat(),
-        }
+        # Ensure we have an active session
+        if not self.current_session_id:
+            self.current_session_id = self.session_memory.start_new_session()
         
-        if sources:
-            entry["sources"] = sources
-        if steps:
-            entry["steps"] = steps
-            
-        self.conversation_history.append(entry)
-        
-        # Keep history at reasonable length
-        if len(self.conversation_history) > 20:
-            self.conversation_history = self.conversation_history[-20:]
+        # Add conversation turn to session memory
+        self.session_memory.add_conversation_turn(
+            role=role,
+            content=content,
+            sources=sources,
+            steps=steps
+        )
     
     def ask_stream(self, question: str):
         """
@@ -140,12 +145,15 @@ class BioinfoAgentV2:
         self.add_to_history("user", question)
         
         try:
+            # Get conversation history for context
+            conversation_context = self.session_memory.get_conversation_history()
+            
             # Use Adaptive RAG system for streaming response
             full_answer = ""
             sources = []
             steps = []
             
-            for event in self.adaptive_rag.stream_answer(question):
+            for event in self.adaptive_rag.stream_answer(question, conversation_context):
                 # Forward different types of events
                 if event['type'] == 'step':
                     yield json.dumps(event)
@@ -172,6 +180,9 @@ class BioinfoAgentV2:
             # Add to history
             if full_answer:
                 self.add_to_history("assistant", full_answer, sources=sources, steps=steps)
+                
+                # Generate title for new sessions after first Q&A
+                self._generate_title_if_needed(question, full_answer)
                 
         except Exception as e:
             logger.error("Error during stream processing: %s", str(e), exc_info=True)
@@ -221,11 +232,12 @@ class BioinfoAgentV2:
     
     def get_conversation_history(self) -> List[Dict[str, Any]]:
         """Get conversation history"""
-        return self.conversation_history
+        return self.session_memory.get_conversation_history()
     
     def clear_history(self):
         """Clear conversation history"""
-        self.conversation_history = []
+        self.session_memory.clear_current_session()
+        self.current_session_id = None
     
     def update_documents(self, force: bool = False) -> bool:
         """
@@ -265,8 +277,12 @@ class BioinfoAgentV2:
         status = {
             "initialized": self.is_initialized,
             "available_tools": len(self.available_tools),
-            "conversation_history_length": len(self.conversation_history),
+            "current_session_id": self.current_session_id,
         }
+        
+        # Add session memory stats
+        memory_stats = self.session_memory.get_session_stats()
+        status.update(memory_stats)
         
         # Check vector store status
         try:
@@ -284,6 +300,87 @@ class BioinfoAgentV2:
             pass
         
         return status
+    
+    # === Session Management Methods ===
+    
+    def start_new_session(self, session_id: str = None) -> str:
+        """Start a new conversation session"""
+        if self.current_session_id:
+            # Save current session before starting new one
+            self.session_memory.save_current_session()
+        
+        self.current_session_id = self.session_memory.start_new_session(session_id)
+        logger.info(f"Started new session: {self.current_session_id}")
+        return self.current_session_id
+    
+    def load_session(self, session_id: str) -> bool:
+        """Load an existing conversation session"""
+        success = self.session_memory.load_session(session_id)
+        if success:
+            self.current_session_id = session_id
+            logger.info(f"Loaded session: {session_id}")
+        return success
+    
+    def save_current_session(self):
+        """Save the current session to file"""
+        self.session_memory.save_current_session()
+    
+    def get_session_list(self) -> List[Dict[str, Any]]:
+        """Get list of all available sessions"""
+        return self.session_memory.get_session_list()
+    
+    def delete_session(self, session_id: str) -> bool:
+        """Delete a specific session"""
+        success = self.session_memory.delete_session(session_id)
+        if success and self.current_session_id == session_id:
+            self.current_session_id = None
+        return success
+    
+    def cleanup_old_sessions(self, days_to_keep: int = 30) -> int:
+        """Clean up old session files"""
+        return self.session_memory.cleanup_old_sessions(days_to_keep)
+    
+    def get_context_for_llm(self, max_tokens: int = 4000) -> List[Dict[str, str]]:
+        """Get conversation context formatted for LLM"""
+        return self.session_memory.get_context_for_llm(max_tokens)
+    
+    def _generate_title_if_needed(self, question: str, answer: str):
+        """Generate title after first conversation"""
+        try:
+            # Check if this is the first user-agent conversation pair
+            history = self.session_memory.get_conversation_history()
+            current_title = self.session_memory.current_session_title
+            
+            # Filter only user and assistant messages (exclude any system messages)
+            user_agent_pairs = [turn for turn in history if turn['role'] in ['user', 'assistant']]
+            
+            logger.info(f"Title generation check: user_agent_pairs={len(user_agent_pairs)}, current_title='{current_title}'")
+            
+            # Generate title only for the first user-assistant pair
+            if len(user_agent_pairs) == 2 and (not current_title or current_title == 'New Conversation'):
+                # Verify this is indeed a user question followed by assistant answer
+                if (user_agent_pairs[0]['role'] == 'user' and 
+                    user_agent_pairs[1]['role'] == 'assistant'):
+                    
+                    logger.info("Generating session title from first Q&A pair...")
+                    
+                    # Use the actual user question and assistant answer content
+                    user_question = user_agent_pairs[0]['content']
+                    assistant_answer = user_agent_pairs[1]['content']
+                    
+                    # Generate title based on the actual conversation content
+                    title = self.adaptive_rag.generate_session_title(user_question, assistant_answer)
+                    logger.info(f"Generated title: '{title}'")
+                    
+                    # Update title
+                    self.session_memory.update_session_title(title)
+                    logger.info(f"Title updated successfully")
+                else:
+                    logger.warning("First two messages are not user-assistant pair, skipping title generation")
+            else:
+                logger.info(f"Title generation skipped: user_agent_pairs={len(user_agent_pairs)}, title='{current_title}'")
+        except Exception as e:
+            logger.error(f"Error generating session title: {e}", exc_info=True)
 
 
 # Backward compatibility - create an alias

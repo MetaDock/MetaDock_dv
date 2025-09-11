@@ -59,18 +59,6 @@ module.exports = {
     "env": "",
     "hasStderr": true
   },
-  "fastqc_v0.12.1": {
-    "title": "fastqc_v0.12.1 Parameters",
-    "toolName": "fastqc_v0.12.1",
-    "route": "fastqc_v0.12.1",
-    "commandRoute": "/run-command-fastqc_v0.12.1",
-    "usagePath": "parameters/fastqc_v0.12.1_usage.json",
-    "paraPath": "parameters/fastqc_v0.12.1_para.json",
-    "html": "tool.ejs",
-    "selectionRoute": "/complete-selection-fastqc_v0.12.1",
-    "env": "",
-    "hasStderr": true
-  },
   "gtdbtk_classify_wf_v2.4.0": {
     "title": "gtdbtk_classify_wf_v2.4.0 Parameters",
     "toolName": "gtdbtk_classify_wf_v2.4.0",
@@ -116,6 +104,30 @@ module.exports = {
     "paraPath": "parameters/pyani_v0.2.12_para.json",
     "html": "tool.ejs",
     "selectionRoute": "/complete-selection-pyani_v0.2.12",
+    "env": "",
+    "hasStderr": true
+  },
+  "fastqc_v0.12.1": {
+    "title": "fastqc_v0.12.1 Parameters",
+    "toolName": "fastqc_v0.12.1",
+    "route": "fastqc_v0.12.1",
+    "commandRoute": "/run-command-fastqc_v0.12.1",
+    "usagePath": "parameters/fastqc_v0.12.1_usage.json",
+    "paraPath": "parameters/fastqc_v0.12.1_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-fastqc_v0.12.1",
+    "env": "",
+    "hasStderr": true
+  },
+  "blastall": {
+    "title": "blastall Parameters",
+    "toolName": "blastall",
+    "route": "blastall",
+    "commandRoute": "/run-command-blastall",
+    "usagePath": "parameters/blastall_usage.json",
+    "paraPath": "parameters/blastall_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-blastall",
     "env": "",
     "hasStderr": true
   }

@@ -1,0 +1,183 @@
+<%- include('partials/header', { title: 'Workflow Builder - Mock' }) %>
+<%- include('partials/navbar') %>
+
+<main class="container mx-auto p-6 space-y-6">
+  <!-- Header -->
+  <div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+      <div class="flex justify-between items-center">
+        <h2 class="card-title text-2xl"><i class="ti ti-graph mr-2"></i>Workflow Builder (Mockup)</h2>
+        <div class="flex gap-2">
+          <button class="btn btn-primary btn-sm"><i class="ti ti-device-floppy mr-1"></i>Save</button>
+          <button class="btn btn-outline btn-sm"><i class="ti ti-folder-open mr-1"></i>Load</button>
+          <button class="btn btn-secondary btn-sm"><i class="ti ti-download mr-1"></i>Export</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Area -->
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <!-- Components Panel -->
+    <div class="lg:col-span-1">
+      <div class="card bg-base-200 shadow-xl h-full">
+        <div class="card-body">
+          <h3 class="card-title text-lg mb-4"><i class="ti ti-puzzle mr-2"></i>Components</h3>
+          <div class="space-y-2">
+            <div>
+              <h4 class="font-medium text-sm mb-2 opacity-80"><i class="ti ti-files mr-2"></i>File Components</h4>
+              <div class="pl-4 space-y-1">
+                <div class="component-item"><i class="ti ti-upload mr-2"></i>Local File Input</div>
+                <div class="component-item"><i class="ti ti-server mr-2"></i>Server File Input</div>
+                <div class="component-item"><i class="ti ti-folder-down mr-2"></i>Local Folder Output</div>
+                <div class="component-item"><i class="ti ti-folder-up mr-2"></i>Server Folder Output</div>
+              </div>
+            </div>
+            <div>
+              <h4 class="font-medium text-sm mb-2 opacity-80"><i class="ti ti-tool mr-2"></i>Tools</h4>
+              <div class="pl-4 space-y-1">
+                <div class="component-item"><i class="ti ti-microscope mr-2"></i>FastQC</div>
+                <div class="component-item"><i class="ti ti-cut mr-2"></i>Cutadapt</div>
+                <div class="component-item"><i class="ti ti-dna-2 mr-2"></i>metaSPAdes</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workflow Canvas -->
+    <div class="lg:col-span-3">
+      <div class="card bg-base-200 shadow-xl">
+        <div class="card-body">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="card-title text-lg"><i class="ti ti-layout-canvas mr-2"></i>Workflow Canvas</h3>
+            <div class="flex gap-2">
+              <button class="btn btn-error btn-sm"><i class="ti ti-trash mr-1"></i>Clear</button>
+              <button class="btn btn-success btn-sm"><i class="ti ti-player-play mr-1"></i>Run Workflow</button>
+            </div>
+          </div>
+          
+          <div id="workflow-canvas" class="rounded-lg min-h-[600px] relative bg-base-100 overflow-hidden">
+            <!-- Connections -->
+            <svg class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 1;">
+              <!-- LFI -> FastQC -->
+              <path d="M 230 190 C 265 190, 265 90, 300 90" class="workflow-connection valid"></path>
+              <!-- LFI -> Cutadapt -->
+              <path d="M 230 190 L 300 190" class="workflow-connection valid"></path>
+              <!-- Cutadapt -> metaSPAdes -->
+              <path d="M 480 190 L 550 190" class="workflow-connection valid"></path>
+              <!-- metaSPAdes -> LFO -->
+              <path d="M 730 190 L 800 190" class="workflow-connection valid"></path>
+            </svg>
+
+            <!-- Nodes -->
+            <div class="workflow-node" style="top: 150px; left: 50px;">
+              <div class="node-header"><span class="node-title flex items-center"><i class="ti ti-upload mr-2"></i>Local File Input</span></div>
+              <div class="node-type">raw_reads.fq</div>
+              <div class="port output"></div>
+            </div>
+
+            <div class="workflow-node" style="top: 50px; left: 300px;">
+              <div class="node-header"><span class="node-title flex items-center"><i class="ti ti-microscope mr-2"></i>FastQC</span></div>
+              <div class="node-type">Quality Control</div>
+              <div class="port input"></div>
+              <div class="port output"></div>
+            </div>
+
+            <div class="workflow-node" style="top: 150px; left: 300px;">
+              <div class="node-header"><span class="node-title flex items-center"><i class="ti ti-cut mr-2"></i>Cutadapt</span></div>
+              <div class="node-type">Adapter Trimming</div>
+              <div class="port input"></div>
+              <div class="port output"></div>
+            </div>
+
+            <div class="workflow-node" style="top: 150px; left: 550px;">
+              <div class="node-header"><span class="node-title flex items-center"><i class="ti ti-dna-2 mr-2"></i>metaSPAdes</span></div>
+              <div class="node-type">Assembly</div>
+              <div class="port input"></div>
+              <div class="port output"></div>
+            </div>
+
+            <div class="workflow-node" style="top: 150px; left: 800px;">
+              <div class="node-header"><span class="node-title flex items-center"><i class="ti ti-folder-down mr-2"></i>Local Folder Output</span></div>
+              <div class="node-type">analysis_results/</div>
+              <div class="port input"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+
+<style>
+  .component-item {
+    padding: 0.5rem; border-radius: 0.5rem; cursor: pointer;
+    transition: background-color 0.2s; font-size: 0.875rem;
+    display: flex; align-items: center;
+  }
+  .component-item:hover { background-color: hsl(var(--b3)); }
+  .workflow-node {
+    position: absolute; background-color: #ffffff;
+    border: 1px solid #e5e7eb; /* Light gray border */
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); /* Subtle shadow */
+    width: 180px; height: 80px; user-select: none;
+    display: flex; flex-direction: column; justify-content: center;
+    transition: all 0.2s ease-in-out;
+    z-index: 10;
+  }
+  .workflow-node:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+  .workflow-node.selected {
+    border: 2px solid #3b82f6; /* Final Fix: Use a hardcoded color */
+    box-shadow: 0 0 15px #3b82f680; /* Shadow with same color */
+  }
+  .node-header { display: flex; align-items: center; margin-bottom: 0.25rem; }
+  .node-title { font-weight: 500; font-size: 0.875rem; }
+  .node-type { font-size: 0.75rem; opacity: 0.7; }
+  .port {
+    /* Generic properties ONLY */
+    position: absolute;
+    border: 2px solid;
+    top: 50%;
+    font-size: 0;
+    line-height: 0;
+    transition: transform 0.2s;
+  }
+  .port:hover { transform: scale(1.25); }
+  .port.input {
+    /* All sizing and positioning here to win specificity wars */
+    box-sizing: border-box !important;
+    width: 1px !important; /* Rectangle width */
+    height: 16px !important; /* Rectangle height (Y-axis) */
+    border-radius: 2px !important; /* Keep the slightly rounded corners */
+    margin-top: -10px !important; /* Recalculated for new height: (16px + 4px border)/2 */
+    left: -20px !important; /* Recalculated for new width: (8px + 4px border)/2 */
+    border-color: #3b82f6;
+    background-color: #60a5fa;
+  }
+  .port.output {
+    /* All sizing and positioning here to win specificity wars */
+    box-sizing: border-box !important;
+    width: 12px !important;
+    height: 12px !important;
+    border-radius: 50% !important;
+    margin-top: -6px !important;
+    right: -6px;
+    border-color: #16a34a;
+    background-color: #4ade80;
+  }
+  .workflow-connection { stroke: #9ca3af; stroke-width: 2.5; fill: none; }
+  .workflow-connection.valid { stroke: #22c55e; }
+  #workflow-canvas {
+    background-image: radial-gradient(circle, hsl(var(--b3)) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+</style>

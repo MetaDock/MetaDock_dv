@@ -19,20 +19,22 @@ from langchain.schema import Document
 
 class DocumentProcessor:
     def __init__(self, 
-                 docs_path: str = "../help_pages_for_test", 
+                 docs_path: List[str] = ["../help_pages_for_test", "../docs"], 
                  vector_store_path: str = "./vector_store"):
         """
         Initialize document processor
         
         Args:
-            docs_path: Document path
+            docs_path: List of document paths
             vector_store_path: Vector store path
         """
         # Fix path parsing
-        if docs_path.startswith("../"):
-            self.docs_path = Path(__file__).parent.parent / docs_path[3:]
-        else:
-            self.docs_path = Path(docs_path)
+        self.docs_paths = []
+        for path in docs_path:
+            if path.startswith("../"):
+                self.docs_paths.append(Path(__file__).parent.parent / path[3:])
+            else:
+                self.docs_paths.append(Path(path))
             
         self.vector_store_path = Path(vector_store_path)
         self.vector_store_path.mkdir(exist_ok=True)
@@ -54,20 +56,21 @@ class DocumentProcessor:
     
     def calculate_docs_hash(self) -> str:
         """Calculate hash of all documents for change detection"""
-        if not self.docs_path.exists():
-            return ""
-        
         all_content = []
-        txt_files = sorted(list(self.docs_path.glob("*.txt")))
         
-        for file_path in txt_files:
-            try:
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    content = f.read()
-                # Include filename and content
-                all_content.append(f"{file_path.name}:{content}")
-            except Exception as e:
-                print(f"Error reading {file_path}: {e}")
+        for doc_path in self.docs_paths:
+            if not doc_path.exists():
+                continue
+            
+            files = sorted(list(doc_path.glob("*.txt"))) + sorted(list(doc_path.glob("*.md")))
+            
+            for file_path in files:
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    all_content.append(f"{file_path.name}:{content}")
+                except Exception as e:
+                    print(f"Error reading {file_path}: {e}")
         
         # Calculate MD5 hash of all content
         combined_content = "\n".join(all_content)
@@ -122,44 +125,52 @@ class DocumentProcessor:
         """Load all documents"""
         documents = []
         
-        print(f"Looking for documents in: {self.docs_path.absolute()}")
-        
-        if not self.docs_path.exists():
-            print(f"Error: Document path does not exist: {self.docs_path}")
-            return documents
-        
-        txt_files = list(self.docs_path.glob("*.txt"))
-        print(f"Found {len(txt_files)} .txt files")
-        
-        for file_path in txt_files:
-            try:
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    content = f.read()
-                
-                if not content.strip():
-                    print(f"Warning: Empty file skipped: {file_path.name}")
-                    continue
+        for doc_path in self.docs_paths:
+            print(f"Looking for documents in: {doc_path.absolute()}")
+            
+            if not doc_path.exists():
+                print(f"Error: Document path does not exist: {doc_path}")
+                continue
+            
+            files = list(doc_path.glob("*.txt")) + list(doc_path.glob("*.md"))
+            print(f"Found {len(files)} files in {doc_path}")
+            
+            for file_path in files:
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
                     
-                # Parse tool name and version
-                parts = file_path.stem.split('_')
-                tool_name = parts[0] if parts else "unknown"
-                version = parts[1] if len(parts) > 1 else "unknown"
-                
-                doc = Document(
-                    page_content=content,
-                    metadata={
-                        "source": file_path.name,
-                        "tool_name": tool_name,
-                        "version": version,
-                        "file_path": str(file_path),
-                        "last_modified": datetime.fromtimestamp(file_path.stat().st_mtime).isoformat()
-                    }
-                )
-                documents.append(doc)
-                print(f"Loaded: {file_path.name} ({len(content)} characters)")
-                
-            except Exception as e:
-                print(f"Error loading {file_path}: {e}")
+                    if not content.strip():
+                        print(f"Warning: Empty file skipped: {file_path.name}")
+                        continue
+                        
+                    # Parse tool name and version
+                    if file_path.suffix == ".txt":
+                        parts = file_path.stem.split('_')
+                        tool_name = parts[0] if parts else "unknown"
+                        version = parts[1] if len(parts) > 1 else "unknown"
+                    elif file_path.suffix == ".md":
+                        tool_name = "MetaDock-Platform"
+                        version = "1.0" # or derive from somewhere else if available
+                    else:
+                        tool_name = "unknown"
+                        version = "unknown"
+                    
+                    doc = Document(
+                        page_content=content,
+                        metadata={
+                            "source": file_path.name,
+                            "tool_name": tool_name,
+                            "version": version,
+                            "file_path": str(file_path),
+                            "last_modified": datetime.fromtimestamp(file_path.stat().st_mtime).isoformat()
+                        }
+                    )
+                    documents.append(doc)
+                    print(f"Loaded: {file_path.name} ({len(content)} characters)")
+                    
+                except Exception as e:
+                    print(f"Error loading {file_path}: {e}")
         
         print(f"Total documents loaded: {len(documents)}")
         return documents
@@ -223,7 +234,7 @@ def main():
     
     parser = argparse.ArgumentParser(description="Build or update vector store")
     parser.add_argument("--force", action="store_true", help="Force rebuild even if no changes detected")
-    parser.add_argument("--docs-path", default="../help_pages_for_test", help="Path to documents")
+    parser.add_argument("--docs-path", nargs='+', default=["../help_pages_for_test", "../docs"], help="Path to documents")
     parser.add_argument("--vector-store-path", default="./vector_store", help="Path to vector store")
     
     args = parser.parse_args()

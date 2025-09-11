@@ -1,12 +1,14 @@
 {
-  "last_update": "2025-07-20T14:33:30.284628",
-  "docs_hash": "ed227a18cd63ca3180530fa206e08ac9",
-  "total_documents": 11,
-  "total_chunks": 138,
+  "last_update": "2025-09-12T01:17:19.237612",
+  "docs_hash": "ffb80e2c0b01b80999c4514f288d72a4",
+  "total_documents": 13,
+  "total_chunks": 153,
   "available_tools": [
+    "MetaDock-Platform",
     "bakta",
     "bbduk",
     "bbmap",
+    "blastall",
     "cutadapt",
     "dbcan",
     "fastqc",

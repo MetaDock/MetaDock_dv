@@ -199,8 +199,10 @@ router.get('/tools', isAdmin, (req, res) => {
 // Upload help file and process
 router.post('/upload-help', upload.single('helpFile'), async (req, res) => {
   try {
-    const { toolName, remoteHelpPath } = req.body;
+    const { toolName, remoteHelpPath, extractionMethod = 'regex' } = req.body;
     const helpFile = req.file;
+
+    console.log('Processing help file with extraction method:', extractionMethod);
 
     // Check if we should read from remote server
     if (remoteHelpPath) {
@@ -239,35 +241,97 @@ router.post('/upload-help', upload.single('helpFile'), async (req, res) => {
     await fs.mkdir(adminConfig.paths.helpDir, { recursive: true });
     await fs.mkdir(adminConfig.paths.tempUploadsDir, { recursive: true });
 
-    // Move help file to help directory
+    // Move help file to help directory with robust error handling
     const helpPath = path.join(adminConfig.paths.helpDir, `${toolName}_help.txt`);
-    await fs.rename(helpFile.path, helpPath);
+    try {
+      await fs.rename(helpFile.path, helpPath);
+    } catch (renameError) {
+      // If rename fails (common on Windows), try copy + delete with retry
+      console.log('Rename failed, trying copy + delete approach:', renameError.message);
+      
+      let retries = 3;
+      while (retries > 0) {
+        try {
+          // Check if source file exists
+          await fs.access(helpFile.path);
+          
+          // Copy file to destination
+          await fs.copyFile(helpFile.path, helpPath);
+          
+          // Delete original file
+          await fs.unlink(helpFile.path);
+          break; // Success, exit retry loop
+          
+        } catch (copyError) {
+          retries--;
+          console.log(`Copy attempt failed (${3-retries}/3):`, copyError.message);
+          
+          if (retries === 0) {
+            // If all retries failed, but we have the content, read and write it
+            try {
+              const content = await fs.readFile(helpFile.path, 'utf8');
+              await fs.writeFile(helpPath, content, 'utf8');
+              await fs.unlink(helpFile.path);
+              console.log('Successfully used read/write fallback method');
+            } catch (fallbackError) {
+              throw new Error(`Failed to move help file after all attempts: ${fallbackError.message}`);
+            }
+          } else {
+            // Wait a bit before retry
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+        }
+      }
+    }
 
     console.log('Help file moved to:', helpPath);
     }
 
-    // Process help file using Python scripts
+    // Process help file using different extraction methods
     const helpPath = path.join(adminConfig.paths.helpDir, `${toolName}_help.txt`);
     const paraOutputPath = path.join(adminConfig.paths.parametersDir, `${toolName}_para.json`);
     const usageOutputPath = path.join(adminConfig.paths.parametersDir, `${toolName}_usage.json`);
 
-    console.log('Running param.py script...');
-    // Run param.py script
-    await new Promise((resolve, reject) => {
-      const command = `python "${adminConfig.scripts.param}" "${helpPath}" "${paraOutputPath}" "${usageOutputPath}"`;
-      console.log('Executing command:', command);
+    if (extractionMethod === 'llm') {
+      console.log('Running LLM parameter extraction...');
+      // Use LLM-based parameter extraction
+      const llmExtractorPath = path.join(__dirname, '..', '..', 'params_llm', 'llm_param_extractor.py');
+      const outputDir = path.join(adminConfig.paths.parametersDir);
       
-      exec(command, (error, stdout, stderr) => {
-        if (error) {
-          console.error('param.py error:', error);
-          console.error('param.py stderr:', stderr);
-          reject(new Error(adminConfig.errors.process.paramExtraction));
-          return;
-        }
-        console.log('param.py stdout:', stdout);
-        resolve(stdout);
+      await new Promise((resolve, reject) => {
+        const command = `python "${llmExtractorPath}" "${helpPath}" "${toolName}" -o "${outputDir}"`;
+        console.log('Executing LLM extraction command:', command);
+        
+        exec(command, { timeout: 300000 }, (error, stdout, stderr) => { // 5 minute timeout for LLM
+          if (error) {
+            console.error('LLM extraction error:', error);
+            console.error('LLM extraction stderr:', stderr);
+            reject(new Error('LLM parameter extraction failed: ' + error.message));
+            return;
+          }
+          console.log('LLM extraction stdout:', stdout);
+          resolve(stdout);
+        });
       });
-    });
+    } else {
+      console.log('Running regex-based param.py script...');
+      // Use traditional regex-based extraction
+      await new Promise((resolve, reject) => {
+        const command = `python "${adminConfig.scripts.param}" "${helpPath}" "${paraOutputPath}" "${usageOutputPath}"`;
+        console.log('Executing command:', command);
+        
+        exec(command, (error, stdout, stderr) => {
+          if (error) {
+            console.error('param.py error:', error);
+            console.error('param.py stderr:', stderr);
+            reject(new Error(adminConfig.errors.process.paramExtraction));
+            return;
+          }
+          console.log('param.py stdout:', stdout);
+          resolve(stdout);
+        });
+      });
+    }
 
     console.log('Running json_to_help.py script...');
     // Run json_to_help.py script
@@ -330,9 +394,11 @@ router.post('/upload-help', upload.single('helpFile'), async (req, res) => {
       `module.exports = ${JSON.stringify(toolsConfig, null, 2)};`
     );
 
+    const methodText = extractionMethod === 'llm' ? 'LLM extraction' : 'regex extraction';
     res.json({
       success: true,
-      message: adminConfig.messages.tool.added,
+      message: `${adminConfig.messages.tool.added} using ${methodText}`,
+      extractionMethod: extractionMethod,
       comparisonUrl: `/help/${toolName}_comparison.html`
     });
 

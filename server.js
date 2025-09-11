@@ -161,6 +161,13 @@ app.get('/theme-test', (req, res) => {
   });
 });
 
+// Agent Widget testing page
+app.get('/test-agent', (req, res) => {
+  res.render('test-agent-widget', { 
+    title: 'Agent Widget Test - MetaDock'
+  });
+});
+
 // Dynamic tool routes - must be before the :tool/file-browser route
 Object.values(toolsConfig).forEach(tool => {
   // Add case-insensitive routes
@@ -172,7 +179,42 @@ Object.values(toolsConfig).forEach(tool => {
       });
     });
 
+    // Original direct execution route
     app.post(tool.commandRoute, commandHandler(tool));
+    
+    // New cluster execution route
+    app.post(`${tool.commandRoute}/cluster`, async (req, res) => {
+      if (!req.app.locals.connectionDetails) {
+        console.log('[Cluster Request] Connection details not provided.');
+        return res.status(400).json({ error: 'Connection details not provided.' });
+      }
+
+      const { command, clusterConfig } = req.body;
+      console.log(`[Cluster Request] Command received: ${command}`);
+      console.log(`[Cluster Config]:`, clusterConfig);
+
+      try {
+        // Build SLURM command
+        const slurmCommand = buildSlurmCommand(command, clusterConfig);
+        console.log(`[SLURM Command] ${slurmCommand}`);
+
+        // Execute SLURM command via SSH
+        const output = await executeClusterCommand(slurmCommand, req.app.locals.connectionDetails);
+        
+        console.log('[Cluster Execution] Command submitted successfully.');
+        res.json({ 
+          output: output,
+          slurmCommand: slurmCommand,
+          message: 'Cluster job submitted successfully'
+        });
+      } catch (error) {
+        console.error('[Cluster Error]', error);
+        res.status(500).json({ 
+          error: 'Cluster execution failed',
+          details: error.message 
+        });
+      }
+    });
   
     app.get(`/get_${path.basename(tool.usagePath, '_usage.json')}_usage`, (req, res) => {
       res.sendFile(path.join(__dirname, tool.usagePath));
@@ -923,6 +965,11 @@ app.get('/workflow', checkConnection, (req, res) => {
   res.render('workflow');
 });
 
+// Route for the workflow mockup page
+app.get('/workflow-mock', checkConnection, (req, res) => {
+  res.render('workflow-mock');
+});
+
 // API Routes for Workflow Builder
 app.get('/api/tools', (req, res) => {
   const tools = Object.values(toolsConfig).map(tool => ({
@@ -1062,7 +1109,7 @@ app.post('/api/run-workflow', checkConnection, async (req, res) => {
 
 // New route for agent communication
 app.post('/api/agent/ask', async (req, res) => {
-  const { question } = req.body;
+  const { question, sessionId } = req.body;
   if (!question) {
     return res.status(400).json({ error: 'Question is required' });
   }
@@ -1076,7 +1123,7 @@ app.post('/api/agent/ask', async (req, res) => {
     const agentResponse = await axios({
       method: 'post',
       url: 'http://127.0.0.1:5111/ask',
-      data: { question },
+      data: { question, sessionId },
       responseType: 'stream'
     });
 
@@ -1113,6 +1160,112 @@ app.post('/api/agent/ask', async (req, res) => {
 // New route for agent status
 app.get('/api/agent/status', (req, res) => {
     res.json({ ready: app.locals.isAgentReady });
+});
+
+// === Session Management Routes ===
+
+// 获取所有会话列表
+app.get('/api/agent/sessions', async (req, res) => {
+  try {
+    const response = await axios.get('http://127.0.0.1:5111/sessions');
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error getting sessions:', error.message);
+    res.status(500).json({ error: 'Failed to get sessions list' });
+  }
+});
+
+// 开始新会话
+app.post('/api/agent/sessions/new', async (req, res) => {
+  try {
+    const { sessionId } = req.body;
+    const response = await axios.post('http://127.0.0.1:5111/sessions/new', {
+      session_id: sessionId
+    });
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error starting new session:', error.message);
+    res.status(500).json({ error: 'Failed to start new session' });
+  }
+});
+
+// 加载指定会话
+app.post('/api/agent/sessions/:sessionId/load', async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const response = await axios.post(`http://127.0.0.1:5111/sessions/${sessionId}/load`);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error loading session:', error.message);
+    if (error.response && error.response.status === 404) {
+      res.status(404).json({ error: 'Session not found' });
+    } else {
+      res.status(500).json({ error: 'Failed to load session' });
+    }
+  }
+});
+
+// 删除指定会话
+app.delete('/api/agent/sessions/:sessionId', async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const response = await axios.delete(`http://127.0.0.1:5111/sessions/${sessionId}`);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error deleting session:', error.message);
+    if (error.response && error.response.status === 404) {
+      res.status(404).json({ error: 'Session not found' });
+    } else {
+      res.status(500).json({ error: 'Failed to delete session' });
+    }
+  }
+});
+
+// 保存当前会话
+app.post('/api/agent/sessions/save', async (req, res) => {
+  try {
+    const response = await axios.post('http://127.0.0.1:5111/sessions/save');
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error saving session:', error.message);
+    res.status(500).json({ error: 'Failed to save current session' });
+  }
+});
+
+// 清理旧会话
+app.post('/api/agent/sessions/cleanup', async (req, res) => {
+  try {
+    const { daysToKeep = 30 } = req.body;
+    const response = await axios.post('http://127.0.0.1:5111/sessions/cleanup', {
+      days_to_keep: daysToKeep
+    });
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error cleaning up sessions:', error.message);
+    res.status(500).json({ error: 'Failed to cleanup old sessions' });
+  }
+});
+
+// 获取会话历史记录
+app.get('/api/agent/history', async (req, res) => {
+  try {
+    const response = await axios.get('http://127.0.0.1:5111/history');
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error getting conversation history:', error.message);
+    res.status(500).json({ error: 'Failed to get conversation history' });
+  }
+});
+
+// 清除会话历史记录
+app.post('/api/agent/clear-history', async (req, res) => {
+  try {
+    const response = await axios.post('http://127.0.0.1:5111/clear-history');
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error clearing conversation history:', error.message);
+    res.status(500).json({ error: 'Failed to clear conversation history' });
+  }
 });
 
 // Helper function to validate workflow
@@ -1417,6 +1570,89 @@ async function executeRemoteCommand(command, connectionDetails) {
     }).on('error', (err) => {
       reject(err);
     }).connect(connectionDetails);
+  });
+}
+
+// Helper function to build SLURM command
+function buildSlurmCommand(originalCommand, clusterConfig) {
+  const {
+    partition = 'cpu',
+    clusterName = 'bioinf', 
+    nodes = '1',
+    cpus = '24',
+    memory = '64G',
+    time = '06:00:00',
+    ntasks = '1',
+    threads = '1'
+  } = clusterConfig;
+
+  const slurmParams = [
+    'srun',
+    '--immediate',
+    '--pty',
+    `--partition=${partition}`,
+    `--cluster=${clusterName}`,
+    `--ntasks=${ntasks}`,
+    `--nodes=${nodes}`,
+    `--cpus-per-task=${cpus}`,
+    `--threads-per-core=${threads}`,
+    `--mem=${memory}`,
+    `--time=${time}`,
+    originalCommand
+  ];
+
+  return slurmParams.join(' ');
+}
+
+// Helper function to execute cluster command
+async function executeClusterCommand(slurmCommand, connectionDetails) {
+  return new Promise((resolve, reject) => {
+    const conn = new Client();
+    
+    conn.on('ready', () => {
+      console.log('[Cluster SSH] Connection established');
+      
+      conn.exec(slurmCommand, (err, stream) => {
+        if (err) {
+          conn.end();
+          return reject(new Error(`SLURM execution failed: ${err.message}`));
+        }
+        
+        let output = '';
+        let errorOutput = '';
+        
+        stream.on('close', (code, signal) => {
+          conn.end();
+          console.log(`[Cluster Execution] Exit code: ${code}, Signal: ${signal || 'None'}`);
+          
+          if (code === 0) {
+            resolve(output || 'Cluster job submitted successfully');
+          } else {
+            const error = errorOutput || output || `Job submission failed, exit code: ${code}`;
+            reject(new Error(error));
+          }
+        });
+        
+        stream.on('data', (data) => {
+          const decoded = iconv.decode(data, 'utf-8');
+          output += decoded;
+          console.log(`[Cluster Output] ${decoded}`);
+        });
+        
+        stream.stderr.on('data', (data) => {
+          const decoded = iconv.decode(data, 'utf-8');
+          errorOutput += decoded;
+          console.error(`[Cluster Error] ${decoded}`);
+        });
+      });
+    });
+    
+    conn.on('error', (err) => {
+      console.error('[Cluster SSH Error]', err);
+      reject(new Error(`SSH connection failed: ${err.message}`));
+    });
+    
+    conn.connect(connectionDetails);
   });
 }
 

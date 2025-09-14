@@ -15,6 +15,7 @@ flask
 flask-cors
 pydantic>=2.0.0
 requests
+google-genai
 # Optional: LangGraph for advanced RAG features
 # langgraph
 # tavily-python

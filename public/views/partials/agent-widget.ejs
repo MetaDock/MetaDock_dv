@@ -12,8 +12,12 @@
       <h2 class="text-lg font-bold flex items-center">
         <i class="ti ti-message-chatbot mr-2"></i> Bioinfo Agent
         <span id="session-indicator" class="badge badge-success badge-sm ml-2 hidden">Memory</span>
+        <span id="model-indicator" class="badge badge-primary badge-sm ml-2">qwen-plus</span>
       </h2>
       <div class="flex items-center gap-1">
+        <button id="model-settings-btn" class="btn btn-sm btn-ghost btn-circle" title="Model Settings">
+          <i class="ti ti-settings"></i>
+      </button>
         <button id="session-menu-btn" class="btn btn-sm btn-ghost btn-circle" title="Session Management">
             <i class="ti ti-history"></i>
         </button>
@@ -99,6 +103,74 @@
         </button>
       </div>
     </div>
+    <!-- Model Settings Modal -->
+<div id="model-settings-modal" class="modal">
+  <div class="modal-box w-11/12 max-w-md">
+    <h3 class="font-bold text-lg mb-4">Model Settings</h3>
+    
+    <!-- Current Model Display -->
+    <div class="alert alert-info mb-4">
+      <i class="ti ti-info-circle"></i>
+      <div>
+        <div class="font-semibold">Current Model</div>
+        <div id="current-model-display">qwen-plus</div>
+      </div>
+    </div>
+    
+    <!-- Model Selection -->
+    <div class="form-control mb-4">
+      <label class="label">
+        <span class="label-text font-semibold">Select Model</span>
+      </label>
+      <select id="model-select" class="select select-bordered w-full">
+        <option value="qwen-plus">Qwen Plus - Fast & Balanced</option>
+        <option value="gemini-2.5-pro">Gemini 2.5 Pro - Advanced Reasoning</option>
+      </select>
+      <label class="label">
+        <span class="label-text-alt" id="model-description">Fast and balanced performance for general questions</span>
+      </label>
+    </div>
+    
+    <!-- API Key Input -->
+    <div class="form-control mb-4">
+      <label class="label">
+        <span class="label-text font-semibold">API Key</span>
+        <span class="label-text-alt" id="api-key-status">Not configured</span>
+      </label>
+      <div class="input-group">
+        <input id="api-key-input" type="password" class="input input-bordered flex-1" 
+               placeholder="Enter your API key">
+        <button id="toggle-api-key" class="btn btn-square btn-outline" type="button">
+          <i class="ti ti-eye"></i>
+        </button>
+      </div>
+      <label class="label">
+        <span class="label-text-alt">
+          Get your key: <a id="api-key-link" href="https://dashscope.console.aliyun.com/" target="_blank" class="link">API Console</a>
+        </span>
+      </label>
+    </div>
+    
+    <!-- Connection Status -->
+    <div id="connection-status" class="alert alert-warning mb-4 hidden">
+      <i class="ti ti-alert-triangle"></i>
+      <span id="connection-message">Testing connection...</span>
+    </div>
+    
+    <!-- Modal Actions -->
+    <div class="modal-action">
+      <button id="test-connection-btn" class="btn btn-outline">
+        <i class="ti ti-plug"></i>
+        Test
+      </button>
+      <button id="apply-model-btn" class="btn btn-primary">
+        <i class="ti ti-check"></i>
+        Apply
+      </button>
+      <button class="btn" onclick="closeModelSettings()">Cancel</button>
+    </div>
+  </div>
+</div>
     <!-- Resize Handles -->
     <div class="resize-handle n"></div><div class="resize-handle s"></div>
     <div class="resize-handle e"></div><div class="resize-handle w"></div>
@@ -132,7 +204,275 @@
   const newSessionBtn = document.getElementById('new-session-btn');
   const saveSessionBtn = document.getElementById('save-session-btn');
   const cleanupSessionsBtn = document.getElementById('cleanup-sessions-btn');
-  
+
+  // === Model Settings ===
+  const modelSettingsBtn = document.getElementById('model-settings-btn');
+  const modelSettingsModal = document.getElementById('model-settings-modal');
+  const modelSelect = document.getElementById('model-select');
+  const apiKeyInput = document.getElementById('api-key-input');
+  const toggleApiKeyBtn = document.getElementById('toggle-api-key');
+  const testConnectionBtn = document.getElementById('test-connection-btn');
+  const applyModelBtn = document.getElementById('apply-model-btn');
+  const currentModelDisplay = document.getElementById('current-model-display');
+  const modelDescription = document.getElementById('model-description');
+  const apiKeyStatus = document.getElementById('api-key-status');
+  const apiKeyLink = document.getElementById('api-key-link');
+  const connectionStatus = document.getElementById('connection-status');
+  const connectionMessage = document.getElementById('connection-message');
+
+  // Model information
+  const MODEL_INFO = {
+    'qwen-plus': {
+      display_name: 'Qwen Plus',
+      description: 'Fast and balanced performance for general questions',
+      provider: 'qwen',
+      apiUrl: 'https://dashscope.console.aliyun.com/',
+      keyEnv: 'DASHSCOPE_API_KEY'
+    },
+    'gemini-2.5-pro': {
+      display_name: 'Gemini 2.5 Pro', 
+      description: 'Advanced reasoning capabilities for complex analysis',
+      provider: 'gemini',
+      apiUrl: 'https://aistudio.google.com/apikey',
+      keyEnv: 'GEMINI_API_KEY'
+    }
+  };
+
+  let currentModel = 'qwen-plus';
+
+  // Initialize model settings
+  async function initializeModelSettings() {
+    try {
+      const response = await fetch('/api/agent/models');
+      if (response.ok) {
+        const data = await response.json();
+        currentModel = data.current_model.model_name;
+        updateModelDisplay();
+        loadStoredApiKey();
+      }
+    } catch (error) {
+      console.error('Failed to load model settings:', error);
+    }
+  }
+
+  // Update model display
+  function updateModelDisplay() {
+    const modelInfo = MODEL_INFO[currentModel];
+    currentModelDisplay.textContent = modelInfo.display_name;
+    modelSelect.value = currentModel;
+    updateModelDescription();
+    updateApiKeyStatus();
+    
+    // Update model indicator in chat header
+    const modelIndicator = document.getElementById('model-indicator');
+    if (modelIndicator) {
+      modelIndicator.textContent = currentModel;
+    }
+  }
+
+  // Update model description and API link
+  function updateModelDescription() {
+    const modelInfo = MODEL_INFO[modelSelect.value];
+    modelDescription.textContent = modelInfo.description;
+    apiKeyLink.href = modelInfo.apiUrl;
+  }
+
+  // Update API key status
+  function updateApiKeyStatus() {
+    const selectedModel = modelSelect.value;
+    const storedKey = getStoredApiKey(selectedModel);
+    
+    if (storedKey) {
+      apiKeyStatus.textContent = 'Configured';
+      apiKeyStatus.className = 'label-text-alt text-success';
+      apiKeyInput.placeholder = '••••••••••••••••';
+    } else {
+      apiKeyStatus.textContent = 'Not configured';
+      apiKeyStatus.className = 'label-text-alt text-warning';
+      apiKeyInput.placeholder = 'Enter your API key';
+    }
+  }
+
+  // Store API key securely
+  function storeApiKey(model, key) {
+    const modelInfo = MODEL_INFO[model];
+    const encrypted = btoa(key); // Simple base64 encoding
+    localStorage.setItem(`${modelInfo.provider}_api_key`, encrypted);
+  }
+
+  // Get stored API key
+  function getStoredApiKey(model) {
+    const modelInfo = MODEL_INFO[model];
+    const encrypted = localStorage.getItem(`${modelInfo.provider}_api_key`);
+    return encrypted ? atob(encrypted) : null;
+  }
+
+  // Load stored API key
+  function loadStoredApiKey() {
+    const selectedModel = modelSelect.value;
+    const storedKey = getStoredApiKey(selectedModel);
+    if (storedKey) {
+      apiKeyInput.value = storedKey;
+    } else {
+      apiKeyInput.value = '';
+    }
+  }
+
+  // Show/hide API key
+  function toggleApiKeyVisibility() {
+    const isPassword = apiKeyInput.type === 'password';
+    apiKeyInput.type = isPassword ? 'text' : 'password';
+    toggleApiKeyBtn.innerHTML = isPassword ? 
+      '<i class="ti ti-eye-off"></i>' : 
+      '<i class="ti ti-eye"></i>';
+  }
+
+  // Test model connection
+  async function testModelConnection() {
+    const selectedModel = modelSelect.value;
+    const apiKey = apiKeyInput.value.trim();
+    
+    if (!apiKey) {
+      showConnectionStatus('error', 'Please enter an API key');
+      return;
+    }
+    
+    testConnectionBtn.disabled = true;
+    testConnectionBtn.innerHTML = '<span class="loading loading-spinner loading-sm"></span> Testing...';
+    showConnectionStatus('info', 'Testing connection...');
+    
+    try {
+      const response = await fetch('/api/agent/test-model', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: selectedModel,
+          api_key: apiKey
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        showConnectionStatus('success', 'Connection successful!');
+        storeApiKey(selectedModel, apiKey);
+        updateApiKeyStatus();
+      } else {
+        showConnectionStatus('error', `Connection failed: ${data.error}`);
+      }
+    } catch (error) {
+      showConnectionStatus('error', `Connection failed: ${error.message}`);
+    } finally {
+      testConnectionBtn.disabled = false;
+      testConnectionBtn.innerHTML = '<i class="ti ti-plug"></i> Test';
+    }
+  }
+
+  // Apply model settings
+  async function applyModelSettings() {
+    const selectedModel = modelSelect.value;
+    const apiKey = apiKeyInput.value.trim();
+    
+    if (!apiKey) {
+      showConnectionStatus('error', 'Please enter an API key');
+      return;
+    }
+    
+    applyModelBtn.disabled = true;
+    applyModelBtn.innerHTML = '<span class="loading loading-spinner loading-sm"></span> Applying...';
+    
+    try {
+      const modelInfo = MODEL_INFO[selectedModel];
+      const apiKeys = {
+        [modelInfo.provider]: apiKey
+      };
+      
+      const response = await fetch('/api/agent/switch-model', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: selectedModel,
+          api_keys: apiKeys
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        currentModel = selectedModel;
+        storeApiKey(selectedModel, apiKey);
+        updateModelDisplay();
+        showConnectionStatus('success', `Switched to ${modelInfo.display_name}!`);
+        
+        // Close modal after success
+        setTimeout(() => {
+          closeModelSettings();
+        }, 1500);
+      } else {
+        showConnectionStatus('error', `Failed to switch model: ${data.error}`);
+      }
+    } catch (error) {
+      showConnectionStatus('error', `Failed to switch model: ${error.message}`);
+    } finally {
+      applyModelBtn.disabled = false;
+      applyModelBtn.innerHTML = '<i class="ti ti-check"></i> Apply';
+    }
+  }
+
+  // Show connection status
+  function showConnectionStatus(type, message) {
+    connectionStatus.className = `alert mb-4`;
+    connectionMessage.textContent = message;
+    
+    switch (type) {
+      case 'success':
+        connectionStatus.classList.add('alert-success');
+        connectionStatus.innerHTML = '<i class="ti ti-check"></i><span>' + message + '</span>';
+        break;
+      case 'error':
+        connectionStatus.classList.add('alert-error');
+        connectionStatus.innerHTML = '<i class="ti ti-x"></i><span>' + message + '</span>';
+        break;
+      case 'info':
+        connectionStatus.classList.add('alert-info');
+        connectionStatus.innerHTML = '<i class="ti ti-info-circle"></i><span>' + message + '</span>';
+        break;
+    }
+    
+    connectionStatus.classList.remove('hidden');
+  }
+
+  // Open model settings
+  function openModelSettings() {
+    loadStoredApiKey();
+    updateModelDescription();
+    updateApiKeyStatus();
+    connectionStatus.classList.add('hidden');
+    modelSettingsModal.classList.add('modal-open');
+  }
+
+  // Close model settings
+  function closeModelSettings() {
+    modelSettingsModal.classList.remove('modal-open');
+    connectionStatus.classList.add('hidden');
+  }
+
+  // Event listeners
+  modelSettingsBtn.addEventListener('click', openModelSettings);
+  modelSelect.addEventListener('change', () => {
+    updateModelDescription();
+    loadStoredApiKey();
+    updateApiKeyStatus();
+  });
+  toggleApiKeyBtn.addEventListener('click', toggleApiKeyVisibility);
+  testConnectionBtn.addEventListener('click', testModelConnection);
+  applyModelBtn.addEventListener('click', applyModelSettings);
+
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    initializeModelSettings();
+  });
+
   // Memory state
   let currentSessionId = null;
   let sessions = [];

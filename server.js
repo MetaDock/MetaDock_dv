@@ -1162,6 +1162,48 @@ app.get('/api/agent/status', (req, res) => {
     res.json({ ready: app.locals.isAgentReady });
 });
 
+// Model management routes
+app.get('/api/agent/models', async (req, res) => {
+  try {
+    const response = await fetch('http://127.0.0.1:5111/models');
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error('Error getting models:', error);
+    res.status(500).json({ error: 'Failed to get models' });
+  }
+});
+
+app.post('/api/agent/switch-model', async (req, res) => {
+  try {
+    const response = await fetch('http://127.0.0.1:5111/switch-model', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req.body)
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error('Error switching model:', error);
+    res.status(500).json({ error: 'Failed to switch model' });
+  }
+});
+
+app.post('/api/agent/test-model', async (req, res) => {
+  try {
+    const response = await fetch('http://127.0.0.1:5111/test-model', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req.body)
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error('Error testing model:', error);
+    res.status(500).json({ error: 'Failed to test model' });
+  }
+});
+
 // === Session Management Routes ===
 
 // 获取所有会话列表

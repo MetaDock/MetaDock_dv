@@ -5,6 +5,7 @@ import sys
 import json
 import os
 from pathlib import Path
+from agent_client import get_llm_client
 
 # Import new Agent system
 from bioinfo_agent_v2 import BioinfoAgentV2 as BioinfoAgent
@@ -12,6 +13,7 @@ from document_processor import DocumentProcessor
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__) 
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -283,6 +285,117 @@ def cleanup_sessions():
         })
     else:
         return jsonify({"error": "Agent is not initialized."}), 503
+
+# === Model Management Endpoints ===
+
+@app.route('/models', methods=['GET'])
+def get_supported_models():
+    """Get list of supported models"""
+    try:
+        from agent_client import MultiLLMClient
+        models = MultiLLMClient.get_supported_models()
+        
+        # Add current model info
+        current_client = get_llm_client()
+        current_info = current_client.get_model_info()
+        
+        return jsonify({
+            "supported_models": models,
+            "current_model": current_info
+        })
+    except Exception as e:
+        logger.error(f"Error getting models: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/switch-model', methods=['POST'])
+def switch_model():
+    """Switch to a different model"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        model_name = data.get('model')
+        api_keys = data.get('api_keys', {})
+        
+        if not model_name:
+            return jsonify({"error": "Model name is required"}), 400
+        
+        # Import here to avoid circular imports
+        from agent_client import switch_global_model, get_llm_client
+        
+        # Switch the global model
+        switch_global_model(model_name, api_keys)
+        
+        # Update the agent's LLM if it exists
+        global agent
+        if agent and agent.is_initialized:
+            # Update the adaptive_rag system to use new model
+            new_client = get_llm_client()
+            new_llm = new_client.get_llm()
+            
+            # Update all LLM references in adaptive_rag
+            agent.adaptive_rag.router_llm = new_llm
+            agent.adaptive_rag.doc_grader_llm = new_llm
+            agent.adaptive_rag.hallucination_grader_llm = new_llm
+            agent.adaptive_rag.answer_grader_llm = new_llm
+            
+            logger.info(f"Updated agent to use model: {model_name}")
+        
+        # Get updated model info
+        current_info = get_llm_client().get_model_info()
+        
+        return jsonify({
+            "success": True,
+            "message": f"Switched to {model_name}",
+            "current_model": current_info
+        })
+        
+    except Exception as e:
+        logger.error(f"Error switching model: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/test-model', methods=['POST'])
+def test_model():
+    """Test model connection with provided API key"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        model_name = data.get('model')
+        api_key = data.get('api_key')
+        
+        if not model_name or not api_key:
+            return jsonify({"error": "Model name and API key are required"}), 400
+        
+        from agent_client import MultiLLMClient
+        
+        # Create a temporary client to test
+        provider = MultiLLMClient.SUPPORTED_MODELS[model_name]["provider"]
+        test_client = MultiLLMClient(model_name, {provider: api_key})
+        
+        # Test with a simple prompt
+        test_llm = test_client.get_llm()
+        
+        if hasattr(test_llm, 'invoke'):
+            response = test_llm.invoke("Hello, please respond with 'Connection successful'")
+        else:
+            # For Gemini adapter
+            response = test_llm.invoke("Hello, please respond with 'Connection successful'")
+        
+        return jsonify({
+            "success": True,
+            "message": "Model connection successful",
+            "test_response": str(response)[:100]  # First 100 chars
+        })
+        
+    except Exception as e:
+        logger.error(f"Error testing model: {e}")
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 400
 
 if __name__ == '__main__':
     initialize_agent()

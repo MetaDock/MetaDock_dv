@@ -130,5 +130,31 @@ module.exports = {
     "selectionRoute": "/complete-selection-blastall",
     "env": "",
     "hasStderr": true
+  },
+  "spades": {
+    "title": "SPAdes Genome Assembler",
+    "toolName": "spades",
+    "route": "spades",
+    "commandRoute": "/run-command-spades",
+    "usagePath": "parameters/spades_usage.json",
+    "paraPath": "parameters/spades_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-spades",
+    "env": "spades_env",
+    "hasStderr": true,
+    "conda_env": "spades_env"
+  },
+  "quast": {
+    "title": "QUAST Assembly Quality Assessment",
+    "toolName": "quast",
+    "route": "quast",
+    "commandRoute": "/run-command-quast",
+    "usagePath": "parameters/quast_usage.json",
+    "paraPath": "parameters/quast_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-quast",
+    "env": "quast_env",
+    "hasStderr": true,
+    "conda_env": "quast_env"
   }
 };

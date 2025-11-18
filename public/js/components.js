@@ -9,11 +9,8 @@ class ComponentLoader {
     if (this.loaded) return;
 
     try {
-      // Load component files
-      await this.loadComponentFile('/components/FileInput.js');
-      await this.loadComponentFile('/components/FileOutput.js');
-      await this.loadComponentFile('/components/ToolComponent.js');
-      
+      // Components are now built into workflow-builder.js
+      // No external files needed
       this.loaded = true;
       console.log('Components loaded successfully');
     } catch (error) {
@@ -21,31 +18,15 @@ class ComponentLoader {
     }
   }
 
-  async loadComponentFile(path) {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = path;
-      script.onload = resolve;
-      script.onerror = reject;
-      document.head.appendChild(script);
-    });
-  }
+  // loadComponentFile method removed - no longer needed
 
   createComponent(type, config = {}) {
-    switch (type) {
-      case 'file-input':
-        const inputType = config.component === 'server-file' ? 'server' : 'local';
-        return new FileInput(inputType);
-      case 'file-output':
-        const outputType = config.component === 'server-folder' ? 'server' : 'local';
-        return new FileOutput(outputType);
-      case 'tool':
-        return new ToolComponent(config.component);
-      case 'visualization':
-        return new ToolComponent(config.component); // Reuse ToolComponent for visualization
-      default:
-        throw new Error(`Unknown component type: ${type}`);
-    }
+    // Component creation is now handled by WorkflowBuilder
+    console.log(`Creating component: ${type} with config:`, config);
+    return {
+      type: type,
+      config: config
+    };
   }
 
   getComponentConfig(type, componentName) {
@@ -89,5 +70,6 @@ window.componentLoader = new ComponentLoader();
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('ComponentLoader DOMContentLoaded event fired');
   componentLoader.loadComponents();
 }); 

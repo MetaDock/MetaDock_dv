@@ -29,63 +29,77 @@
   </div>
 
   <!-- Main Workflow Area -->
-  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-    <!-- Components Panel -->
-    <div class="lg:col-span-1">
-      <div class="card bg-base-200 shadow-xl h-full">
+  <div class="flex gap-6 relative">
+    <!-- Components Panel (Collapsible Sidebar) -->
+    <div id="component-sidebar" class="transition-all duration-300 ease-in-out" style="width: 320px;">
+      <div class="card bg-gradient-to-br from-base-200 to-base-300 shadow-xl h-full border border-base-300">
         <div class="card-body">
-          <h3 class="card-title text-lg mb-4">
-            <i class="ti ti-puzzle mr-2"></i>
-            Components
-          </h3>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="card-title text-lg">
+              <i class="ti ti-puzzle mr-2 text-primary"></i>
+              Component Library
+            </h3>
+            <!-- Sidebar Collapse Button -->
+            <button id="sidebar-collapse-btn" class="btn btn-sm btn-ghost btn-circle" onclick="toggleComponentSidebar()" title="Collapse Sidebar">
+              <i class="ti ti-chevron-left"></i>
+            </button>
+          </div>
           
           <!-- Search Components -->
           <div class="form-control mb-4">
-            <input 
-              type="text" 
-              id="component-search" 
-              class="input input-bordered input-sm" 
-              placeholder="Search components..."
-            >
+            <div class="relative">
+              <input 
+                type="text" 
+                id="component-search" 
+                class="input input-bordered input-sm w-full pr-10" 
+                placeholder="Search components..."
+                autocomplete="off" 
+                autocorrect="off" 
+                autocapitalize="off" 
+                spellcheck="false"
+                data-form-type="other"
+              >
+              <i class="ti ti-search absolute right-3 top-1/2 transform -translate-y-1/2 text-base-content/50"></i>
+            </div>
           </div>
 
-          <!-- Component Categories -->
-          <div class="space-y-4">
+          <!-- Component Categories (with scroll) -->
+          <div id="component-container" class="space-y-4 overflow-auto max-h-[calc(100vh-280px)] pr-2">
             <!-- File Components -->
-            <div class="collapse collapse-arrow bg-base-100">
+            <div class="collapse collapse-arrow bg-base-100 border border-base-300 rounded-lg shadow-sm">
               <input type="checkbox" checked /> 
               <div class="collapse-title text-sm font-medium">
-                <i class="ti ti-files mr-2"></i>
+                <i class="ti ti-files mr-2 text-orange-500"></i>
                 File Components
               </div>
               <div class="collapse-content">
                 <div class="space-y-2">
-                  <div class="component-item" data-type="file-input" data-component="local-file" draggable="true">
-                    <i class="ti ti-upload mr-2"></i>
-                    Local File Input
+                  <div class="component-item bg-gradient-to-r from-green-50 to-green-100 border border-green-200 hover:from-green-100 hover:to-green-200 transition-all duration-200" data-type="file-input" data-component="local-file" draggable="true">
+                    <i class="ti ti-upload mr-2 text-green-600"></i>
+                    <span class="text-green-800">Local File Input</span>
                   </div>
-                  <div class="component-item" data-type="file-input" data-component="server-file" draggable="true">
-                    <i class="ti ti-server mr-2"></i>
-                    Server File Input
+                  <div class="component-item bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 hover:from-blue-100 hover:to-blue-200 transition-all duration-200" data-type="file-input" data-component="server-file" draggable="true">
+                    <i class="ti ti-server mr-2 text-blue-600"></i>
+                    <span class="text-blue-800">Server File Input</span>
                   </div>
-                  <div class="component-item" data-type="file-output" data-component="local-folder" draggable="true">
-                    <i class="ti ti-folder-down mr-2"></i>
-                    Local Folder Output
+                  <div class="component-item bg-gradient-to-r from-purple-50 to-purple-100 border border-purple-200 hover:from-purple-100 hover:to-purple-200 transition-all duration-200" data-type="file-output" data-component="local-folder" draggable="true">
+                    <i class="ti ti-folder-down mr-2 text-purple-600"></i>
+                    <span class="text-purple-800">Local Folder Output</span>
                   </div>
-                  <div class="component-item" data-type="file-output" data-component="server-folder" draggable="true">
-                    <i class="ti ti-folder-up mr-2"></i>
-                    Server Folder Output
+                  <div class="component-item bg-gradient-to-r from-indigo-50 to-indigo-100 border border-indigo-200 hover:from-indigo-100 hover:to-indigo-200 transition-all duration-200" data-type="file-output" data-component="server-folder" draggable="true">
+                    <i class="ti ti-folder-up mr-2 text-indigo-600"></i>
+                    <span class="text-indigo-800">Server Folder Output</span>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- Tool Components -->
-            <div class="collapse collapse-arrow bg-base-100">
+            <div class="collapse collapse-arrow bg-base-100 border border-base-300 rounded-lg shadow-sm">
               <input type="checkbox" checked /> 
               <div class="collapse-title text-sm font-medium">
-                <i class="ti ti-tool mr-2"></i>
-                Tools
+                <i class="ti ti-tool mr-2 text-blue-500"></i>
+                Bioinformatics Tools
               </div>
               <div class="collapse-content">
                 <div id="tool-components" class="space-y-2">
@@ -95,15 +109,34 @@
             </div>
 
             <!-- Visualization Components -->
-            <div class="collapse collapse-arrow bg-base-100">
+            <div class="collapse collapse-arrow bg-base-100 border border-base-300 rounded-lg shadow-sm">
               <input type="checkbox" checked /> 
               <div class="collapse-title text-sm font-medium">
-                <i class="ti ti-chart-dots mr-2"></i>
-                Visualization
+                <i class="ti ti-chart-dots mr-2 text-pink-500"></i>
+                Visualization Components
               </div>
               <div class="collapse-content">
                 <div id="viz-components" class="space-y-2">
                   <!-- Visualization tools will be loaded dynamically -->
+                </div>
+              </div>
+            </div>
+            
+            <!-- Quick Templates -->
+            <div class="collapse collapse-arrow bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/30 rounded-lg shadow-sm">
+              <input type="checkbox" /> 
+              <div class="collapse-title text-sm font-medium">
+                <i class="ti ti-template mr-2 text-primary"></i>
+                Quick Templates
+                <div class="badge badge-primary badge-xs ml-2">Recommended</div>
+              </div>
+              <div class="collapse-content">
+                <div class="space-y-2">
+                  <div class="component-item bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 hover:from-primary/10 hover:to-primary/20 transition-all duration-200 cursor-pointer" onclick="createSpadesQuastWorkflow()">
+                    <i class="ti ti-dna-2 mr-2 text-primary"></i>
+                    <span class="text-primary font-medium">SPAdes + QUAST</span>
+                    <div class="text-xs text-primary/70 mt-1">Genome Assembly & Quality Assessment</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -113,15 +146,42 @@
     </div>
 
     <!-- Workflow Canvas -->
-    <div class="lg:col-span-3">
-      <div class="card bg-base-200 shadow-xl">
+    <div id="canvas-area" class="flex-1 transition-all duration-300 ease-in-out">
+      <div class="card bg-gradient-to-br from-base-100 to-base-200 shadow-xl border border-base-300">
         <div class="card-body">
           <div class="flex justify-between items-center mb-4">
-            <h3 class="card-title text-lg">
-              <i class="ti ti-layout mr-2"></i>
-              Workflow Canvas
-            </h3>
-            <div class="flex gap-2">
+            <div class="flex items-center gap-3">
+              <!-- Sidebar Expand Button (only visible when collapsed) -->
+              <button id="sidebar-expand-btn" class="btn btn-sm btn-ghost btn-circle hidden" onclick="toggleComponentSidebar()" title="Show Component Library">
+                <i class="ti ti-chevron-right"></i>
+              </button>
+              
+              <h3 class="card-title text-lg">
+                <i class="ti ti-layout mr-2 text-primary"></i>
+                Workflow Canvas
+              </h3>
+              <div class="flex gap-1">
+                <div class="badge badge-sm badge-outline" id="node-count">Nodes: 0</div>
+                <div class="badge badge-sm badge-outline" id="connection-count">Connections: 0</div>
+              </div>
+            </div>
+            <div class="flex gap-2 flex-wrap items-center">
+              
+              <!-- Canvas Zoom Controls -->
+              <div class="join join-horizontal">
+                <button class="btn btn-xs btn-outline join-item" onclick="zoomCanvas(-0.1)" title="Zoom Out">
+                  <i class="ti ti-zoom-out"></i>
+                </button>
+                <button class="btn btn-xs btn-outline join-item" onclick="resetCanvasZoom()" title="Reset Zoom">
+                  <span id="canvas-zoom-level" class="text-xs font-mono">100%</span>
+                </button>
+                <button class="btn btn-xs btn-outline join-item" onclick="zoomCanvas(0.1)" title="Zoom In">
+                  <i class="ti ti-zoom-in"></i>
+                </button>
+              </div>
+              
+              <div class="divider divider-horizontal mx-0"></div>
+              
               <button id="clear-canvas" class="btn btn-error btn-sm">
                 <i class="ti ti-trash mr-1"></i>
                 Clear
@@ -130,16 +190,67 @@
                 <i class="ti ti-player-play mr-1"></i>
                 Run Workflow
               </button>
+              <button class="btn btn-info btn-sm" onclick="showWorkflowProgress()">
+                <i class="ti ti-activity mr-1"></i>
+                View Progress
+              </button>
+              <button class="btn btn-warning btn-sm" onclick="showWorkflowStats()">
+                <i class="ti ti-chart-bar mr-1"></i>
+                Statistics
+              </button>
             </div>
           </div>
           
-          <div id="workflow-canvas" class="border-2 border-dashed border-base-300 rounded-lg min-h-[600px] relative bg-base-100">
-            <!-- Workflow nodes will be placed here -->
-            <div class="absolute inset-0 flex items-center justify-center text-base-content/50">
-              <div class="text-center">
-                <i class="ti ti-mouse text-4xl mb-2"></i>
-                <p>Drag components from the left panel to start building your workflow</p>
+          <!-- Canvas Controls -->
+          <div class="flex justify-between items-center mb-3 text-sm text-base-content/70">
+            <div class="flex items-center gap-4">
+              <span class="flex items-center gap-1">
+                <i class="ti ti-mouse text-primary"></i>
+                Drag components to canvas
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="ti ti-click text-secondary"></i>
+                Click connection points to connect
+              </span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="btn btn-xs btn-ghost" onclick="undoLastAction()">
+                <i class="ti ti-arrow-back-up"></i>
+                Undo
+              </button>
+              <button class="btn btn-xs btn-ghost" onclick="redoLastAction()">
+                <i class="ti ti-arrow-forward-up"></i>
+                Redo
+              </button>
+            </div>
+          </div>
+          
+          <!-- Canvas Scroll Container -->
+          <div id="canvas-scroll-container" class="border-2 border-dashed border-primary/30 rounded-xl h-[calc(100vh-280px)] relative bg-gradient-to-br from-base-50 to-base-100 overflow-auto">
+            <div id="workflow-canvas" class="min-h-full min-w-full relative" style="transform-origin: top left; width: 1000px; height: 1000px;">
+              <!-- Grid Pattern -->
+              <div class="absolute inset-0 opacity-30 pointer-events-none" style="background-image: radial-gradient(circle, #94a3b8 1px, transparent 1px); background-size: 20px 20px;"></div>
+            
+            <!-- Canvas Placeholder -->
+            <div id="canvas-placeholder" class="absolute inset-0 flex items-center justify-center text-base-content/50 z-0">
+              <div class="text-center p-8 bg-base-100/80 backdrop-blur-sm rounded-2xl border border-base-300 shadow-lg">
+                <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center">
+                  <i class="ti ti-mouse text-2xl text-primary"></i>
+                </div>
+                <h4 class="font-semibold text-base-content mb-2">Start Building Your Workflow</h4>
+                <p class="text-sm">Drag components from the left panel to here</p>
+                <div class="flex justify-center gap-2 mt-4">
+                  <div class="badge badge-primary badge-sm">Drag</div>
+                  <div class="badge badge-secondary badge-sm">Connect</div>
+                  <div class="badge badge-accent badge-sm">Configure</div>
+                </div>
               </div>
+            </div>
+            
+            <!-- SVG Layer for Connections -->
+            <svg id="workflow-svg" class="absolute inset-0 w-full h-full pointer-events-none z-10">
+              <!-- Connection lines will be drawn here -->
+            </svg>
             </div>
           </div>
         </div>
@@ -148,15 +259,22 @@
   </div>
 
   <!-- Workflow Properties Panel -->
-  <div class="card bg-base-200 shadow-xl">
+  <div class="card bg-gradient-to-br from-base-200 to-base-300 shadow-xl border border-base-300">
     <div class="card-body">
-      <h3 class="card-title text-lg mb-4">
-        <i class="ti ti-settings mr-2"></i>
-        Properties
-      </h3>
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="card-title text-lg">
+            <i class="ti ti-settings mr-2 text-accent"></i>
+            Properties Panel
+          </h3>
+          <div class="badge badge-accent badge-sm" id="selected-component-type">None Selected</div>
+        </div>
       <div id="properties-panel" class="space-y-4">
-        <div class="text-center text-base-content/50">
-          Select a component to view its properties
+        <div class="text-center text-base-content/50 p-8 bg-base-100/50 rounded-lg border border-base-300">
+          <div class="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-accent/20 to-accent/30 rounded-full flex items-center justify-center">
+            <i class="ti ti-click text-accent text-xl"></i>
+          </div>
+          <p class="font-medium mb-1">Select Component to View Properties</p>
+          <p class="text-xs">Click any component on the canvas to configure its properties</p>
         </div>
       </div>
     </div>
@@ -165,14 +283,28 @@
 
 <!-- Component Configuration Modal -->
 <dialog id="component-config-modal" class="modal">
-  <div class="modal-box w-11/12 max-w-5xl">
-    <h3 class="font-bold text-lg mb-4">Configure Component</h3>
-    <div id="component-config-content">
+  <div class="modal-box w-11/12 max-w-5xl bg-gradient-to-br from-base-100 to-base-200 border border-base-300">
+    <div class="flex items-center justify-between mb-6">
+      <h3 class="font-bold text-xl flex items-center">
+        <i class="ti ti-settings mr-3 text-primary"></i>
+        Component Configuration
+      </h3>
+      <button class="btn btn-sm btn-circle btn-ghost" onclick="closeComponentConfig()">
+        <i class="ti ti-x"></i>
+      </button>
+    </div>
+    <div id="component-config-content" class="bg-base-100 rounded-lg p-4 border border-base-300 shadow-inner">
       <!-- Configuration content will be loaded here -->
     </div>
-    <div class="modal-action">
-      <button class="btn btn-outline" onclick="closeComponentConfig()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveComponentConfig()">Save</button>
+    <div class="modal-action mt-6">
+      <button class="btn btn-outline" onclick="closeComponentConfig()">
+        <i class="ti ti-x mr-2"></i>
+        Cancel
+      </button>
+      <button class="btn btn-primary" onclick="saveComponentConfig()">
+        <i class="ti ti-check mr-2"></i>
+        Save Configuration
+      </button>
     </div>
   </div>
 </dialog>
@@ -213,61 +345,339 @@
 }
 
 .workflow-node {
-  @apply absolute bg-base-100 border-2 border-base-300 rounded-lg p-3 shadow-lg cursor-move;
-  min-width: 150px;
-  min-height: 80px;
+  @apply absolute bg-base-100 border-2 border-base-300 shadow-lg cursor-move;
+  width: 200px !important;
+  min-height: 120px;
+  padding: 12px !important;
   user-select: none;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  z-index: 10;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
+/* Enhanced File Input/Output Nodes */
+.workflow-node:not(.tool-node) {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+  border: 2px solid #e2e8f0 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+  color: #1a202c !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border-radius: 16px !important;
+}
+
+.workflow-node:not(.tool-node):hover {
+  border-color: #cbd5e0 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06) !important;
+  transform: translateY(-2px) scale(1.02) !important;
+}
+
+/* File Input Nodes */
+.workflow-node.file-input-node {
+  border-left: 4px solid #10b981 !important;
+}
+
+.workflow-node.file-input-node:hover {
+  border-left-color: #059669 !important;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15), 0 4px 8px rgba(16, 185, 129, 0.08) !important;
+}
+
+/* File Output Nodes */
+.workflow-node.file-output-node {
+  border-left: 4px solid #8b5cf6 !important;
+}
+
+.workflow-node.file-output-node:hover {
+  border-left-color: #7c3aed !important;
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.15), 0 4px 8px rgba(139, 92, 246, 0.08) !important;
+}
+
+.workflow-node:not(.tool-node) .node-type {
+  background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+  color: white !important;
+  font-weight: 500 !important;
+  border-radius: 12px !important;
+  padding: 2px 8px !important;
+  font-size: 0.65rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.workflow-node:not(.tool-node) .btn {
+  background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  font-size: 0.75rem !important;
+  padding: 6px 12px !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 4px rgba(34, 197, 94, 0.2) !important;
+}
+
+.workflow-node:not(.tool-node) .btn:hover {
+  background: linear-gradient(135deg, #16a34a, #15803d) !important;
+  box-shadow: 0 4px 8px rgba(34, 197, 94, 0.3) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Old styles removed */
+
 .workflow-node.selected {
-  @apply border-primary shadow-xl;
+  border: 3px solid #4299e1 !important;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1), 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-2px) !important;
+}
+
+.workflow-node.selected.tool-node {
+  border: 3px solid #667eea !important;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Langflow-inspired Tool Nodes */
+.workflow-node.tool-node {
+  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%) !important;
+  border: 2px solid #e2e8f0 !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.05) !important;
+  color: #1a202c !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border-radius: 16px !important;
+  border-top: 4px solid #3b82f6 !important;
+}
+
+/* Langflow-inspired File Input Nodes */
+.workflow-node.file-input-node {
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%) !important;
+  border: 1px solid #dcfce7 !important;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.08), 0 2px 4px rgba(34, 197, 94, 0.04) !important;
+  color: #1a202c !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Langflow-inspired File Output Nodes */
+.workflow-node.file-output-node {
+  background: linear-gradient(135deg, #ffffff 0%, #fef3f2 100%) !important;
+  border: 1px solid #fecaca !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.08), 0 2px 4px rgba(239, 68, 68, 0.04) !important;
+  color: #1a202c !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.workflow-node.tool-node:hover {
+  border-color: #cbd5e0 !important;
+  border-top-color: #2563eb !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15), 0 6px 12px rgba(0, 0, 0, 0.08) !important;
+  transform: translateY(-3px) scale(1.03) !important;
+}
+
+.workflow-node.file-input-node:hover {
+  border-color: #bbf7d0 !important;
+  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.12), 0 4px 8px rgba(34, 197, 94, 0.06) !important;
+  transform: translateY(-1px) !important;
+}
+
+.workflow-node.file-output-node:hover {
+  border-color: #fca5a5 !important;
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.12), 0 4px 8px rgba(239, 68, 68, 0.06) !important;
+  transform: translateY(-1px) !important;
+}
+
+.workflow-node.tool-node .node-header {
+  background: linear-gradient(135deg, #667eea, #764ba2) !important;
+  color: white !important;
+  margin: -12px -12px 12px -12px !important;
+  padding: 12px !important;
+  border-radius: 12px 12px 0 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.workflow-node.file-input-node .node-header {
+  background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+  color: white !important;
+  margin: -12px -12px 12px -12px !important;
+  padding: 12px !important;
+  border-radius: 12px 12px 0 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.workflow-node.file-output-node .node-header {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  color: white !important;
+  margin: -12px -12px 12px -12px !important;
+  padding: 12px !important;
+  border-radius: 12px 12px 0 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.workflow-node.tool-node .node-title,
+.workflow-node.file-input-node .node-title,
+.workflow-node.file-output-node .node-title {
+  display: flex !important;
+  align-items: center !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  margin: 0 !important;
+}
+
+.workflow-node.tool-node .node-title i,
+.workflow-node.file-input-node .node-title i,
+.workflow-node.file-output-node .node-title i {
+  font-size: 1.1rem !important;
+  margin-right: 8px !important;
+}
+
+.workflow-node.tool-node .node-type,
+.workflow-node.file-input-node .node-type,
+.workflow-node.file-output-node .node-type {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+  font-weight: 500 !important;
+  border-radius: 12px !important;
+  padding: 2px 8px !important;
+  font-size: 0.65rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.workflow-node.tool-node .node-description,
+.workflow-node.file-input-node .node-content .text-xs,
+.workflow-node.file-output-node .node-content .text-xs {
+  color: #64748b !important;
+  font-size: 0.75rem !important;
+  margin-bottom: 12px !important;
+  line-height: 1.4 !important;
+}
+
+.workflow-node.tool-node .btn {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  font-size: 0.75rem !important;
+  padding: 6px 12px !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2) !important;
+}
+
+.workflow-node.tool-node .btn:hover {
+  background: linear-gradient(135deg, #4338ca, #6d28d9) !important;
+  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3) !important;
+  transform: translateY(-1px) !important;
+}
+
+.workflow-node.file-input-node .btn {
+  background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  font-size: 0.75rem !important;
+  padding: 6px 12px !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 4px rgba(34, 197, 94, 0.2) !important;
+}
+
+.workflow-node.file-input-node .btn:hover {
+  background: linear-gradient(135deg, #16a34a, #15803d) !important;
+  box-shadow: 0 4px 8px rgba(34, 197, 94, 0.3) !important;
+  transform: translateY(-1px) !important;
+}
+
+.workflow-node.file-output-node .btn {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  font-size: 0.75rem !important;
+  padding: 6px 12px !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2) !important;
+}
+
+.workflow-node.file-output-node .btn:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3) !important;
+  transform: translateY(-1px) !important;
 }
 
 .workflow-node .node-header {
-  @apply flex items-center justify-between mb-2;
+  @apply flex flex-col mb-3;
 }
 
 .workflow-node .node-title {
-  @apply font-medium text-sm;
+  @apply font-medium text-sm mb-1 flex items-center;
 }
 
 .workflow-node .node-type {
-  @apply text-xs opacity-70;
+  @apply text-xs opacity-70 bg-base-200 px-2 py-1 rounded text-center;
+}
+
+.workflow-node .node-content {
+  @apply text-center;
+}
+
+.workflow-node:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -8px rgba(0, 0, 0, 0.3);
 }
 
 .workflow-node .node-ports {
   @apply flex justify-between items-center mt-2;
 }
 
-.workflow-node .port {
-  @apply w-3 h-3 rounded-full border-2 cursor-pointer transition-colors;
-}
-
-.workflow-node .port.input {
-  @apply border-blue-500 bg-blue-500;
-}
-
-.workflow-node .port.output {
-  @apply border-green-500 bg-green-500;
-}
-
-.workflow-node .port:hover {
-  @apply scale-125;
-}
+/* Old port styles removed - using node-connection-point instead */
 
 .workflow-connection {
-  @apply absolute pointer-events-none;
-  stroke: #3b82f6;
-  stroke-width: 2;
+  stroke: #6b7280;
+  stroke-width: 3;
   fill: none;
+  transition: all 0.3s ease;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  cursor: pointer;
+  pointer-events: stroke;
 }
 
 .workflow-connection.valid {
   stroke: #10b981;
+  stroke-width: 3;
+  filter: drop-shadow(0 0 3px rgba(16, 185, 129, 0.4));
 }
 
 .workflow-connection.invalid {
   stroke: #ef4444;
+  stroke-width: 3;
+  stroke-dasharray: 5,5;
+  filter: drop-shadow(0 0 3px rgba(239, 68, 68, 0.4));
+}
+
+.workflow-connection:hover {
+  stroke: #4b5563;
+  stroke-width: 4;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.workflow-connection.temp-connection {
+  stroke: #3b82f6;
+  stroke-width: 2;
+  opacity: 0.7;
+  pointer-events: none;
+  animation: dash 1s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -10;
+  }
 }
 
 #workflow-canvas {
@@ -277,16 +687,94 @@
 }
 
 .node-connection-point {
-  @apply absolute w-4 h-4 bg-base-300 border-2 border-base-content rounded-full cursor-crosshair;
-  transform: translate(-50%, -50%);
+  position: absolute !important;
+  width: 14px !important;
+  height: 14px !important;
+  border-radius: 7px !important;
+  cursor: crosshair !important;
+  z-index: 20 !important;
+  transition: all 0.2s ease !important;
+  border: none !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  min-width: 14px !important;
+  min-height: 14px !important;
+  max-width: 14px !important;
+  max-height: 14px !important;
+  aspect-ratio: 1 / 1 !important;
+  flex-shrink: 0 !important;
+  overflow: hidden !important;
+  box-shadow: 0 0 0 2px white, 0 0 0 3px currentColor !important;
 }
 
+.node-connection-point:hover {
+  transform: scale(1.4) !important;
+  box-shadow: 0 0 0 3px white, 0 0 0 6px currentColor, 0 0 12px rgba(0, 0, 0, 0.3) !important;
+  z-index: 30 !important;
+}
+
+/* Connection mode visual feedback */
+body.connecting .node-connection-point.compatible {
+  animation: pulse 1s infinite;
+  box-shadow: 0 0 0 3px white, 0 0 0 5px #22c55e, 0 0 12px rgba(34, 197, 94, 0.4) !important;
+}
+
+body.connecting .node-connection-point.incompatible {
+  opacity: 0.3 !important;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Modern color-coded connection points */
 .node-connection-point.input {
-  @apply bg-blue-500 border-blue-600;
+  background-color: #4f46e5 !important;
+  color: #4f46e5 !important;
+  left: -7px !important;
 }
 
 .node-connection-point.output {
-  @apply bg-green-500 border-green-600;
+  background-color: #059669 !important;
+  color: #059669 !important;
+  right: -7px !important;
+}
+
+/* Data type specific colors - softer, more professional */
+.node-connection-point.file {
+  background-color: #f97316 !important;
+  color: #f97316 !important;
+}
+
+.node-connection-point.fastq {
+  background-color: #7c3aed !important;
+  color: #7c3aed !important;
+}
+
+.node-connection-point.fasta {
+  background-color: #0891b2 !important;
+  color: #0891b2 !important;
+}
+
+.node-connection-point.report {
+  background-color: #db2777 !important;
+  color: #db2777 !important;
+}
+
+/* Tool-specific connection points for better visual hierarchy */
+.workflow-node.tool-node .node-connection-point.input {
+  background-color: #6366f1 !important;
+  color: #6366f1 !important;
+}
+
+.workflow-node.tool-node .node-connection-point.output {
+  background-color: #10b981 !important;
+  color: #10b981 !important;
 }
 
 /* Drag and drop visual feedback */
@@ -297,7 +785,2285 @@
 .component-item.drag-over {
   @apply bg-primary/20 border-primary;
 }
+
+/* Visual boundary indicator */
+#workflow-canvas {
+  position: relative;
+}
+
+#workflow-canvas::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border: 1px dashed transparent;
+  pointer-events: none;
+  z-index: 0;
+  transition: border-color 0.3s ease;
+}
+
+#workflow-canvas.drag-over::before {
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* Ensure nodes stay above the boundary indicator */
+.workflow-node {
+  z-index: 10;
+}
+
+/* Enhanced drag and drop experience */
+.component-item {
+  transition: all 0.2s ease-in-out;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: grab;
+  user-select: none;
+}
+
+.component-item:active {
+  cursor: grabbing;
+  transform: scale(0.95);
+}
+
+.component-item.dragging {
+  opacity: 0.7;
+  transform: scale(0.9) rotate(2deg);
+  z-index: 1000;
+}
+
+/* Canvas drag over states */
+#workflow-canvas.drag-over {
+  border-color: #3b82f6 !important;
+  border-style: solid !important;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(147, 51, 234, 0.05)) !important;
+  animation: pulse-border 1s infinite;
+}
+
+@keyframes pulse-border {
+  0%, 100% {
+    border-width: 2px;
+  }
+  50% {
+    border-width: 3px;
+  }
+}
+
+/* Node selection improvements */
+.workflow-node.selected {
+  border: 3px solid #3b82f6 !important;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2), 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-2px) scale(1.02) !important;
+  z-index: 20 !important;
+}
+
+.workflow-node.selected.tool-node {
+  border-top: 6px solid #2563eb !important;
+}
+
+/* Connection line improvements */
+.workflow-connection {
+  stroke: #6b7280;
+  stroke-width: 3;
+  fill: none;
+  transition: all 0.3s ease;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  cursor: pointer;
+  pointer-events: stroke;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.workflow-connection:hover {
+  stroke: #374151;
+  stroke-width: 4;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.workflow-connection.selected {
+  stroke: #3b82f6;
+  stroke-width: 4;
+  filter: drop-shadow(0 2px 8px rgba(59, 130, 246, 0.3));
+  animation: flow 2s linear infinite;
+}
+
+@keyframes flow {
+  0% {
+    stroke-dasharray: 8 4;
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 12;
+  }
+}
+
+/* Loading states */
+.workflow-node.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.workflow-node.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid #e2e8f0;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Success/Error states */
+.workflow-node.success {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2) !important;
+}
+
+.workflow-node.error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+/* Mobile and responsive improvements */
+@media (max-width: 768px) {
+  .workflow-node {
+    width: 160px !important;
+    min-height: 100px !important;
+    font-size: 0.875rem !important;
+  }
+  
+  .workflow-node .node-title {
+    font-size: 0.8rem !important;
+  }
+  
+  .workflow-node .btn {
+    font-size: 0.7rem !important;
+    padding: 4px 8px !important;
+  }
+  
+  .node-connection-point {
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 8px !important;
+  }
+  
+  .node-connection-point.input {
+    left: -8px !important;
+  }
+  
+  .node-connection-point.output {
+    right: -8px !important;
+  }
+  
+  #workflow-canvas {
+    min-height: 400px !important;
+  }
+  
+  .component-item {
+    padding: 6px 10px !important;
+    font-size: 0.8rem !important;
+  }
+  
+  .card-body {
+    padding: 1rem !important;
+  }
+  
+  .flex.gap-2 {
+    flex-wrap: wrap;
+    gap: 0.25rem !important;
+  }
+  
+  .btn-sm {
+    font-size: 0.7rem !important;
+    padding: 0.25rem 0.5rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .grid.grid-cols-1.xl\\:grid-cols-4.lg\\:grid-cols-3 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .workflow-node {
+    width: 140px !important;
+    min-height: 80px !important;
+  }
+  
+  #workflow-canvas {
+    min-height: 300px !important;
+  }
+  
+  .card-title {
+    font-size: 1rem !important;
+  }
+  
+  .collapse-title {
+    font-size: 0.8rem !important;
+  }
+  
+  .badge {
+    font-size: 0.6rem !important;
+  }
+}
+
+/* Touch device improvements */
+@media (hover: none) and (pointer: coarse) {
+  .component-item:hover {
+    background-color: inherit;
+  }
+  
+  .component-item:active {
+    background-color: rgba(59, 130, 246, 0.1);
+    transform: scale(0.98);
+  }
+  
+  .workflow-node:hover {
+    transform: none;
+    box-shadow: inherit;
+  }
+  
+  .workflow-node:active {
+    transform: scale(0.98);
+  }
+  
+  .node-connection-point {
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 10px !important;
+  }
+  
+  .node-connection-point.input {
+    left: -10px !important;
+  }
+  
+  .node-connection-point.output {
+    right: -10px !important;
+  }
+}
+
+/* Custom Scrollbar Styles */
+#canvas-scroll-container::-webkit-scrollbar,
+#component-container::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+#canvas-scroll-container::-webkit-scrollbar-track,
+#component-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+}
+
+#canvas-scroll-container::-webkit-scrollbar-thumb,
+#component-container::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.5);
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+#canvas-scroll-container::-webkit-scrollbar-thumb:hover,
+#component-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.7);
+  background-clip: padding-box;
+}
+
+#canvas-scroll-container::-webkit-scrollbar-corner,
+#component-container::-webkit-scrollbar-corner {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Zoom transition for canvas */
+#workflow-canvas {
+  transition: transform 0.2s ease-out;
+}
+
+/* Sidebar collapse transition */
+#component-sidebar {
+  transition: width 0.3s ease-in-out;
+}
+
+/* Ensure scrollbars are always visible */
+#canvas-scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.5) rgba(0, 0, 0, 0.1);
+}
+
+#component-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.5) rgba(0, 0, 0, 0.1);
+}
 </style>
 
 <script src="/js/components.js"></script>
-<script src="/js/workflow-builder.js"></script> 
+<script src="/js/workflow-builder.js?v=2024"></script>
+<script src="/js/workflow-debug.js?v=2024"></script>
+<script>
+  // Enhanced workflow UI functions
+  function updateNodeCount() {
+    const nodeCount = document.querySelectorAll('.workflow-node').length;
+    const nodeCountBadge = document.getElementById('node-count');
+    if (nodeCountBadge) {
+      nodeCountBadge.textContent = `Nodes: ${nodeCount}`;
+    }
+  }
+
+  function updateConnectionCount() {
+    const connectionCount = document.querySelectorAll('.workflow-connection').length;
+    const connectionCountBadge = document.getElementById('connection-count');
+    if (connectionCountBadge) {
+      connectionCountBadge.textContent = `Connections: ${connectionCount}`;
+    }
+  }
+
+  function updateComponentCounts() {
+    // Update tool count
+    const toolCount = document.querySelectorAll('#tool-components .component-item').length;
+    const toolCountBadge = document.getElementById('tool-count');
+    if (toolCountBadge) {
+      toolCountBadge.textContent = toolCount;
+    }
+
+    // Update viz count
+    const vizCount = document.querySelectorAll('#viz-components .component-item').length;
+    const vizCountBadge = document.getElementById('viz-count');
+    if (vizCountBadge) {
+      vizCountBadge.textContent = vizCount;
+    }
+  }
+
+  function toggleGrid() {
+    const canvas = document.getElementById('workflow-canvas');
+    const gridElement = canvas.querySelector('.absolute.inset-0.opacity-30');
+    if (gridElement) {
+      gridElement.style.display = gridElement.style.display === 'none' ? 'block' : 'none';
+    }
+  }
+
+  function zoomToFit() {
+    const canvas = document.getElementById('workflow-canvas');
+    const nodes = canvas.querySelectorAll('.workflow-node');
+    if (nodes.length === 0) return;
+
+    // Calculate bounding box of all nodes
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    nodes.forEach(node => {
+      const rect = node.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+      const x = rect.left - canvasRect.left;
+      const y = rect.top - canvasRect.top;
+      minX = Math.min(minX, x);
+      minY = Math.min(minY, y);
+      maxX = Math.max(maxX, x + rect.width);
+      maxY = Math.max(maxY, y + rect.height);
+    });
+
+    // Center the view on the nodes
+    const centerX = (minX + maxX) / 2;
+    const centerY = (minY + maxY) / 2;
+    const canvasWidth = canvas.offsetWidth;
+    const canvasHeight = canvas.offsetHeight;
+
+    // Smooth scroll to center
+    canvas.scrollTo({
+      left: centerX - canvasWidth / 2,
+      top: centerY - canvasHeight / 2,
+      behavior: 'smooth'
+    });
+  }
+
+  function resetZoom() {
+    const canvas = document.getElementById('workflow-canvas');
+    canvas.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+  }
+
+  // ===== Component Sidebar Toggle =====
+  let sidebarCollapsed = false;
+  
+  function toggleComponentSidebar() {
+    const sidebar = document.getElementById('component-sidebar');
+    const collapseBtn = document.getElementById('sidebar-collapse-btn');
+    const expandBtn = document.getElementById('sidebar-expand-btn');
+    
+    sidebarCollapsed = !sidebarCollapsed;
+    
+    if (sidebarCollapsed) {
+      // Collapse sidebar
+      sidebar.style.width = '0px';
+      sidebar.style.overflow = 'hidden';
+      
+      // Hide collapse button (in sidebar)
+      if (collapseBtn) collapseBtn.style.display = 'none';
+      
+      // Show expand button (in canvas toolbar)
+      if (expandBtn) expandBtn.classList.remove('hidden');
+    } else {
+      // Expand sidebar
+      sidebar.style.width = '320px';
+      sidebar.style.overflow = 'visible';
+      
+      // Show collapse button (in sidebar)
+      if (collapseBtn) collapseBtn.style.display = 'flex';
+      
+      // Hide expand button (in canvas toolbar)
+      if (expandBtn) expandBtn.classList.add('hidden');
+    }
+    
+    // Update connections after sidebar toggle
+    if (window.workflowBuilder && window.workflowBuilder.updateAllConnections) {
+      setTimeout(() => {
+        window.workflowBuilder.updateAllConnections();
+      }, 350);
+    }
+  }
+
+  // ===== Canvas Zoom Functions =====
+  let canvasZoomLevel = 1.0;
+  
+  function zoomCanvas(delta) {
+    const canvas = document.getElementById('workflow-canvas');
+    const zoomDisplay = document.getElementById('canvas-zoom-level');
+    
+    canvasZoomLevel = Math.max(0.3, Math.min(3.0, canvasZoomLevel + delta));
+    canvas.style.transform = `scale(${canvasZoomLevel})`;
+    
+    // Update display
+    zoomDisplay.textContent = `${Math.round(canvasZoomLevel * 100)}%`;
+    
+    // Update connections after zoom
+    if (window.workflowBuilder && window.workflowBuilder.updateAllConnections) {
+      setTimeout(() => {
+        window.workflowBuilder.updateAllConnections();
+      }, 100);
+    }
+  }
+  
+  function resetCanvasZoom() {
+    canvasZoomLevel = 1.0;
+    const canvas = document.getElementById('workflow-canvas');
+    const zoomDisplay = document.getElementById('canvas-zoom-level');
+    
+    canvas.style.transform = 'scale(1)';
+    zoomDisplay.textContent = '100%';
+    
+    // Update connections after reset
+    if (window.workflowBuilder && window.workflowBuilder.updateAllConnections) {
+      setTimeout(() => {
+        window.workflowBuilder.updateAllConnections();
+      }, 100);
+    }
+  }
+
+  // Mouse wheel zoom for canvas
+  function setupCanvasWheelZoom() {
+    const scrollContainer = document.getElementById('canvas-scroll-container');
+    if (!scrollContainer) return;
+    
+    scrollContainer.addEventListener('wheel', (e) => {
+      // Ctrl/Cmd + Wheel for zoom
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.05 : 0.05;
+        zoomCanvas(delta);
+      }
+    }, { passive: false });
+  }
+
+  // Center canvas on initial load
+  function centerCanvas() {
+    const scrollContainer = document.getElementById('canvas-scroll-container');
+    const canvas = document.getElementById('workflow-canvas');
+    
+    if (scrollContainer && canvas) {
+      // Calculate center position
+      const containerWidth = scrollContainer.clientWidth;
+      const containerHeight = scrollContainer.clientHeight;
+      const canvasWidth = canvas.offsetWidth;
+      const canvasHeight = canvas.offsetHeight;
+      
+      // Scroll to center
+      scrollContainer.scrollLeft = (canvasWidth - containerWidth) / 2;
+      scrollContainer.scrollTop = (canvasHeight - containerHeight) / 2;
+    }
+  }
+
+  function undoLastAction() {
+    if (window.workflowBuilder && window.workflowBuilder.undo) {
+      window.workflowBuilder.undo();
+    } else {
+      console.log('Undo function not yet implemented');
+    }
+  }
+
+  function redoLastAction() {
+    if (window.workflowBuilder && window.workflowBuilder.redo) {
+      window.workflowBuilder.redo();
+    } else {
+      console.log('Redo function not yet implemented');
+    }
+  }
+
+  // Component search functionality
+  function setupComponentSearch() {
+    const searchInput = document.getElementById('component-search');
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase();
+      const componentItems = document.querySelectorAll('.component-item');
+      
+      componentItems.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        const shouldShow = text.includes(searchTerm);
+        item.style.display = shouldShow ? 'flex' : 'none';
+        
+        // Add highlight effect
+        if (searchTerm && shouldShow && searchTerm.length > 0) {
+          item.classList.add('bg-primary/10', 'border-primary/30');
+        } else {
+          item.classList.remove('bg-primary/10', 'border-primary/30');
+        }
+      });
+    });
+  }
+
+  // Workflow template functions
+
+  function showTemplateMessage(message, type = 'info') {
+    const alertClass = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-error' : 'alert-info';
+    const iconClass = type === 'success' ? 'ti-check' : type === 'error' ? 'ti-x' : 'ti-info-circle';
+    
+    const alert = document.createElement('div');
+    alert.className = `alert ${alertClass} fixed top-20 right-4 z-50 w-96 shadow-lg`;
+    alert.innerHTML = `
+      <i class="ti ${iconClass}"></i>
+      <span>${message}</span>
+      <button class="btn btn-sm btn-circle btn-ghost ml-auto" onclick="this.parentElement.remove()">
+        <i class="ti ti-x"></i>
+      </button>
+    `;
+    
+    document.body.appendChild(alert);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+      if (alert.parentElement) {
+        alert.remove();
+      }
+    }, 3000);
+  }
+
+  // Progress visualization functions
+  async function showWorkflowProgress() {
+    // Check if there's a recent workflow job to show progress for
+    const lastJobId = window.workflowBuilder?.lastJobId;
+    
+    if (lastJobId) {
+      // Show progress for the last executed workflow
+      console.log('🔍 Showing progress for job:', lastJobId);
+      try {
+        await window.workflowBuilder.showProgressModal(lastJobId);
+        return;
+      } catch (error) {
+        console.error('Error showing job progress:', error);
+        // Fall through to show static progress if job progress fails
+      }
+    }
+    
+    // Show static workflow information if no active job
+    const modal = document.createElement('dialog');
+    modal.className = 'modal';
+    
+    // Get workflow jobs list
+    let workflowJobs = [];
+    try {
+      const response = await fetch('/api/workflow-jobs');
+      if (response.ok) {
+        workflowJobs = await response.json();
+      }
+    } catch (error) {
+      console.log('Could not fetch workflow jobs:', error);
+    }
+    
+    modal.innerHTML = `
+      <div class="modal-box w-11/12 max-w-4xl bg-gradient-to-br from-base-100 to-base-200">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="font-bold text-xl flex items-center">
+            <i class="ti ti-activity mr-3 text-info"></i>
+            Workflow Progress & History
+          </h3>
+          <button class="btn btn-sm btn-circle btn-ghost" onclick="this.closest('dialog').close()">
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
+        
+        <div class="space-y-4">
+          <!-- Current Workflow Stats -->
+          <div class="stats shadow w-full">
+            <div class="stat">
+              <div class="stat-figure text-primary">
+                <i class="ti ti-nodes text-2xl"></i>
+              </div>
+              <div class="stat-title">Canvas Nodes</div>
+              <div class="stat-value text-primary">${document.querySelectorAll('.workflow-node').length}</div>
+            </div>
+            
+            <div class="stat">
+              <div class="stat-figure text-secondary">
+                <i class="ti ti-git-branch text-2xl"></i>
+              </div>
+              <div class="stat-title">Connections</div>
+              <div class="stat-value text-secondary">${document.querySelectorAll('.workflow-connection').length}</div>
+            </div>
+            
+            <div class="stat">
+              <div class="stat-figure text-accent">
+                <i class="ti ti-history text-2xl"></i>
+              </div>
+              <div class="stat-title">Job History</div>
+              <div class="stat-value text-accent">${workflowJobs.length}</div>
+            </div>
+          </div>
+          
+          <!-- Workflow Jobs History -->
+          ${workflowJobs.length > 0 ? `
+          <div class="bg-base-100 rounded-lg p-4 border border-base-300">
+            <h4 class="font-semibold mb-3 flex items-center">
+              <i class="ti ti-history mr-2"></i>
+              Recent Workflow Executions
+            </h4>
+            <div class="space-y-2 max-h-64 overflow-y-auto">
+              ${workflowJobs.slice(0, 10).map(job => `
+                <div class="flex items-center justify-between p-3 bg-base-200 rounded-lg hover:bg-base-300 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i class="ti ${job.status === 'completed' ? 'ti-check text-success' : 
+                                  job.status === 'failed' ? 'ti-x text-error' : 
+                                  job.status === 'running' ? 'ti-loader text-warning animate-spin' : 
+                                  'ti-clock text-base-content/50'}"></i>
+                    <div>
+                      <div class="font-medium">Job ${job.jobId.split('_')[1]}</div>
+                      <div class="text-sm text-base-content/70">${new Date(job.startTime).toLocaleString()}</div>
+                      ${job.workflow?.tools ? `<div class="text-xs text-base-content/50">${job.workflow.tools.join(' → ')}</div>` : ''}
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <div class="badge badge-outline ${job.status === 'completed' ? 'badge-success' : 
+                                                    job.status === 'failed' ? 'badge-error' : 
+                                                    job.status === 'running' ? 'badge-warning' : 'badge-ghost'}">${job.status}</div>
+                    ${job.progress ? `<div class="text-sm text-base-content/70">${job.progress}%</div>` : ''}
+                    <button class="btn btn-xs btn-outline" onclick="showJobProgress('${job.jobId}')">
+                      <i class="ti ti-eye"></i>
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          ` : `
+          <div class="bg-base-100 rounded-lg p-4 border border-base-300 text-center">
+            <i class="ti ti-inbox text-4xl text-base-content/30 mb-2"></i>
+            <p class="text-base-content/70">No workflow executions yet</p>
+            <p class="text-sm text-base-content/50">Run a workflow to see execution history here</p>
+          </div>
+          `}
+          
+          <!-- Current Canvas Status -->
+          <div class="bg-base-100 rounded-lg p-4 border border-base-300">
+            <h4 class="font-semibold mb-3 flex items-center">
+              <i class="ti ti-list mr-2"></i>
+              Current Canvas Status
+            </h4>
+            <div id="progress-list" class="space-y-2">
+              <!-- Progress items will be populated here -->
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-action">
+          <button class="btn btn-outline" onclick="this.closest('dialog').close()">Close</button>
+          <button class="btn btn-primary" onclick="refreshProgress()">
+            <i class="ti ti-refresh mr-1"></i>
+            Refresh
+          </button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    modal.showModal();
+    
+    // Populate current canvas status
+    populateProgressList();
+  }
+
+  function populateProgressList() {
+    const progressList = document.getElementById('progress-list');
+    if (!progressList) return;
+    
+    const nodes = document.querySelectorAll('.workflow-node');
+    progressList.innerHTML = '';
+    
+    nodes.forEach((node, index) => {
+      const nodeType = node.getAttribute('data-type') || 'unknown';
+      const component = node.getAttribute('data-component') || 'unknown';
+      const status = node.classList.contains('success') ? 'success' : 
+                   node.classList.contains('error') ? 'error' :
+                   node.classList.contains('loading') ? 'loading' : 'pending';
+      
+      const statusIcon = status === 'success' ? 'ti-check text-success' :
+                        status === 'error' ? 'ti-x text-error' :
+                        status === 'loading' ? 'ti-loader text-warning' : 'ti-clock text-base-content/50';
+      
+      const statusText = status === 'success' ? 'Completed' :
+                        status === 'error' ? 'Failed' :
+                        status === 'loading' ? 'Running' : 'Pending';
+      
+      const progressItem = document.createElement('div');
+      progressItem.className = 'flex items-center justify-between p-3 bg-base-200 rounded-lg';
+      progressItem.innerHTML = `
+        <div class="flex items-center gap-3">
+          <i class="ti ${statusIcon}"></i>
+          <div>
+            <div class="font-medium">${component}</div>
+            <div class="text-sm text-base-content/70">${nodeType}</div>
+          </div>
+        </div>
+        <div class="badge badge-outline">${statusText}</div>
+      `;
+      
+      progressList.appendChild(progressItem);
+    });
+  }
+
+  function showWorkflowStats() {
+    const nodes = document.querySelectorAll('.workflow-node');
+    const connections = document.querySelectorAll('.workflow-connection');
+    const toolNodes = document.querySelectorAll('.workflow-node.tool-node');
+    const fileNodes = document.querySelectorAll('.workflow-node:not(.tool-node)');
+    
+    const modal = document.createElement('dialog');
+    modal.className = 'modal';
+    modal.innerHTML = `
+      <div class="modal-box w-11/12 max-w-3xl bg-gradient-to-br from-base-100 to-base-200">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="font-bold text-xl flex items-center">
+            <i class="ti ti-chart-bar mr-3 text-warning"></i>
+            Workflow Statistics
+          </h3>
+          <button class="btn btn-sm btn-circle btn-ghost" onclick="this.closest('dialog').close()">
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div class="stat bg-gradient-to-r from-primary/10 to-primary/20 rounded-lg">
+            <div class="stat-figure text-primary">
+              <i class="ti ti-tool text-3xl"></i>
+            </div>
+            <div class="stat-title">Tool Nodes</div>
+            <div class="stat-value text-primary">${toolNodes.length}</div>
+            <div class="stat-desc">Bioinformatics Tools</div>
+          </div>
+          
+          <div class="stat bg-gradient-to-r from-secondary/10 to-secondary/20 rounded-lg">
+            <div class="stat-figure text-secondary">
+              <i class="ti ti-files text-3xl"></i>
+            </div>
+            <div class="stat-title">File Nodes</div>
+            <div class="stat-value text-secondary">${fileNodes.length}</div>
+            <div class="stat-desc">Input/Output Files</div>
+          </div>
+          
+          <div class="stat bg-gradient-to-r from-accent/10 to-accent/20 rounded-lg">
+            <div class="stat-figure text-accent">
+              <i class="ti ti-git-branch text-3xl"></i>
+            </div>
+            <div class="stat-title">Connections</div>
+            <div class="stat-value text-accent">${connections.length}</div>
+            <div class="stat-desc">Data Flow Links</div>
+          </div>
+          
+          <div class="stat bg-gradient-to-r from-info/10 to-info/20 rounded-lg">
+            <div class="stat-figure text-info">
+              <i class="ti ti-percentage text-3xl"></i>
+            </div>
+            <div class="stat-title">Complexity</div>
+            <div class="stat-value text-info">${Math.round((connections.length / Math.max(nodes.length, 1)) * 100)}%</div>
+            <div class="stat-desc">Connection Density</div>
+          </div>
+        </div>
+        
+        <div class="bg-base-100 rounded-lg p-4 border border-base-300">
+          <h4 class="font-semibold mb-3">Workflow Health Check</h4>
+          <div class="space-y-2">
+            <div class="flex items-center gap-2">
+              <i class="ti ti-check text-success"></i>
+              <span>All nodes have valid connection points</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="ti ${nodes.length > 0 ? 'ti-check text-success' : 'ti-alert-triangle text-warning'}"></i>
+              <span>${nodes.length > 0 ? 'Workflow contains nodes' : 'Workflow is empty'}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="ti ${connections.length > 0 ? 'ti-check text-success' : 'ti-alert-triangle text-warning'}"></i>
+              <span>${connections.length > 0 ? 'Nodes have data flow connections' : 'Missing node connections'}</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-action">
+          <button class="btn btn-outline" onclick="this.closest('dialog').close()">Close</button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    modal.showModal();
+  }
+
+  async function refreshProgress() {
+    // Close current modal and reopen with fresh data
+    const currentModal = document.querySelector('dialog.modal[open]');
+    if (currentModal) {
+      currentModal.close();
+    }
+    
+    // Reopen the progress modal with updated data
+    await showWorkflowProgress();
+    showTemplateMessage('Progress information refreshed', 'info');
+  }
+
+  // Function to show progress for a specific job
+  async function showJobProgress(jobId) {
+    console.log('🔍 Showing progress for specific job:', jobId);
+    
+    // Close current modal
+    const currentModal = document.querySelector('dialog.modal[open]');
+    if (currentModal) {
+      currentModal.close();
+    }
+    
+    // Use WorkflowBuilder's showProgressModal method
+    if (window.workflowBuilder && window.workflowBuilder.showProgressModal) {
+      try {
+        await window.workflowBuilder.showProgressModal(jobId);
+      } catch (error) {
+        console.error('Error showing job progress:', error);
+        alert('Failed to load job progress: ' + error.message);
+      }
+    } else {
+      alert('WorkflowBuilder not available');
+    }
+  }
+
+  // Initialize enhanced features
+  document.addEventListener('DOMContentLoaded', function() {
+    updateComponentCounts();
+    setupComponentSearch();
+    setupCanvasWheelZoom();
+    
+    // Center canvas after a short delay to ensure layout is ready
+    setTimeout(() => {
+      centerCanvas();
+    }, 100);
+    
+    // Update counts when nodes are added/removed
+    const observer = new MutationObserver(function(mutations) {
+      let shouldUpdate = false;
+      mutations.forEach(mutation => {
+        if (mutation.type === 'childList') {
+          const addedNodes = Array.from(mutation.addedNodes);
+          const removedNodes = Array.from(mutation.removedNodes);
+          
+          if (addedNodes.some(node => node.classList && node.classList.contains('workflow-node')) ||
+              removedNodes.some(node => node.classList && node.classList.contains('workflow-node'))) {
+            shouldUpdate = true;
+          }
+        }
+      });
+      
+      if (shouldUpdate) {
+        updateNodeCount();
+        updateConnectionCount();
+      }
+    });
+    
+    const canvas = document.getElementById('workflow-canvas');
+    if (canvas) {
+      observer.observe(canvas, { childList: true, subtree: true });
+    }
+  });
+
+  // Add global function to fix connection points
+  function fixConnectionPoints() {
+    console.log('Fixing all connection points...');
+    const allPorts = document.querySelectorAll('.node-connection-point');
+    console.log(`Found ${allPorts.length} connection points to fix`);
+    
+    allPorts.forEach((port, index) => {
+      // Force perfect circle styles
+      port.style.setProperty('width', '14px', 'important');
+      port.style.setProperty('height', '14px', 'important');
+      port.style.setProperty('border-radius', '7px', 'important');
+      port.style.setProperty('border', 'none', 'important');
+      port.style.setProperty('aspect-ratio', '1 / 1', 'important');
+      port.style.setProperty('flex-shrink', '0', 'important');
+      port.style.setProperty('overflow', 'hidden', 'important');
+      port.style.setProperty('box-sizing', 'border-box', 'important');
+      port.style.setProperty('box-shadow', '0 0 0 2px white, 0 0 0 3px currentColor', 'important');
+      
+      console.log(`Fixed connection point ${index}`);
+    });
+    
+    alert(`Fixed ${allPorts.length} connection points, they should now be perfect circles!`);
+  }
+  
+  // Debug function to test connections
+  function testConnection() {
+    if (!window.workflowBuilder) {
+      alert('WorkflowBuilder not initialized');
+      return;
+    }
+    
+    console.log('Testing WorkflowBuilder:');
+    console.log('- Canvas:', window.workflowBuilder.canvas);
+    console.log('- SVG element:', window.workflowBuilder.svg);
+    console.log('- Connections Map:', window.workflowBuilder.connections);
+    console.log('- SVG children:', window.workflowBuilder.svg ? window.workflowBuilder.svg.children.length : 'No SVG');
+    
+    // Check if SVG exists in DOM
+    const svg = document.querySelector('#workflow-canvas svg');
+    console.log('- SVG in DOM:', svg);
+    
+    alert('Check console for WorkflowBuilder debug information');
+  }
+  
+  // Function to check code version
+  function checkCodeVersion() {
+    console.log('=== Code Version Check ===');
+    
+    // Check if the updated updateConnectionPath method exists
+    if (window.workflowBuilder && window.workflowBuilder.updateConnectionPath) {
+      const methodStr = window.workflowBuilder.updateConnectionPath.toString();
+      
+      // Check for our debug log signature
+      const hasDebugLog = methodStr.includes('Updating connection path:');
+      const hasNewCalculation = methodStr.includes('fromType === \'input\' && toType === \'output\'');
+      
+      console.log('UpdateConnectionPath method analysis:');
+      console.log('- Has debug logging:', hasDebugLog ? '✓' : '✗');
+      console.log('- Has new calculation logic:', hasNewCalculation ? '✓' : '✗');
+      
+      if (hasDebugLog && hasNewCalculation) {
+        console.log('✅ Code is updated to latest version');
+      } else {
+        console.log('❌ Code needs refresh - please hard reload (Ctrl+F5)');
+      }
+    } else {
+      console.log('❌ WorkflowBuilder not available');
+    }
+  }
+
+  // Function to create test connection
+  function createTestConnection() {
+    if (!window.workflowBuilder) {
+      alert('WorkflowBuilder not initialized');
+      return;
+    }
+    
+    // Check code version first
+    checkCodeVersion();
+    
+    // Clear canvas first
+    window.workflowBuilder.clearCanvas();
+    
+    // Create test nodes
+    console.log('Creating test nodes...');
+    window.workflowBuilder.createNode('tool', 'spades', 100, 100);
+    window.workflowBuilder.createNode('tool', 'quast', 350, 100);
+    
+    // Wait a bit for nodes to be created, then try to connect
+    setTimeout(() => {
+      try {
+        console.log('Nodes created, checking connection points...');
+        const allPorts = document.querySelectorAll('.node-connection-point');
+        console.log('Found', allPorts.length, 'connection points');
+        
+        allPorts.forEach((port, i) => {
+          const rect = port.getBoundingClientRect();
+          const canvasRect = document.getElementById('workflow-canvas').getBoundingClientRect();
+          console.log(`Port ${i}:`, {
+            type: port.dataset.type,
+            port: port.dataset.port,
+            node: port.closest('.workflow-node')?.id,
+            visualPos: { 
+              x: rect.left + rect.width/2 - canvasRect.left, 
+              y: rect.top + rect.height/2 - canvasRect.top 
+            },
+            rect: rect
+          });
+        });
+        
+        // Try manual connection
+        const nodes = window.workflowBuilder.nodes;
+        console.log('Nodes Map:', nodes);
+        
+        if (nodes.size >= 2) {
+          const nodeIds = Array.from(nodes.keys());
+          
+          // Make sure we connect output to input correctly
+          const fromNodeId = nodeIds[0];
+          const toNodeId = nodeIds[1];
+          
+          console.log('Attempting connection between:', fromNodeId, 'file (output) -> ', toNodeId, 'file (input)');
+          
+          // Verify the ports exist before connecting
+          const fromNode = document.getElementById(fromNodeId);
+          const toNode = document.getElementById(toNodeId);
+          const outputPort = fromNode?.querySelector('[data-port="file"][data-type="output"]');
+          const inputPort = toNode?.querySelector('[data-port="file"][data-type="input"]');
+          
+          if (outputPort && inputPort) {
+            window.workflowBuilder.createConnection(fromNodeId, 'file', toNodeId, 'file');
+            console.log('Test connection created');
+          } else {
+            console.error('Could not find required ports:', {
+              outputPort: !!outputPort,
+              inputPort: !!inputPort
+            });
+          }
+          
+          // Auto-fix new connections after a delay
+          setTimeout(() => {
+            console.log('Auto-fixing new connection...');
+            manualFixConnection();
+            debugConnectionAlignment();
+          }, 200);
+        }
+        
+        // Check SVG content
+        if (window.workflowBuilder.svg) {
+          console.log('SVG has', window.workflowBuilder.svg.children.length, 'children');
+          Array.from(window.workflowBuilder.svg.children).forEach((child, i) => {
+            console.log(`Child ${i}:`, child.tagName, child.className.baseVal || child.className);
+          });
+        }
+      } catch (error) {
+        console.error('Error creating test connection:', error);
+      }
+    }, 1000);
+  }
+  
+  // Function to debug connection alignment
+  function debugConnectionAlignment() {
+    console.log('=== Debug Connection Alignment ===');
+    
+    const connections = window.workflowBuilder.connections;
+    const canvas = document.getElementById('workflow-canvas');
+    const canvasRect = canvas.getBoundingClientRect();
+    
+    connections.forEach((conn, connId) => {
+      console.log(`Connection ${connId}:`, conn);
+      
+      const fromNode = document.getElementById(conn.fromNode);
+      const toNode = document.getElementById(conn.toNode);
+      const fromPort = fromNode?.querySelector(`[data-port="${conn.fromPort}"]`);
+      const toPort = toNode?.querySelector(`[data-port="${conn.toPort}"]`);
+      const pathElement = document.getElementById(connId);
+      
+      if (fromPort && toPort && pathElement) {
+        const fromRect = fromPort.getBoundingClientRect();
+        const toRect = toPort.getBoundingClientRect();
+        
+        const fromX = fromRect.left + fromRect.width / 2 - canvasRect.left;
+        const fromY = fromRect.top + fromRect.height / 2 - canvasRect.top;
+        const toX = toRect.left + toRect.width / 2 - canvasRect.left;
+        const toY = toRect.top + toRect.height / 2 - canvasRect.top;
+        
+        console.log(`  From port (${fromPort.dataset.type}): (${fromX}, ${fromY})`);
+        console.log(`  To port (${toPort.dataset.type}): (${toX}, ${toY})`);
+        
+        // Debug port details
+        console.log(`  From port details:`, {
+          element: fromPort,
+          classList: fromPort.className,
+          dataType: fromPort.dataset.type,
+          dataPort: fromPort.dataset.port
+        });
+        console.log(`  To port details:`, {
+          element: toPort,
+          classList: toPort.className,
+          dataType: toPort.dataset.type,
+          dataPort: toPort.dataset.port
+        });
+        console.log(`  Distance: ${Math.abs(toX - fromX)}`);
+        console.log(`  Control offset: ${Math.max(100, Math.abs(toX - fromX) * 0.5)}`);
+        
+        const path = pathElement.getAttribute('d');
+        console.log(`  Path d attribute:`, path);
+        
+        // Parse and validate path
+        const pathMatch = path.match(/M\s+([\d.]+)\s+([\d.]+)\s+C\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)/);
+        if (pathMatch) {
+          const [_, startX, startY, ctrl1X, ctrl1Y, ctrl2X, ctrl2Y, endX, endY] = pathMatch.map(parseFloat);
+          console.log(`  Parsed path:`, {
+            start: [startX, startY],
+            control1: [ctrl1X, ctrl1Y],
+            control2: [ctrl2X, ctrl2Y],
+            end: [endX, endY]
+          });
+          
+          // Check if control points make sense
+          if (fromPort.dataset.type === 'output') {
+            console.log(`  Expected: ctrl1X (${ctrl1X}) > startX (${startX}): ${ctrl1X > startX ? '✓' : '✗'}`);
+            console.log(`  Expected: ctrl2X (${ctrl2X}) < endX (${endX}): ${ctrl2X < endX ? '✓' : '✗'}`);
+          }
+        }
+        
+        // Highlight the connection points temporarily
+        fromPort.style.backgroundColor = 'red';
+        toPort.style.backgroundColor = 'blue';
+        
+        setTimeout(() => {
+          fromPort.style.backgroundColor = '';
+          toPort.style.backgroundColor = '';
+        }, 3000);
+      }
+    });
+  }
+  
+  // Function to refresh all connection paths using new calculation
+  function refreshAllConnections() {
+    if (!window.workflowBuilder) {
+      alert('WorkflowBuilder not initialized');
+      return;
+    }
+    
+    console.log('Refreshing all connection paths...');
+    
+    const connections = window.workflowBuilder.connections;
+    connections.forEach((conn, connId) => {
+      console.log(`Refreshing connection ${connId}:`, conn);
+      
+      // Get the path element
+      const pathElement = document.getElementById(connId);
+      console.log(`Path element before update:`, pathElement ? pathElement.getAttribute('d') : 'not found');
+      
+      // Call the update method
+      window.workflowBuilder.updateConnectionPath(
+        connId,
+        conn.fromNode,
+        conn.fromPort,
+        conn.toNode,
+        conn.toPort
+      );
+      
+      // Check if it was updated
+      console.log(`Path element after update:`, pathElement ? pathElement.getAttribute('d') : 'not found');
+    });
+    
+    console.log('All connections refreshed!');
+  }
+  
+  // Function to manually fix a connection with correct calculation
+  function manualFixConnection() {
+    if (!window.workflowBuilder) {
+      alert('WorkflowBuilder not initialized');
+      return;
+    }
+    
+    const connections = window.workflowBuilder.connections;
+    connections.forEach((conn, connId) => {
+      console.log(`Manually fixing connection ${connId}`);
+      
+      const fromNode = document.getElementById(conn.fromNode);
+      const toNode = document.getElementById(conn.toNode);
+      
+      // Find the correct ports: from should be output, to should be input
+      const fromPort = fromNode?.querySelector(`[data-port="${conn.fromPort}"][data-type="output"]`);
+      const toPort = toNode?.querySelector(`[data-port="${conn.toPort}"][data-type="input"]`);
+      const pathElement = document.getElementById(connId);
+      
+      if (fromPort && toPort && pathElement) {
+        const canvas = document.getElementById('workflow-canvas');
+        const rect = canvas.getBoundingClientRect();
+        const fromRect = fromPort.getBoundingClientRect();
+        const toRect = toPort.getBoundingClientRect();
+        
+        const fromX = fromRect.left + fromRect.width / 2 - rect.left;
+        const fromY = fromRect.top + fromRect.height / 2 - rect.top;
+        const toX = toRect.left + toRect.width / 2 - rect.left;
+        const toY = toRect.top + toRect.height / 2 - rect.top;
+        
+        // Apply the new calculation directly
+        const distance = Math.abs(toX - fromX);
+        const controlOffset = Math.max(100, distance * 0.5);
+        
+        const fromType = fromPort.dataset.type;
+        const toType = toPort.dataset.type;
+        
+        let path;
+        if (fromType === 'output' && toType === 'input') {
+          const controlX1 = fromX + controlOffset;
+          const controlX2 = toX - controlOffset;
+          path = `M ${fromX} ${fromY} C ${controlX1} ${fromY} ${controlX2} ${toY} ${toX} ${toY}`;
+        } else if (fromType === 'input' && toType === 'output') {
+          const controlX1 = fromX - controlOffset;
+          const controlX2 = toX + controlOffset;
+          path = `M ${fromX} ${fromY} C ${controlX1} ${fromY} ${controlX2} ${toY} ${toX} ${toY}`;
+        } else {
+          const controlX = (fromX + toX) / 2;
+          path = `M ${fromX} ${fromY} C ${controlX} ${fromY} ${controlX} ${toY} ${toX} ${toY}`;
+        }
+        
+        console.log('Calculated new path:', path);
+        console.log('Old path was:', pathElement.getAttribute('d'));
+        
+        pathElement.setAttribute('d', path);
+        
+        console.log('Path updated to:', pathElement.getAttribute('d'));
+      }
+    });
+  }
+  
+  // Function to test mouse interaction
+  function testMouseInteraction() {
+    console.log('Testing mouse interaction...');
+    
+    const ports = document.querySelectorAll('.node-connection-point');
+    if (ports.length < 2) {
+      alert('Need at least 2 nodes to test connection');
+      return;
+    }
+    
+    console.log('Found', ports.length, 'connection points');
+    
+    // Simulate mousedown on first output port
+    const outputPort = Array.from(ports).find(p => p.dataset.type === 'output');
+    const inputPort = Array.from(ports).find(p => p.dataset.type === 'input');
+    
+    if (outputPort && inputPort) {
+      console.log('Simulating connection from', outputPort, 'to', inputPort);
+      
+      // Trigger mousedown
+      const mouseDownEvent = new MouseEvent('mousedown', {
+        bubbles: true,
+        cancelable: true,
+        clientX: 100,
+        clientY: 100
+      });
+      
+      outputPort.dispatchEvent(mouseDownEvent);
+      
+      // Check if connection mode started
+      setTimeout(() => {
+        console.log('Connection mode active:', document.body.classList.contains('connecting'));
+        console.log('Connecting from:', window.workflowBuilder.connectingFrom);
+        
+        // Trigger mouseup on input port
+        const mouseUpEvent = new MouseEvent('mouseup', {
+          bubbles: true,
+          cancelable: true,
+          target: inputPort
+        });
+        
+        document.dispatchEvent(mouseUpEvent);
+        
+        setTimeout(() => {
+          console.log('Connections after test:', window.workflowBuilder.connections);
+        }, 100);
+      }, 100);
+    } else {
+      console.log('Could not find both output and input ports');
+    }
+  }
+  
+  // Function to stop infinite update loops
+  function stopInfiniteUpdates() {
+    console.log('Stopping infinite update loops...');
+    
+    if (window.workflowBuilder) {
+      // Remove all event listeners that might cause updates
+      window.workflowBuilder.updateThrottled = true;
+      
+      // Clear any pending animation frames
+      if (window.workflowBuilder.animationFrame) {
+        cancelAnimationFrame(window.workflowBuilder.animationFrame);
+      }
+      
+      // Stop auto-fix
+      clearTimeout(window.autoFixTimeout);
+      
+      console.log('Update loops stopped');
+      alert('Infinite update loops stopped. Refresh page if needed.');
+    }
+  }
+
+  function testServerFileBrowser() {
+    console.log('🧪 Testing server file browser...');
+    if (window.workflowBuilder) {
+      console.log('✅ WorkflowBuilder found, calling openServerFileBrowser...');
+      try {
+        window.workflowBuilder.openServerFileBrowser('input');
+      } catch (error) {
+        console.error('❌ Error calling openServerFileBrowser:', error);
+      }
+    } else {
+      console.error('❌ WorkflowBuilder not found!');
+    }
+  }
+
+  function testFileSelectionFeedback() {
+    console.log('🧪 Testing file selection feedback...');
+    
+    if (window.workflowBuilder) {
+      try {
+        // Clear canvas first
+        window.workflowBuilder.clearCanvas();
+        
+        // Create test nodes
+        window.workflowBuilder.createNode('file-input', 'server-file', 100, 100);
+        window.workflowBuilder.createNode('file-output', 'server-folder', 350, 100);
+        
+        console.log('✅ Test nodes created for file selection testing');
+        
+        // Wait a moment then simulate file selection
+        setTimeout(() => {
+          console.log('📁 Simulating file selection...');
+          window.workflowBuilder.updateNodeWithFile('server-file', 'test-data.fastq.gz', 'server');
+          window.workflowBuilder.updateNodeWithFile('server-folder', 'output-folder', 'server');
+          console.log('✅ File selection simulation complete - check visual feedback!');
+        }, 1000);
+        
+      } catch (error) {
+        console.error('❌ Error in file selection test:', error);
+      }
+    } else {
+      console.error('❌ WorkflowBuilder not found!');
+    }
+  }
+
+  function createSpadesQuastWorkflow() {
+    console.log('🧬 Creating SPAdes + QUAST workflow...');
+    
+    if (window.workflowBuilder) {
+      try {
+        // Clear canvas first
+        window.workflowBuilder.clearCanvas();
+        
+        // Create input files for paired-end reads
+        window.workflowBuilder.createNode('file-input', 'server-file', 50, 100);
+        window.workflowBuilder.createNode('file-input', 'server-file', 50, 200);
+        
+        // Create SPAdes tool
+        window.workflowBuilder.createNode('tool', 'spades', 300, 150);
+        
+        // Create QUAST tool
+        window.workflowBuilder.createNode('tool', 'quast', 600, 150);
+        
+        // Create output folder
+        window.workflowBuilder.createNode('file-output', 'server-folder', 850, 150);
+        
+        // Auto-connect the workflow after a short delay
+        setTimeout(() => {
+          try {
+            console.log('🔗 Auto-connecting workflow...');
+            
+            // Get all nodes
+            const nodes = document.querySelectorAll('.workflow-node');
+            let input1, input2, spades, quast, output;
+            
+            nodes.forEach(node => {
+              const type = node.getAttribute('data-type');
+              const component = node.getAttribute('data-component');
+              
+              if (type === 'file-input' && component === 'server-file') {
+                if (!input1) input1 = node;
+                else input2 = node;
+              } else if (type === 'tool' && component === 'spades') {
+                spades = node;
+              } else if (type === 'tool' && component === 'quast') {
+                quast = node;
+              } else if (type === 'file-output') {
+                output = node;
+              }
+            });
+            
+            if (input1 && input2 && spades && quast && output) {
+              // Connect input1 to spades reads_1
+              window.workflowBuilder.createConnection(input1.id, 'file', spades.id, 'reads_1');
+              
+              // Connect input2 to spades reads_2
+              window.workflowBuilder.createConnection(input2.id, 'file', spades.id, 'reads_2');
+              
+              // Connect spades contigs to quast contigs
+              window.workflowBuilder.createConnection(spades.id, 'contigs', quast.id, 'contigs');
+              
+              // Connect quast report to output
+              window.workflowBuilder.createConnection(quast.id, 'report', output.id, 'file');
+              
+              console.log('✅ Workflow auto-connected successfully!');
+            }
+          } catch (error) {
+            console.error('Error auto-connecting workflow:', error);
+          }
+        }, 500);
+        
+        console.log('✅ SPAdes + QUAST workflow created!');
+        console.log('📝 Next steps:');
+        console.log('   1. Select left.fastq.gz for first input');
+        console.log('   2. Select right.fastq.gz for second input');
+        console.log('   3. Configure parameters for both tools');
+        console.log('   4. Run workflow!');
+        
+        // Show hint
+        alert('🧬 SPAdes + QUAST workflow created and connected!\n\nNext steps:\n1. Select left.fastq.gz and right.fastq.gz files\n2. Configure tool parameters (conda environments, output paths)\n3. Run workflow!');
+        
+      } catch (error) {
+        console.error('❌ Error creating workflow:', error);
+      }
+    } else {
+      console.error('❌ WorkflowBuilder not found!');
+    }
+  }
+
+  function testCompleteWorkflow() {
+    console.log('🧪 Testing complete SPAdes + QUAST workflow...');
+    
+    if (window.workflowBuilder) {
+      try {
+        // First create the workflow
+        createSpadesQuastWorkflow();
+        
+        // Wait for auto-connection to complete, then simulate file selection and configuration
+        setTimeout(() => {
+          console.log('📁 Simulating file selection...');
+          
+          // Select files for inputs
+          window.workflowBuilder.updateNodeWithFile('server-file', 'left.fastq.gz', 'server');
+          
+          // Find second input node and update it too
+          const inputNodes = document.querySelectorAll('[data-component="server-file"]');
+          if (inputNodes.length >= 2) {
+            // Get the second input node's ID
+            const secondInputId = inputNodes[1].id;
+            console.log('Updating second input:', secondInputId);
+            // We'll need to manually trigger the update for the second node
+            // This is a bit hacky but works for testing
+            setTimeout(() => {
+              const secondInput = document.getElementById(secondInputId);
+              if (secondInput) {
+                const contentDiv = secondInput.querySelector('.text-xs');
+                const button = secondInput.querySelector('.btn');
+                if (contentDiv && button) {
+                  contentDiv.textContent = 'Selected: right.fastq.gz';
+                  contentDiv.style.color = '#16a34a';
+                  contentDiv.style.fontWeight = '500';
+                  button.innerHTML = '<i class="ti ti-edit mr-1"></i>Change';
+                  secondInput.style.borderColor = '#16a34a';
+                  secondInput.style.borderWidth = '2px';
+                }
+              }
+            }, 200);
+          }
+          
+          console.log('✅ Complete workflow test setup finished!');
+          console.log('🔧 Next: Configure tool parameters and run workflow');
+          
+          // Show the workflow status
+          setTimeout(() => {
+            const workflow = window.workflowBuilder.exportWorkflow();
+            console.log('📊 Current workflow:', workflow);
+            
+            alert('🧬 Complete Workflow Test Setup Complete!\n\n' +
+                  'Files selected:\n• left.fastq.gz (Input 1)\n• right.fastq.gz (Input 2)\n\n' +
+                  'Connected workflow:\n• Inputs → SPAdes → QUAST → Output\n\n' +
+                  'Next steps:\n1. Click "Configure Parameters" on SPAdes\n2. Click "Configure Parameters" on QUAST\n3. Click "Run Workflow" to execute!');
+          }, 1000);
+          
+        }, 1000);
+        
+      } catch (error) {
+        console.error('❌ Error in complete workflow test:', error);
+      }
+    } else {
+      console.error('❌ WorkflowBuilder not found!');
+    }
+  }
+
+  // Function to test boundary constraints
+  function testBoundaryConstraints() {
+    if (!window.workflowBuilder) {
+      alert('WorkflowBuilder not initialized');
+      return;
+    }
+    
+    const canvas = document.getElementById('workflow-canvas');
+    const canvasWidth = canvas.offsetWidth;
+    const canvasHeight = canvas.offsetHeight;
+    
+    console.log('Canvas dimensions:', { width: canvasWidth, height: canvasHeight });
+    
+    // Create test nodes at boundary positions
+    const testPositions = [
+      { x: 0, y: 0, name: 'top-left corner' },
+      { x: canvasWidth, y: 0, name: 'top-right corner' },
+      { x: 0, y: canvasHeight, name: 'bottom-left corner' },
+      { x: canvasWidth, y: canvasHeight, name: 'bottom-right corner' },
+      { x: canvasWidth / 2, y: -50, name: 'above canvas' },
+      { x: canvasWidth / 2, y: canvasHeight + 50, name: 'below canvas' }
+    ];
+    
+    window.workflowBuilder.clearCanvas();
+    
+    testPositions.forEach((pos, index) => {
+      setTimeout(() => {
+        console.log(`Creating test node at ${pos.name}: (${pos.x}, ${pos.y})`);
+        window.workflowBuilder.createNode('tool', 'test-tool', pos.x, pos.y);
+        
+        // Check final position after constraints
+        setTimeout(() => {
+          const node = document.getElementById(`node_${index + 1}`);
+          if (node) {
+            const finalX = parseInt(node.style.left);
+            const finalY = parseInt(node.style.top);
+            console.log(`Final position for ${pos.name}: (${finalX}, ${finalY})`);
+          }
+        }, 100);
+      }, index * 200);
+    });
+  }
+
+  // Function to debug all connection points
+  function debugAllConnectionPoints() {
+    console.log('=== Debug All Connection Points ===');
+    
+    const allPorts = document.querySelectorAll('.node-connection-point');
+    console.log(`Found ${allPorts.length} connection points:`);
+    
+    allPorts.forEach((port, index) => {
+      const node = port.closest('.workflow-node');
+      const rect = port.getBoundingClientRect();
+      const canvasRect = document.getElementById('workflow-canvas').getBoundingClientRect();
+      
+      console.log(`Port ${index + 1}:`, {
+        nodeId: node?.id,
+        className: port.className,
+        dataType: port.dataset.type,
+        dataPort: port.dataset.port,
+        position: {
+          x: rect.left + rect.width/2 - canvasRect.left,
+          y: rect.top + rect.height/2 - canvasRect.top
+        },
+        styles: {
+          left: port.style.left,
+          right: port.style.right,
+          top: port.style.top,
+          backgroundColor: port.style.backgroundColor
+        }
+      });
+    });
+    
+    // Check if there are equal numbers of input and output ports
+    const inputPorts = document.querySelectorAll('.node-connection-point[data-type="input"]');
+    const outputPorts = document.querySelectorAll('.node-connection-point[data-type="output"]');
+    
+    console.log(`Input ports: ${inputPorts.length}, Output ports: ${outputPorts.length}`);
+    
+    if (inputPorts.length === 0 || outputPorts.length === 0) {
+      console.error('⚠️ Missing input or output ports!');
+    }
+  }
+  
+  // Function to fix connection point types
+  function fixConnectionPointTypes() {
+    console.log('=== Fixing Connection Point Types ===');
+    
+    document.querySelectorAll('.workflow-node').forEach(node => {
+      console.log(`Checking node: ${node.id}`);
+      
+      // Fix input ports (left side)
+      const leftPorts = node.querySelectorAll('.node-connection-point');
+      leftPorts.forEach(port => {
+        const hasLeft = port.style.left && port.style.left !== '';
+        const hasRight = port.style.right && port.style.right !== '';
+        
+        if (hasLeft && !hasRight) {
+          // Left side should be input
+          if (port.dataset.type !== 'input') {
+            console.log(`Fixing port ${port.dataset.port} to input type`);
+            port.dataset.type = 'input';
+            port.className = 'node-connection-point input';
+            port.style.backgroundColor = '#4f46e5'; // Blue for input
+            port.style.color = '#4f46e5';
+          }
+        } else if (hasRight && !hasLeft) {
+          // Right side should be output  
+          if (port.dataset.type !== 'output') {
+            console.log(`Fixing port ${port.dataset.port} to output type`);
+            port.dataset.type = 'output';
+            port.className = 'node-connection-point output';
+            port.style.backgroundColor = '#059669'; // Green for output
+            port.style.color = '#059669';
+          }
+        }
+      });
+    });
+    
+    console.log('Connection point types fixed!');
+  }
+
+  // Make functions available globally
+  window.fixConnectionPoints = fixConnectionPoints;
+  window.testConnection = testConnection;
+  window.createTestConnection = createTestConnection;
+  window.testMouseInteraction = testMouseInteraction;
+  window.debugConnectionAlignment = debugConnectionAlignment;
+  window.refreshAllConnections = refreshAllConnections;
+  window.manualFixConnection = manualFixConnection;
+  window.checkCodeVersion = checkCodeVersion;
+  window.stopInfiniteUpdates = stopInfiniteUpdates;
+  window.testServerFileBrowser = testServerFileBrowser;
+  window.testBoundaryConstraints = testBoundaryConstraints;
+  window.debugAllConnectionPoints = debugAllConnectionPoints;
+  window.fixConnectionPointTypes = fixConnectionPointTypes;
+  
+  // Auto-fix on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    // Wait a bit for nodes to be created, then auto-fix
+    setTimeout(() => {
+      if (document.querySelectorAll('.node-connection-point').length > 0) {
+        fixConnectionPoints();
+      }
+    }, 1000);
+  });
+  
+  // Add error handling for connection issues
+  window.addEventListener('error', function(e) {
+    if (e.message.includes('findExistingConnection')) {
+      console.warn('Connection error detected, reloading workflow builder...');
+      if (window.workflowBuilder) {
+        // Force cleanup and reinitialize
+        try {
+          document.body.classList.remove('connecting');
+          document.body.style.cursor = '';
+          window.workflowBuilder.connectingFrom = null;
+          window.workflowBuilder.tempConnection = null;
+        } catch (err) {
+          console.error('Cleanup error:', err);
+        }
+      }
+    }
+  });
+  
+  // Initialize WorkflowBuilder when DOM is ready (single instance)
+  let workflowBuilderInitialized = false;
+  
+  function initializeWorkflowBuilder() {
+    if (workflowBuilderInitialized) {
+      console.log('WorkflowBuilder initialization already attempted, skipping...');
+      return;
+    }
+    
+    workflowBuilderInitialized = true;
+    
+    try {
+      if (window.workflowBuilder) {
+        console.log('WorkflowBuilder already exists, skipping...');
+        return;
+      }
+      
+      if (typeof WorkflowBuilder !== 'undefined') {
+        window.workflowBuilder = new WorkflowBuilder();
+        console.log('WorkflowBuilder initialized successfully (EJS)');
+        
+        // Check for pending workflow from Agent
+        setTimeout(() => {
+          const pendingWorkflow = sessionStorage.getItem('pendingWorkflow');
+          if (pendingWorkflow) {
+            try {
+              const workflowData = JSON.parse(pendingWorkflow);
+              sessionStorage.removeItem('pendingWorkflow');
+              
+              console.log('🤖 Building workflow from Agent:', workflowData);
+              
+              // Clear existing workflow
+              window.workflowBuilder.clearCanvas();
+              
+              // Add nodes and create ID mapping
+              const nodeIdMapping = new Map(); // Maps Agent IDs to actual node IDs
+              
+              workflowData.nodes.forEach(nodeData => {
+                try {
+                  const node = window.workflowBuilder.createNode(
+                    nodeData.type,
+                    nodeData.component,
+                    nodeData.x,
+                    nodeData.y
+                  );
+                  
+                  // Check if node was created successfully
+                  if (!node || !node.id) {
+                    console.error('Failed to create node:', nodeData);
+                    return;
+                  }
+                  
+                  // Map Agent ID to actual node ID
+                  nodeIdMapping.set(nodeData.id, node.id);
+                  console.log(`📍 Node ID mapping: ${nodeData.id} → ${node.id}`);
+                  
+                  // Configure node parameters
+                  if (nodeData.config && Object.keys(nodeData.config).length > 0) {
+                    const nodeElement = document.getElementById(node.id);
+                    if (nodeElement) {
+                      // Store config in node data
+                      const nodeMapEntry = window.workflowBuilder.nodes.get(node.id);
+                      if (nodeMapEntry) {
+                        nodeMapEntry.config = nodeData.config;
+                      }
+                      
+                      // Update node display to show it's configured
+                      const configBtn = nodeElement.querySelector('.config-btn');
+                      if (configBtn) {
+                        configBtn.classList.remove('btn-outline');
+                        configBtn.classList.add('btn-primary');
+                        configBtn.innerHTML = '<i class="ti ti-settings-filled mr-1"></i>Configured';
+                      }
+                    }
+                  }
+                } catch (error) {
+                  console.error('Error creating node:', nodeData, error);
+                }
+              });
+              
+              // Store the mapping for connection creation
+              window.agentNodeIdMapping = nodeIdMapping;
+              
+              // Add connections after a longer delay to ensure nodes are fully initialized
+              setTimeout(() => {
+                console.log('🔗 Creating connections from Agent workflow:', workflowData.connections);
+                
+                if (!workflowData.connections || workflowData.connections.length === 0) {
+                  console.warn('⚠️ No connections found in Agent workflow data');
+                  return;
+                }
+                
+                workflowData.connections.forEach((connData, index) => {
+                  try {
+                    console.log(`🔗 Creating connection ${index + 1}:`, connData);
+                    
+                    // Validate connection data
+                    if (!connData.fromNode || !connData.toNode) {
+                      console.error('❌ Invalid connection data - missing nodes:', connData);
+                      return;
+                    }
+                    
+                    if (!connData.fromPort || !connData.toPort) {
+                      console.error('❌ Invalid connection data - missing ports:', connData);
+                      return;
+                    }
+                    
+                    // Map Agent IDs to actual node IDs
+                    const actualFromNodeId = nodeIdMapping.get(connData.fromNode);
+                    const actualToNodeId = nodeIdMapping.get(connData.toNode);
+                    
+                    if (!actualFromNodeId) {
+                      console.error(`❌ From node ID mapping not found: ${connData.fromNode}`);
+                      return;
+                    }
+                    
+                    if (!actualToNodeId) {
+                      console.error(`❌ To node ID mapping not found: ${connData.toNode}`);
+                      return;
+                    }
+                    
+                    console.log(`🔄 ID mapping: ${connData.fromNode} → ${actualFromNodeId}, ${connData.toNode} → ${actualToNodeId}`);
+                    
+                    // Verify nodes exist in DOM
+                    const fromNodeElement = document.getElementById(actualFromNodeId);
+                    const toNodeElement = document.getElementById(actualToNodeId);
+                    
+                    if (!fromNodeElement) {
+                      console.error(`❌ From node not found in DOM: ${actualFromNodeId}`);
+                      return;
+                    }
+                    
+                    if (!toNodeElement) {
+                      console.error(`❌ To node not found in DOM: ${actualToNodeId}`);
+                      return;
+                    }
+                    
+                    console.log(`✅ Nodes verified - From: ${actualFromNodeId}, To: ${actualToNodeId}`);
+                    
+                    const result = window.workflowBuilder.createConnection(
+                      actualFromNodeId,
+                      connData.fromPort,
+                      actualToNodeId,
+                      connData.toPort
+                    );
+                    
+                    console.log(`✅ Connection ${index + 1} created successfully:`, result);
+                    
+                  } catch (error) {
+                    console.error(`❌ Error creating connection ${index + 1}:`, connData, error);
+                  }
+                });
+                
+                // Update canvas placeholder
+                window.workflowBuilder.updateCanvasPlaceholder();
+                
+                // Show success message
+                const successMsg = document.createElement('div');
+                successMsg.className = 'alert alert-success fixed top-20 right-4 z-50 w-96';
+                successMsg.innerHTML = `
+                  <div class="flex items-center">
+                    <i class="ti ti-robot mr-2"></i>
+                    <div>
+                      <div class="font-semibold">Agent Built Your Workflow!</div>
+                      <div class="text-sm opacity-90">The workflow has been created based on your conversation.</div>
+                    </div>
+                  </div>
+                `;
+                document.body.appendChild(successMsg);
+                
+                // Auto-remove success message
+                setTimeout(() => {
+                  if (successMsg.parentNode) {
+                    successMsg.remove();
+                  }
+                }, 8000);
+                
+              }, 1000); // Increased delay to ensure nodes are fully initialized
+              
+            } catch (error) {
+              console.error('Error loading pending workflow:', error);
+              sessionStorage.removeItem('pendingWorkflow');
+            }
+          }
+        }, 1000);
+        
+      } else {
+        console.error('WorkflowBuilder class not found');
+      }
+    } catch (error) {
+      console.error('Failed to initialize WorkflowBuilder:', error);
+    }
+  }
+
+  // Global functions for conda environment management
+  async function loadCondaEnvironments(paramId) {
+    console.log('🐍 Loading conda environments for:', paramId);
+    
+    const selectElement = document.getElementById(paramId + '_select');
+    if (!selectElement) {
+      console.error('Select element not found:', paramId + '_select');
+      return;
+    }
+    
+    // Show loading state
+    selectElement.innerHTML = '<option value="">Loading...</option>';
+    selectElement.disabled = true;
+    
+    try {
+      const response = await fetch('/api/conda-environments');
+      const data = await response.json();
+      
+      if (data.success && data.environments) {
+        console.log('✅ Found conda environments:', data.environments);
+        
+        // Clear loading state
+        selectElement.innerHTML = '<option value="">Select conda environment...</option>';
+        
+        // Add environments to dropdown
+        data.environments.forEach(env => {
+          const option = document.createElement('option');
+          option.value = env.name;
+          option.textContent = env.name + (env.active ? ' (Currently Active)' : '');
+          if (env.active) {
+            option.style.fontWeight = 'bold';
+            option.style.color = '#059669';
+          }
+          selectElement.appendChild(option);
+        });
+        
+        // Set default value if available
+        const inputElement = document.getElementById(paramId);
+        if (inputElement && inputElement.value) {
+          selectElement.value = inputElement.value;
+        }
+        
+        console.log(`✅ Loaded ${data.environments.length} conda environments`);
+      } else {
+        throw new Error(data.error || 'Failed to load environments');
+      }
+    } catch (error) {
+      console.error('❌ Error loading conda environments:', error);
+      
+      // Add common environment options as fallback
+      selectElement.innerHTML = `
+        <option value="">❌ Auto-load failed, select common environment or input manually</option>
+        <option value="base">base (Default Environment)</option>
+        <option value="spades_env">spades_env</option>
+        <option value="quast_env">quast_env</option>
+        <option value="biotools">biotools</option>
+        <option value="bioinformatics">bioinformatics</option>
+      `;
+      
+      // Show detailed error message
+      const label = selectElement.closest('.form-control')?.querySelector('.label-text-alt');
+      if (label) {
+        let errorMsg = '❌ Unable to auto-load environment list.';
+        
+        // Parse error details
+        if (error.message.includes('Conda command failed')) {
+          errorMsg += ' Conda command execution failed, conda may not be installed or not in PATH.';
+        } else if (error.message.includes('SSH connection failed')) {
+          errorMsg += ' SSH connection failed, please check server connection.';
+        } else {
+          errorMsg += ' Please check server connection and conda installation.';
+        }
+        
+        errorMsg += ' You can select common environments from above or input manually.';
+        
+        label.innerHTML = errorMsg;
+        label.style.color = '#ef4444';
+      }
+    } finally {
+      selectElement.disabled = false;
+    }
+  }
+
+  function updateCondaEnvInput(paramId) {
+    const selectElement = document.getElementById(paramId + '_select');
+    const inputElement = document.getElementById(paramId);
+    
+    if (selectElement && inputElement && selectElement.value) {
+      inputElement.value = selectElement.value;
+      console.log('🐍 Updated conda environment:', selectElement.value);
+    }
+  }
+
+  // Show server terminal conda output
+  async function showServerTerminalConda() {
+    console.log('🖥️ Getting server terminal conda output...');
+    
+    try {
+      const response = await fetch('/api/conda-terminal');
+      const data = await response.json();
+      
+      if (data.success) {
+        console.log('✅ Server terminal output received');
+        
+        let terminalOutput = '🖥️ Server Terminal Conda Check Results:\n';
+        terminalOutput += '='.repeat(50) + '\n\n';
+        terminalOutput += data.output;
+        
+        if (data.errorOutput) {
+          terminalOutput += '\n\n📛 Error Output:\n';
+          terminalOutput += data.errorOutput;
+        }
+        
+        terminalOutput += '\n\n📊 Execution Info:\n';
+        terminalOutput += `Exit Code: ${data.exitCode}\n`;
+        terminalOutput += `Execution Time: ${data.timestamp}\n`;
+        
+        // Create a modal to show the terminal output
+        showTerminalOutputModal(terminalOutput);
+      } else {
+        throw new Error(data.error || 'Unknown error');
+      }
+    } catch (error) {
+      console.error('❌ Error getting server terminal output:', error);
+      alert('❌ Failed to get server terminal output:\n\n' + error.message);
+    }
+  }
+
+  function showTerminalOutputModal(output) {
+    // Create modal HTML
+    const modalHtml = `
+      <div id="terminal-output-modal" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      ">
+        <div style="
+          background: #1e1e1e;
+          color: #00ff00;
+          font-family: 'Courier New', monospace;
+          font-size: 12px;
+          width: 90%;
+          max-width: 800px;
+          max-height: 80%;
+          overflow-y: auto;
+          padding: 20px;
+          border-radius: 8px;
+          border: 2px solid #00ff00;
+          position: relative;
+        ">
+          <button onclick="closeTerminalModal()" style="
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+          ">✕ Close</button>
+          <h3 style="color: #00ff00; margin-top: 0; margin-bottom: 15px;">
+            🖥️ Server Terminal Output
+          </h3>
+          <pre style="
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+            line-height: 1.4;
+          ">${output}</pre>
+        </div>
+      </div>
+    `;
+    
+    // Add modal to document
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+  }
+
+  function closeTerminalModal() {
+    const modal = document.getElementById('terminal-output-modal');
+    if (modal) {
+      modal.remove();
+    }
+  }
+
+  // Test conda availability function
+  async function testCondaAvailability() {
+    console.log('🔍 Testing conda availability...');
+    
+    try {
+      const response = await fetch('/api/conda-test');
+      const data = await response.json();
+      
+      if (data.success) {
+        let message = '🔍 Conda Installation Check Results:\n\n';
+        
+        if (data.condaAvailable) {
+          message += '✅ Conda is installed and available\n';
+          message += `📍 Installation Path: ${data.condaPath}\n\n`;
+          message += 'You can now try to get the environment list.';
+        } else {
+          message += '❌ Conda not found\n\n';
+          message += 'Possible reasons:\n';
+          message += '• conda is not installed\n';
+          message += '• conda is not in system PATH\n';
+          message += '• need to activate conda environment first\n\n';
+          message += 'Suggestions:\n';
+          message += '1. Install Miniconda or Anaconda\n';
+          message += '2. Ensure conda is in PATH\n';
+          message += '3. Restart terminal session';
+        }
+        
+        alert(message);
+      } else {
+        throw new Error(data.error || 'Unknown error');
+      }
+    } catch (error) {
+      console.error('❌ Error testing conda availability:', error);
+      alert('❌ Failed to check conda installation status:\n\n' + error.message + '\n\nPlease check server connection.');
+    }
+  }
+
+  // Test conda environments function
+  async function testCondaEnvironments() {
+    console.log('🐍 Testing conda environments...');
+    
+    try {
+      const response = await fetch('/api/conda-environments');
+      const data = await response.json();
+      
+      if (data.success) {
+        console.log('✅ Conda environments loaded successfully:', data.environments);
+        
+        let envList = '🐍 Available Conda Environments:\n\n';
+        if (data.environments.length === 0) {
+          envList += '❌ No conda environments found\n';
+        } else {
+          data.environments.forEach((env, index) => {
+            envList += `${index + 1}. ${env.name}`;
+            if (env.active) envList += ' (Currently Active)';
+            envList += '\n   Path: ' + env.path + '\n\n';
+          });
+        }
+        
+        envList += `\nTotal ${data.environments.length} environments found`;
+        if (data.commandUsed) {
+          envList += '\n\nSuccessfully executed command: ' + data.commandUsed;
+        }
+        envList += '\n\nRaw Output:\n' + data.rawOutput;
+        
+        alert(envList);
+      } else {
+        throw new Error(data.error || 'Unknown error');
+      }
+    } catch (error) {
+      console.error('❌ Error testing conda environments:', error);
+      alert('❌ Failed to get conda environments:\n\n' + error.message + '\n\nPlease ensure:\n1. Server connection is normal\n2. Conda is installed on server\n3. Conda command is in PATH');
+    }
+  }
+
+  // Detect conda paths function
+  async function detectCondaPaths() {
+    console.log('🔍 Detecting conda paths...');
+    
+    try {
+      const response = await fetch('/api/conda-terminal');
+      const data = await response.json();
+      
+      if (data.success) {
+        let pathInfo = '🔍 Conda Path Detection Results:\n\n';
+        pathInfo += data.output;
+        
+        // Parse key information
+        const lines = data.output.split('\n');
+        let condaPath = '';
+        let envs = [];
+        
+        lines.forEach(line => {
+          if (line.includes('/conda') && !line.includes('not found')) {
+            condaPath = line.trim();
+          }
+          if (line.includes('spades_env') || line.includes('quast_env')) {
+            envs.push(line.trim());
+          }
+        });
+        
+        pathInfo += '\n\n📋 Key Information:\n';
+        pathInfo += `Conda Installation Path: ${condaPath || 'Not Found'}\n`;
+        pathInfo += `Environment List: ${envs.length > 0 ? envs.join(', ') : 'spades_env/quast_env not found'}\n`;
+        
+        alert(pathInfo);
+      } else {
+        throw new Error(data.error || 'Unknown error');
+      }
+    } catch (error) {
+      console.error('❌ Error detecting conda paths:', error);
+      alert('❌ Failed to detect conda paths:\n\n' + error.message);
+    }
+  }
+
+  // Test mock workflow function
+  async function testMockWorkflow() {
+    console.log('🧪 Testing mock SPAdes + QUAST workflow...');
+    
+    try {
+      const response = await fetch('/api/run-mock-spades-quast', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          workingDir: '/home/hoshigawarei',
+          spadesEnv: 'spades_env',  // Use environment name instead of full path
+          quastEnv: 'quast_env'     // Use environment name instead of full path
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      
+      let message = '🧬 Mock Workflow Test Results:\n\n';
+      
+      if (data.success) {
+        message += '✅ Workflow completed successfully!\n\n';
+      } else {
+        message += '❌ Workflow failed:\n' + data.error + '\n\n';
+      }
+      
+      if (data.results && data.results.steps) {
+        message += `📊 Execution Summary:\n`;
+        message += `• Total steps: ${data.results.totalSteps || data.results.steps.length}\n`;
+        message += `• Successful steps: ${data.results.successfulSteps || 0}\n`;
+        message += `• Duration: ${data.results.startTime} to ${data.results.endTime || 'running'}\n\n`;
+        
+        message += `📝 Step Details:\n`;
+        data.results.steps.forEach((step, index) => {
+          message += `${index + 1}. ${step.tool}:\n`;
+          message += `   Command: ${step.command}\n`;
+          message += `   Exit Code: ${step.exitCode}\n`;
+          message += `   Time: ${step.timestamp}\n\n`;
+        });
+      }
+      
+      alert(message);
+      
+    } catch (error) {
+      console.error('❌ Error testing mock workflow:', error);
+      
+      let errorMessage = '❌ Mock workflow test failed:\n\n';
+      
+      if (error.message.includes('Unexpected token')) {
+        errorMessage += '🔌 Connection Error: Please establish server connection first.\n\n';
+        errorMessage += 'Go to the login page and connect to your server.';
+      } else if (error.message.includes('401')) {
+        errorMessage += '🔐 Authentication Error: No connection established.\n\n';
+        errorMessage += 'Please login and establish server connection first.';
+      } else {
+        errorMessage += error.message;
+      }
+      
+      alert(errorMessage);
+    }
+  }
+
+  // Global functions needed by the modal
+  function closeComponentConfig() {
+    document.getElementById('component-config-modal').close();
+  }
+
+  function saveComponentConfig() {
+    if (window.workflowBuilder && window.workflowBuilder.saveComponentConfig) {
+      window.workflowBuilder.saveComponentConfig();
+    }
+  }
+  
+  // Global error handlers to prevent uncaught promise errors
+  window.addEventListener('unhandledrejection', function(event) {
+    console.warn('Unhandled promise rejection:', event.reason);
+    // Prevent the default behavior (logging to console)
+    event.preventDefault();
+  });
+
+  window.addEventListener('error', function(event) {
+    console.warn('Global error:', event.error);
+  });
+
+  document.addEventListener('DOMContentLoaded', initializeWorkflowBuilder);
+</script> 

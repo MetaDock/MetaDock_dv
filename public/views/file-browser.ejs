@@ -31,6 +31,11 @@
             placeholder="/path/to/directory"
             class="join-item input input-bordered w-full" 
             value="<%= currentDir %>"
+            autocomplete="off"
+            autocorrect="off" 
+            autocapitalize="off" 
+            spellcheck="false"
+            data-form-type="other"
         >
         <button onclick="goToFolder()" class="join-item btn btn-primary">
             <i class="ti ti-arrow-right"></i>

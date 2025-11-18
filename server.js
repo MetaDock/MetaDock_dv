@@ -120,6 +120,17 @@ const checkConnection = (req, res, next) => {
   next();
 };
 
+// API-specific middleware that returns JSON error instead of redirect
+const checkConnectionAPI = (req, res, next) => {
+  if (!req.app.locals.connectionDetails) {
+    return res.status(401).json({ 
+      error: 'No connection established', 
+      message: 'Please establish server connection first' 
+    });
+  }
+  next();
+};
+
 // Add middleware to pass connectionDetails to all routes
 app.use((req, res, next) => {
   res.locals.connectionDetails = req.app.locals.connectionDetails;
@@ -1019,10 +1030,13 @@ app.get('/api/tool-config/:toolName', async (req, res) => {
     
     try {
       const usageData = await fs.readFile(usagePath, 'utf8');
-      const usageJson = JSON.parse(usageData);
-      description = usageJson.description || '';
+      if (usageData.trim()) {
+        const usageJson = JSON.parse(usageData);
+        description = usageJson.description || '';
+      }
     } catch (error) {
-      console.error(`Error loading usage for ${toolName}:`, error);
+      // Silently handle missing or invalid usage files
+      console.log(`Usage file not available for ${toolName}, using default description`);
     }
     
     res.json({
@@ -1035,6 +1049,890 @@ app.get('/api/tool-config/:toolName', async (req, res) => {
   } catch (error) {
     console.error('Error loading tool config:', error);
     res.status(500).json({ error: 'Failed to load tool configuration' });
+  }
+});
+
+// API to list conda environments
+app.get('/api/conda-environments', checkConnectionAPI, async (req, res) => {
+  try {
+    const connectionDetails = req.app.locals.connectionDetails;
+    
+    if (!connectionDetails) {
+      return res.status(400).json({ error: 'No connection details available' });
+    }
+
+    const { Client } = require('ssh2');
+    const conn = new Client();
+
+    conn.on('ready', () => {
+      // List conda environments - try multiple commands
+      const commands = [
+        'conda env list',
+        '/opt/miniconda3/bin/conda env list',
+        '/opt/conda/bin/conda env list',
+        'source ~/.bashrc && conda env list',
+        'eval "$(conda shell.bash hook)" && conda env list'
+      ];
+      
+      let commandIndex = 0;
+      
+      function tryNextCommand() {
+        if (commandIndex >= commands.length) {
+          return res.status(500).json({ 
+            error: 'All conda commands failed', 
+            details: 'Could not find conda installation or conda is not in PATH'
+          });
+        }
+        
+        const command = commands[commandIndex];
+        console.log(`Trying conda command ${commandIndex + 1}: ${command}`);
+        
+        conn.exec(command, (err, stream) => {
+          if (err) {
+            console.log(`Command ${commandIndex + 1} exec failed:`, err.message);
+            commandIndex++;
+            return tryNextCommand();
+          }
+
+          let output = '';
+          let errorOutput = '';
+
+          stream.on('close', (code) => {
+            console.log(`Command ${commandIndex + 1} finished with code: ${code}`);
+            console.log(`Output: ${output}`);
+            console.log(`Error output: ${errorOutput}`);
+            
+            if (code !== 0) {
+              console.log(`Command ${commandIndex + 1} failed, trying next...`);
+              commandIndex++;
+              return tryNextCommand();
+            }
+
+            // Parse conda env list output
+            const environments = [];
+            const lines = output.split('\n');
+            
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (trimmed && !trimmed.startsWith('#') && trimmed !== '') {
+                // Parse environment name and path
+                const parts = trimmed.split(/\s+/);
+                if (parts.length >= 1) {
+                  const envName = parts[0];
+                  const envPath = parts.length > 1 ? parts[parts.length - 1] : '';
+                  const isActive = trimmed.includes('*');
+                  
+                  if (envName) {  // Include base environment too
+                    environments.push({
+                      name: envName,
+                      path: envPath,
+                      active: isActive
+                    });
+                  }
+                }
+              }
+            }
+
+            conn.end();
+            res.json({
+              success: true,
+              environments: environments,
+              rawOutput: output,
+              commandUsed: command
+            });
+          });
+
+          stream.on('data', (data) => {
+            output += data.toString();
+          });
+
+          stream.stderr.on('data', (data) => {
+            errorOutput += data.toString();
+          });
+        });
+      }
+      
+      // Start trying commands
+      tryNextCommand();
+    });
+
+    conn.on('error', (err) => {
+      res.status(500).json({ error: 'SSH connection failed', details: err.message });
+    });
+
+    conn.connect(connectionDetails);
+
+  } catch (error) {
+    console.error('Error listing conda environments:', error);
+    res.status(500).json({ error: 'Failed to list conda environments' });
+  }
+});
+
+// Simple test API to check if conda is available
+app.get('/api/conda-test', checkConnectionAPI, async (req, res) => {
+  try {
+    const connectionDetails = req.app.locals.connectionDetails;
+    
+    if (!connectionDetails) {
+      return res.status(400).json({ error: 'No connection details available' });
+    }
+
+    const { Client } = require('ssh2');
+    const conn = new Client();
+
+    conn.on('ready', () => {
+      conn.exec('which conda || echo "conda not found"', (err, stream) => {
+        if (err) {
+          conn.end();
+          return res.status(500).json({ error: 'Failed to test conda' });
+        }
+
+        let output = '';
+        
+        stream.on('close', (code) => {
+          conn.end();
+          
+          const condaPath = output.trim();
+          const hasData = condaPath && !condaPath.includes('conda not found');
+          
+          res.json({
+            success: true,
+            condaAvailable: hasData,
+            condaPath: hasData ? condaPath : null,
+            message: hasData ? 'Conda is available' : 'Conda not found in PATH'
+          });
+        });
+
+        stream.on('data', (data) => {
+          output += data.toString();
+        });
+      });
+    });
+
+    conn.on('error', (err) => {
+      res.status(500).json({ error: 'SSH connection failed', details: err.message });
+    });
+
+    conn.connect(connectionDetails);
+
+  } catch (error) {
+    console.error('Error testing conda:', error);
+    res.status(500).json({ error: 'Failed to test conda availability' });
+  }
+});
+
+// API to show raw server terminal conda output
+app.get('/api/conda-terminal', checkConnectionAPI, async (req, res) => {
+  try {
+    const connectionDetails = req.app.locals.connectionDetails;
+    
+    if (!connectionDetails) {
+      return res.status(400).json({ error: 'No connection details available' });
+    }
+
+    const { Client } = require('ssh2');
+    const conn = new Client();
+
+    conn.on('ready', () => {
+      const commands = [
+        'echo "=== Checking conda installation location ==="',
+        'which conda 2>/dev/null || echo "conda not in PATH"',
+        'echo "\\n=== Finding conda executable files ==="', 
+        'find /opt -name "conda" -type f 2>/dev/null | head -5 || echo "conda not found"',
+        'find /usr -name "conda" -type f 2>/dev/null | head -5 || echo "conda not found"',
+        'echo "\\n=== Trying conda env list ==="',
+        'conda env list 2>&1 || echo "conda env list failed"',
+        'echo "\\n=== Trying full path ==="',
+        '/opt/miniconda3/bin/conda env list 2>/dev/null || echo "/opt/miniconda3/bin/conda not found"',
+        '/opt/anaconda3/bin/conda env list 2>/dev/null || echo "/opt/anaconda3/bin/conda not found"',
+        'echo "\\n=== Checking conda configuration ==="',
+        'ls -la ~/.condarc 2>/dev/null || echo "No .condarc file"',
+        'echo "\\n=== Checking conda config in bashrc ==="',
+        'grep -n conda ~/.bashrc 2>/dev/null | head -3 || echo "No conda config in .bashrc"',
+        'echo "\\n=== Current PATH environment variable ==="',
+        'echo $PATH | grep -o "[^:]*conda[^:]*" || echo "No conda in PATH"',
+        'echo "\\n=== Check completed ==="'
+      ];
+      
+      const fullCommand = commands.join(' && ');
+      console.log('Executing conda terminal check:', fullCommand);
+      
+      conn.exec(fullCommand, (err, stream) => {
+        if (err) {
+          conn.end();
+          return res.status(500).json({ error: 'Failed to execute terminal commands' });
+        }
+
+        let output = '';
+        let errorOutput = '';
+
+        stream.on('close', (code) => {
+          conn.end();
+          
+          res.json({
+            success: true,
+            output: output,
+            errorOutput: errorOutput,
+            exitCode: code,
+            timestamp: new Date().toISOString()
+          });
+        });
+
+        stream.on('data', (data) => {
+          output += data.toString();
+        });
+
+        stream.stderr.on('data', (data) => {
+          errorOutput += data.toString();
+        });
+      });
+    });
+
+    conn.on('error', (err) => {
+      res.status(500).json({ error: 'SSH connection failed', details: err.message });
+    });
+
+    conn.connect(connectionDetails);
+
+  } catch (error) {
+    console.error('Error running conda terminal check:', error);
+    res.status(500).json({ error: 'Failed to run conda terminal check' });
+  }
+});
+
+// In-memory storage for workflow status
+const workflowJobs = new Map();
+
+// Generic workflow execution system for any tool combination
+app.post('/api/run-generic-workflow', checkConnectionAPI, async (req, res) => {
+  try {
+    const { workflow, executionPlan, commands, workingDir } = req.body;
+    const connectionDetails = req.app.locals.connectionDetails;
+    
+    if (!connectionDetails) {
+      return res.status(400).json({ error: 'No connection details available' });
+    }
+
+    // Generate unique job ID
+    const jobId = `workflow_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    console.log(`Starting workflow job ${jobId}`);
+    console.log('Execution order:', executionPlan.map(step => step.component));
+    console.log('Commands:', commands.map(cmd => `${cmd.component}: ${cmd.command}`));
+
+    const executionResults = {
+      jobId: jobId,
+      status: 'running',
+      steps: [],
+      startTime: new Date().toISOString(),
+      workingDir: workingDir,
+      workflow: workflow,
+      executionPlan: executionPlan,
+      commands: commands,
+      progress: 0,
+      currentStep: null
+    };
+    
+    // Store job in memory
+    workflowJobs.set(jobId, executionResults);
+    
+    // Return job ID immediately for background execution
+    res.json({
+      success: true,
+      message: 'Workflow started in background',
+      jobId: jobId,
+      status: 'running'
+    });
+
+    // Execute workflow in background
+    const conn = new Client();
+
+    conn.on('ready', () => {
+      console.log('SSH connection ready for generic workflow execution');
+      
+      // Execute commands in sequence according to execution plan
+      executeNextCommand(0);
+      
+      function executeNextCommand(stepIndex) {
+        if (stepIndex >= commands.length) {
+          // All commands completed
+          executionResults.endTime = new Date().toISOString();
+          executionResults.totalSteps = commands.length;
+          executionResults.successfulSteps = executionResults.steps.filter(step => step.exitCode === 0).length;
+          executionResults.progress = 100;
+          executionResults.currentStep = null;
+          
+          const allSuccessful = executionResults.successfulSteps === executionResults.totalSteps;
+          executionResults.status = allSuccessful ? 'completed' : 'failed';
+          executionResults.message = allSuccessful ? 
+            `Generic workflow completed successfully! Executed ${executionResults.totalSteps} tools.` : 
+            `Workflow completed with ${executionResults.successfulSteps}/${executionResults.totalSteps} successful steps.`;
+          
+          // Update job status
+          workflowJobs.set(jobId, executionResults);
+          
+          conn.end();
+          console.log(`Workflow job ${jobId} completed with status: ${executionResults.status}`);
+          return;
+        }
+        
+        const currentCommand = commands[stepIndex];
+        console.log(`Executing step ${stepIndex + 1}/${commands.length}: ${currentCommand.component}`);
+        
+        // Update job status
+        executionResults.progress = Math.round((stepIndex / commands.length) * 100);
+        executionResults.currentStep = currentCommand.component;
+        workflowJobs.set(jobId, executionResults);
+        
+        // Build full command with conda activation and environment setup
+        let fullCommand = `
+          source ~/.bashrc 2>/dev/null || true &&
+          cd ${workingDir} && 
+          echo "=== Executing ${currentCommand.component} ===" &&
+        `;
+        
+        // Add test data creation for SPAdes if needed
+        if (currentCommand.component === 'spades') {
+          fullCommand += `
+          echo "Creating test data files if they don't exist..." &&
+          [ ! -f left.fastq.gz ] && printf "@read1\\nACGTACGTACGT\\n+\\nIIIIIIIIIIII\\n" | gzip > left.fastq.gz || echo "left.fastq.gz already exists" &&
+          [ ! -f right.fastq.gz ] && printf "@read2\\nTGCATGCATGCA\\n+\\nIIIIIIIIIIII\\n" | gzip > right.fastq.gz || echo "right.fastq.gz already exists" &&
+          `;
+        }
+        
+        fullCommand += `
+          export PATH="/home/hoshigawarei/miniconda3/bin:$PATH" &&
+          eval "$(/home/hoshigawarei/miniconda3/bin/conda shell.bash hook)" &&
+          echo "Checking if conda environment '${currentCommand.condaEnv}' exists..." &&
+          conda env list | grep -q "^${currentCommand.condaEnv}\\s" || (echo "ERROR: Conda environment '${currentCommand.condaEnv}' not found!" && exit 1) &&
+          conda activate ${currentCommand.condaEnv} &&
+          echo "Activated environment: $CONDA_DEFAULT_ENV" &&
+          echo "Checking if ${currentCommand.component}.py is available..." &&
+          which ${currentCommand.component}.py || (echo "ERROR: ${currentCommand.component}.py not found in environment '${currentCommand.condaEnv}'!" && echo "Please install ${currentCommand.component} in this environment." && exit 1) &&
+          ${currentCommand.command}
+        `;
+        
+        console.log(`Executing command: ${fullCommand}`);
+        
+        conn.exec(fullCommand, (err, stream) => {
+          if (err) {
+            console.error(`Failed to execute command for ${currentCommand.component}:`, err);
+            executionResults.steps.push({
+              tool: currentCommand.component,
+              nodeId: currentCommand.nodeId,
+              command: fullCommand,
+              exitCode: -1,
+              output: '',
+              error: `Failed to execute: ${err.message}`,
+              timestamp: new Date().toISOString()
+            });
+            
+            // Continue with next command even if this one failed
+            executeNextCommand(stepIndex + 1);
+            return;
+          }
+
+          let output = '';
+          let error = '';
+
+          stream.on('close', (code) => {
+            console.log(`${currentCommand.component} finished with code: ${code}`);
+            
+            executionResults.steps.push({
+              tool: currentCommand.component,
+              nodeId: currentCommand.nodeId,
+              command: fullCommand,
+              exitCode: code,
+              output: output,
+              error: error,
+              timestamp: new Date().toISOString()
+            });
+
+            // Continue with next command
+            executeNextCommand(stepIndex + 1);
+          });
+
+          stream.on('data', (data) => {
+            output += data.toString();
+          });
+
+          stream.stderr.on('data', (data) => {
+            error += data.toString();
+          });
+        });
+      }
+    });
+
+    conn.on('error', (err) => {
+      console.error('SSH connection error:', err);
+      res.status(500).json({ 
+        error: 'SSH connection failed',
+        details: err.message 
+      });
+    });
+
+    conn.connect(connectionDetails);
+
+  } catch (error) {
+    console.error('Error running generic workflow:', error);
+    
+    // Update job status on error
+    if (executionResults && executionResults.jobId) {
+      executionResults.status = 'failed';
+      executionResults.error = error.message;
+      workflowJobs.set(executionResults.jobId, executionResults);
+    }
+    
+    res.status(500).json({ error: 'Failed to run generic workflow', details: error.message });
+  }
+});
+
+// Get workflow job status
+app.get('/api/workflow-status/:jobId', checkConnectionAPI, (req, res) => {
+  const { jobId } = req.params;
+  
+  if (!workflowJobs.has(jobId)) {
+    return res.status(404).json({ error: 'Workflow job not found' });
+  }
+  
+  const job = workflowJobs.get(jobId);
+  res.json(job);
+});
+
+// Get all workflow jobs
+app.get('/api/workflow-jobs', checkConnectionAPI, (req, res) => {
+  const jobs = Array.from(workflowJobs.values()).map(job => ({
+    jobId: job.jobId,
+    status: job.status,
+    startTime: job.startTime,
+    endTime: job.endTime,
+    progress: job.progress,
+    currentStep: job.currentStep,
+    totalSteps: job.totalSteps,
+    successfulSteps: job.successfulSteps,
+    workflow: {
+      nodes: job.workflow.nodes.length,
+      tools: job.executionPlan.map(step => step.component)
+    }
+  }));
+  
+  res.json(jobs);
+});
+
+// Real SPAdes + QUAST workflow execution with user configuration
+app.post('/api/run-real-spades-quast', checkConnectionAPI, async (req, res) => {
+  try {
+    const { workingDir, spadesEnv, quastEnv, spadesCommand, quastCommand, workflow } = req.body;
+    const connectionDetails = req.app.locals.connectionDetails;
+    
+    if (!connectionDetails) {
+      return res.status(400).json({ error: 'No connection details available' });
+    }
+
+    console.log('Running real SPAdes + QUAST workflow with commands:');
+    console.log('SPAdes:', spadesCommand);
+    console.log('QUAST:', quastCommand);
+
+    const conn = new Client();
+    const executionResults = {
+      steps: [],
+      startTime: new Date().toISOString(),
+      workingDir: workingDir,
+      environments: { spadesEnv, quastEnv },
+      commands: { spadesCommand, quastCommand },
+      workflow: workflow
+    };
+
+    conn.on('ready', () => {
+      console.log('SSH connection ready for real workflow execution');
+      
+      // First, detect conda installation and environments
+      const detectCommand = `
+        echo "=== Real Workflow Detection ==="
+        source ~/.bashrc 2>/dev/null || true
+        export PATH="/home/hoshigawarei/miniconda3/bin:$PATH"
+        which conda 2>/dev/null && echo "✅ conda found" || echo "❌ conda not found"
+        eval "$(/home/hoshigawarei/miniconda3/bin/conda shell.bash hook)" 2>/dev/null || true
+        conda env list 2>/dev/null | grep -E "(${spadesEnv}|${quastEnv})" && echo "✅ environments found" || echo "❌ environments not found"
+        echo "Files in ${workingDir}:"
+        ls -la ${workingDir}/ | head -5
+        echo "=== Detection Complete ==="
+      `;
+      
+      conn.exec(detectCommand, (err, stream) => {
+        if (err) {
+          console.log('Detection command failed, proceeding with execution');
+          executeRealSpades();
+          return;
+        }
+
+        let detectionOutput = '';
+        
+        stream.on('close', (code) => {
+          console.log('Detection output:', detectionOutput);
+          executionResults.detection = detectionOutput;
+          executeRealSpades();
+        });
+
+        stream.on('data', (data) => {
+          detectionOutput += data.toString();
+        });
+      });
+
+      function executeRealSpades() {
+        // Step 1: Run SPAdes with user-configured command
+        const fullSpadesCommand = `
+          source ~/.bashrc 2>/dev/null || true &&
+          cd ${workingDir} && 
+          echo "Creating test data files if they don't exist..." &&
+          [ ! -f left.fastq.gz ] && printf "@read1\\nACGTACGTACGT\\n+\\nIIIIIIIIIIII\\n" | gzip > left.fastq.gz || echo "left.fastq.gz already exists" &&
+          [ ! -f right.fastq.gz ] && printf "@read2\\nTGCATGCATGCA\\n+\\nIIIIIIIIIIII\\n" | gzip > right.fastq.gz || echo "right.fastq.gz already exists" &&
+          export PATH="/home/hoshigawarei/miniconda3/bin:$PATH" &&
+          eval "$(/home/hoshigawarei/miniconda3/bin/conda shell.bash hook)" &&
+          conda activate ${spadesEnv} &&
+          echo "Activated environment: $CONDA_DEFAULT_ENV" &&
+          which spades.py &&
+          ${spadesCommand}
+        `;
+        
+        console.log('Executing real SPAdes command:', fullSpadesCommand);
+      
+        conn.exec(fullSpadesCommand, (err, stream) => {
+          if (err) {
+            conn.end();
+            return res.status(500).json({ 
+              error: 'Failed to execute SPAdes command',
+              details: err.message 
+            });
+          }
+
+          let spadesOutput = '';
+          let spadesError = '';
+
+          stream.on('close', (code) => {
+            console.log(`Real SPAdes finished with code: ${code}`);
+            
+            executionResults.steps.push({
+              tool: 'SPAdes',
+              command: fullSpadesCommand,
+              exitCode: code,
+              output: spadesOutput,
+              error: spadesError,
+              timestamp: new Date().toISOString()
+            });
+
+            if (code !== 0) {
+              conn.end();
+              return res.json({
+                success: false,
+                error: 'SPAdes execution failed',
+                results: executionResults
+              });
+            }
+
+            executeRealQuast();
+          });
+
+          stream.on('data', (data) => {
+            spadesOutput += data.toString();
+          });
+
+          stream.stderr.on('data', (data) => {
+            spadesError += data.toString();
+          });
+        });
+      }
+
+      function executeRealQuast() {
+        // Step 2: Run QUAST with user-configured command
+        const fullQuastCommand = `
+          source ~/.bashrc 2>/dev/null || true &&
+          cd ${workingDir} && 
+          export PATH="/home/hoshigawarei/miniconda3/bin:$PATH" &&
+          eval "$(/home/hoshigawarei/miniconda3/bin/conda shell.bash hook)" &&
+          conda activate ${quastEnv} &&
+          echo "Activated environment: $CONDA_DEFAULT_ENV" &&
+          which quast.py &&
+          ${quastCommand}
+        `;
+        
+        console.log('Executing real QUAST command:', fullQuastCommand);
+        
+        conn.exec(fullQuastCommand, (err, stream) => {
+          if (err) {
+            conn.end();
+            return res.status(500).json({ 
+              error: 'Failed to execute QUAST command',
+              details: err.message 
+            });
+          }
+
+          let quastOutput = '';
+          let quastError = '';
+
+          stream.on('close', (code) => {
+            console.log(`Real QUAST finished with code: ${code}`);
+            
+            executionResults.steps.push({
+              tool: 'QUAST',
+              command: fullQuastCommand,
+              exitCode: code,
+              output: quastOutput,
+              error: quastError,
+              timestamp: new Date().toISOString()
+            });
+
+            executionResults.endTime = new Date().toISOString();
+            executionResults.totalSteps = 2;
+            executionResults.successfulSteps = executionResults.steps.filter(step => step.exitCode === 0).length;
+
+            conn.end();
+            
+            res.json({
+              success: code === 0,
+              message: code === 0 ? 'Real SPAdes + QUAST workflow completed successfully' : 'QUAST execution failed',
+              results: executionResults
+            });
+          });
+
+          stream.on('data', (data) => {
+            quastOutput += data.toString();
+          });
+
+          stream.stderr.on('data', (data) => {
+            quastError += data.toString();
+          });
+        });
+      }
+    });
+
+    conn.on('error', (err) => {
+      console.error('SSH connection error:', err);
+      res.status(500).json({ 
+        error: 'SSH connection failed',
+        details: err.message 
+      });
+    });
+
+    conn.connect(connectionDetails);
+
+  } catch (error) {
+    console.error('Error running real SPAdes + QUAST workflow:', error);
+    res.status(500).json({ error: 'Failed to run real workflow' });
+  }
+});
+
+// Mock SPAdes + QUAST workflow execution
+app.post('/api/run-mock-spades-quast', checkConnectionAPI, async (req, res) => {
+  try {
+    const { workingDir, spadesEnv, quastEnv } = req.body;
+    const connectionDetails = req.app.locals.connectionDetails;
+    
+    if (!connectionDetails) {
+      return res.status(400).json({ error: 'No connection details available' });
+    }
+
+    console.log('🧬 Starting mock SPAdes + QUAST workflow execution...');
+    console.log('Working directory:', workingDir);
+    console.log('SPAdes environment:', spadesEnv);
+    console.log('QUAST environment:', quastEnv);
+
+    const { Client } = require('ssh2');
+    const conn = new Client();
+
+    const executionResults = {
+      steps: [],
+      startTime: new Date().toISOString(),
+      workingDir: workingDir,
+      environments: { spadesEnv, quastEnv }
+    };
+
+    conn.on('ready', () => {
+      console.log('SSH connection ready for workflow execution');
+      
+      // First, detect conda installation and environments
+      const detectCommand = `
+        echo "=== Conda Detection ==="
+        source ~/.bashrc 2>/dev/null || true
+        export PATH="/home/hoshigawarei/miniconda3/bin:$PATH"
+        which conda 2>/dev/null && echo "✅ conda found" || echo "❌ conda not found"
+        eval "$(/home/hoshigawarei/miniconda3/bin/conda shell.bash hook)" 2>/dev/null || true
+        conda env list 2>/dev/null | grep -E "(spades_env|quast_env)" && echo "✅ environments found" || echo "❌ environments not found"
+        echo "Testing spades_env activation:"
+        conda activate spades_env 2>/dev/null && echo "✅ spades_env activated: $CONDA_DEFAULT_ENV" || echo "❌ spades_env activation failed"
+        conda deactivate 2>/dev/null || true
+        echo "Testing quast_env activation:"
+        conda activate quast_env 2>/dev/null && echo "✅ quast_env activated: $CONDA_DEFAULT_ENV" || echo "❌ quast_env activation failed"
+        conda deactivate 2>/dev/null || true
+        echo "Files in ${workingDir}:"
+        ls -la ${workingDir}/ | head -5
+        echo "Checking for test data files:"
+        ls -la ${workingDir}/left.fastq.gz 2>/dev/null && echo "✅ left.fastq.gz found" || echo "❌ left.fastq.gz not found"
+        ls -la ${workingDir}/right.fastq.gz 2>/dev/null && echo "✅ right.fastq.gz found" || echo "❌ right.fastq.gz not found"
+        echo "=== Detection Complete ==="
+      `;
+      
+      conn.exec(detectCommand, (err, stream) => {
+        if (err) {
+          console.log('Detection command failed, proceeding with original approach');
+          executeSpades();
+          return;
+        }
+
+        let detectionOutput = '';
+        
+        stream.on('close', (code) => {
+          console.log('Detection output:', detectionOutput);
+          executionResults.detection = detectionOutput;
+          executeSpades();
+        });
+
+        stream.on('data', (data) => {
+          detectionOutput += data.toString();
+        });
+      });
+
+      function executeSpades() {
+        // Step 1: Run SPAdes with proper conda initialization
+        const spadesCommand = `
+          source ~/.bashrc 2>/dev/null || true &&
+          cd ${workingDir} && 
+          echo "Creating test data files if they don't exist..." &&
+          [ ! -f left.fastq.gz ] && printf "@read1\\nACGTACGTACGT\\n+\\nIIIIIIIIIIII\\n" | gzip > left.fastq.gz || echo "left.fastq.gz already exists" &&
+          [ ! -f right.fastq.gz ] && printf "@read2\\nTGCATGCATGCA\\n+\\nIIIIIIIIIIII\\n" | gzip > right.fastq.gz || echo "right.fastq.gz already exists" &&
+          export PATH="/home/hoshigawarei/miniconda3/bin:$PATH" &&
+          eval "$(/home/hoshigawarei/miniconda3/bin/conda shell.bash hook)" &&
+          conda activate spades_env &&
+          echo "Activated environment: $CONDA_DEFAULT_ENV" &&
+          which spades.py &&
+          spades.py -1 left.fastq.gz -2 right.fastq.gz -o spades_output_folder
+        `;
+        
+        console.log('Executing SPAdes command:', spadesCommand);
+      
+      conn.exec(spadesCommand, (err, stream) => {
+        if (err) {
+          conn.end();
+          return res.status(500).json({ 
+            error: 'Failed to execute SPAdes command',
+            details: err.message 
+          });
+        }
+
+        let spadesOutput = '';
+        let spadesError = '';
+
+        stream.on('close', (code) => {
+          console.log(`SPAdes finished with code: ${code}`);
+          
+          executionResults.steps.push({
+            tool: 'SPAdes',
+            command: spadesCommand,
+            exitCode: code,
+            output: spadesOutput,
+            error: spadesError,
+            timestamp: new Date().toISOString()
+          });
+
+          if (code !== 0) {
+            conn.end();
+            return res.json({
+              success: false,
+              error: 'SPAdes execution failed',
+              results: executionResults
+            });
+          }
+
+          executeQuast();
+        });
+
+        stream.on('data', (data) => {
+          spadesOutput += data.toString();
+        });
+
+        stream.stderr.on('data', (data) => {
+          spadesError += data.toString();
+        });
+      });
+      }
+
+      function executeQuast() {
+        // Step 2: Run QUAST with proper conda initialization
+        const quastCommand = `
+          source ~/.bashrc 2>/dev/null || true &&
+          cd ${workingDir} && 
+          export PATH="/home/hoshigawarei/miniconda3/bin:$PATH" &&
+          eval "$(/home/hoshigawarei/miniconda3/bin/conda shell.bash hook)" &&
+          conda activate quast_env &&
+          echo "Activated environment: $CONDA_DEFAULT_ENV" &&
+          which quast.py &&
+          quast.py spades_output_folder/contigs.fasta -o quast_output_dir
+        `;
+        
+        console.log('Executing QUAST command:', quastCommand);
+        
+        conn.exec(quastCommand, (err, stream) => {
+          if (err) {
+            conn.end();
+            return res.status(500).json({ 
+              error: 'Failed to execute QUAST command',
+              details: err.message 
+            });
+          }
+
+          let quastOutput = '';
+          let quastError = '';
+
+          stream.on('close', (code) => {
+            console.log(`QUAST finished with code: ${code}`);
+            
+            executionResults.steps.push({
+              tool: 'QUAST',
+              command: quastCommand,
+              exitCode: code,
+              output: quastOutput,
+              error: quastError,
+              timestamp: new Date().toISOString()
+            });
+
+            executionResults.endTime = new Date().toISOString();
+            executionResults.totalSteps = 2;
+            executionResults.successfulSteps = executionResults.steps.filter(step => step.exitCode === 0).length;
+
+            conn.end();
+            
+            res.json({
+              success: code === 0,
+              message: code === 0 ? 'SPAdes + QUAST workflow completed successfully' : 'QUAST execution failed',
+              results: executionResults
+            });
+          });
+
+          stream.on('data', (data) => {
+            quastOutput += data.toString();
+          });
+
+          stream.stderr.on('data', (data) => {
+            quastError += data.toString();
+          });
+        });
+      }
+    });
+
+    conn.on('error', (err) => {
+      console.error('SSH connection error:', err);
+      res.status(500).json({ 
+        error: 'SSH connection failed', 
+        details: err.message,
+        results: executionResults 
+      });
+    });
+
+    conn.connect(connectionDetails);
+
+  } catch (error) {
+    console.error('Error running mock workflow:', error);
+    res.status(500).json({ error: 'Failed to run mock workflow', details: error.message });
   }
 });
 
@@ -1057,6 +1955,12 @@ app.get('/api/server-files', checkConnection, async (req, res) => {
     console.error('Error loading server files:', error);
     res.status(500).json({ error: 'Failed to load server files' });
   }
+});
+
+// 文件浏览器页面路由
+app.get('/browse-files', checkConnection, (req, res) => {
+  const { type = 'input' } = req.query;
+  res.render('browse-files', { type });
 });
 
 app.get('/api/server-folders', checkConnection, async (req, res) => {
@@ -1554,7 +2458,15 @@ function getNodeOutputFiles(node, workflow) {
     case 'file-input':
       return node.config?.files || [];
     case 'tool':
-      return [`${node.component}_output.txt`];
+      if (node.component === 'spades') {
+        const outputDir = node.config?.['o'] || node.config?.['output-dir'] || 'spades_output';
+        return [`${outputDir}/contigs.fasta`, `${outputDir}/scaffolds.fasta`];
+      } else if (node.component === 'quast') {
+        const outputDir = node.config?.['o'] || node.config?.['output-dir'] || 'quast_output';
+        return [`${outputDir}/report.html`, `${outputDir}/report.txt`];
+      } else {
+        return [`${node.component}_output.txt`];
+      }
     case 'visualization':
       return [`${node.component}_viz.html`];
     default:
@@ -1563,19 +2475,53 @@ function getNodeOutputFiles(node, workflow) {
 }
 
 function buildToolCommand(node, inputFiles) {
-  let command = node.component;
+  let command = '';
+  
+  // Check if conda environment is specified
+  const condaEnv = node.config?.['conda-env'] || node.config?.['conda_env'];
+  if (condaEnv) {
+    command = `conda activate ${condaEnv} && `;
+  }
+  
+  // Add the base tool command
+  if (node.component === 'spades') {
+    command += 'spades.py';
+  } else if (node.component === 'quast') {
+    command += 'quast.py';
+  } else {
+    command += node.component;
+  }
   
   // Add parameters
-  if (node.config?.parameters) {
-    Object.entries(node.config.parameters).forEach(([key, value]) => {
-      if (value !== null && value !== undefined && value !== '') {
-        command += ` --${key} ${value}`;
+  if (node.config) {
+    Object.entries(node.config).forEach(([key, value]) => {
+      if (key === 'conda-env' || key === 'conda_env') {
+        // Skip conda environment as it's already handled
+        return;
+      }
+      
+      if (value !== null && value !== undefined && value !== '' && value !== false) {
+        if (value === true) {
+          // Boolean flag without value
+          command += ` --${key}`;
+        } else {
+          // Parameter with value
+          if (key.length === 1) {
+            command += ` -${key} ${value}`;
+          } else {
+            command += ` --${key} ${value}`;
+          }
+        }
       }
     });
   }
   
-  // Add input files
-  if (inputFiles.length > 0) {
+  // Add input files for specific tools
+  if (node.component === 'quast' && inputFiles.length > 0) {
+    // For QUAST, input files come first
+    command += ` ${inputFiles.join(' ')}`;
+  } else if (inputFiles.length > 0 && !node.config?.['-1'] && !node.config?.['1']) {
+    // Add input files if not already specified in parameters
     command += ` ${inputFiles.join(' ')}`;
   }
   

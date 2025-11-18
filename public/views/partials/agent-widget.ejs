@@ -93,7 +93,7 @@
     <!-- Input Area -->
     <div class="card-footer bg-base-200 p-4 border-t border-base-300">
       <div class="flex items-center space-x-2">
-        <input type="text" id="chat-input" class="input input-bordered w-full" placeholder="Ask a question..." autocomplete="off">
+        <input type="text" id="chat-input" class="input input-bordered w-full" placeholder="Ask a question..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-form-type="other">
         <button id="chat-send-btn" class="btn btn-primary btn-circle">
           <i class="ti ti-send"></i>
         </button>
@@ -125,6 +125,7 @@
       <select id="model-select" class="select select-bordered w-full">
         <option value="qwen-plus">Qwen Plus - Fast & Balanced</option>
         <option value="gemini-2.5-pro">Gemini 2.5 Pro - Advanced Reasoning</option>
+        <option value="deepseek-r1:8b">DeepSeek R1 8B - Local (Ollama)</option>
       </select>
       <label class="label">
         <span class="label-text-alt" id="model-description">Fast and balanced performance for general questions</span>
@@ -139,7 +140,7 @@
       </label>
       <div class="input-group">
         <input id="api-key-input" type="password" class="input input-bordered flex-1" 
-               placeholder="Enter your API key">
+               placeholder="Enter your API key" autocomplete="new-password" data-form-type="other">
         <button id="toggle-api-key" class="btn btn-square btn-outline" type="button">
           <i class="ti ti-eye"></i>
         </button>
@@ -235,6 +236,14 @@
       provider: 'gemini',
       apiUrl: 'https://aistudio.google.com/apikey',
       keyEnv: 'GEMINI_API_KEY'
+    },
+    'deepseek-r1:8b': {
+      display_name: 'DeepSeek R1 8B',
+      description: 'Local model running on Ollama - no API key required',
+      provider: 'ollama',
+      apiUrl: 'https://ollama.com/',
+      keyEnv: null,
+      requiresApiKey: false
     }
   };
 
@@ -280,6 +289,20 @@
   // Update API key status
   function updateApiKeyStatus() {
     const selectedModel = modelSelect.value;
+    const modelInfo = MODEL_INFO[selectedModel];
+    
+    // Check if this model requires an API key
+    if (modelInfo.requiresApiKey === false) {
+      apiKeyStatus.textContent = 'Not required';
+      apiKeyStatus.className = 'label-text-alt text-success';
+      apiKeyInput.placeholder = 'No API key needed for local models';
+      apiKeyInput.disabled = true;
+      return;
+    }
+    
+    // Re-enable API key input for models that need it
+    apiKeyInput.disabled = false;
+    
     const storedKey = getStoredApiKey(selectedModel);
     
     if (storedKey) {
@@ -330,9 +353,11 @@
   // Test model connection
   async function testModelConnection() {
     const selectedModel = modelSelect.value;
+    const modelInfo = MODEL_INFO[selectedModel];
     const apiKey = apiKeyInput.value.trim();
     
-    if (!apiKey) {
+    // For Ollama models, we don't need API key
+    if (modelInfo.requiresApiKey !== false && !apiKey) {
       showConnectionStatus('error', 'Please enter an API key');
       return;
     }
@@ -347,7 +372,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: selectedModel,
-          api_key: apiKey
+          api_key: apiKey || null  // Send null for Ollama models
         })
       });
       
@@ -371,9 +396,11 @@
   // Apply model settings
   async function applyModelSettings() {
     const selectedModel = modelSelect.value;
+    const modelInfo = MODEL_INFO[selectedModel];
     const apiKey = apiKeyInput.value.trim();
     
-    if (!apiKey) {
+    // For Ollama models, we don't need API key
+    if (modelInfo.requiresApiKey !== false && !apiKey) {
       showConnectionStatus('error', 'Please enter an API key');
       return;
     }
@@ -382,10 +409,12 @@
     applyModelBtn.innerHTML = '<span class="loading loading-spinner loading-sm"></span> Applying...';
     
     try {
-      const modelInfo = MODEL_INFO[selectedModel];
-      const apiKeys = {
-        [modelInfo.provider]: apiKey
-      };
+      const apiKeys = {};
+      
+      // Only add API key if the model requires it
+      if (modelInfo.requiresApiKey !== false && apiKey) {
+        apiKeys[modelInfo.provider] = apiKey;
+      }
       
       const response = await fetch('/api/agent/switch-model', {
         method: 'POST',
@@ -400,7 +429,12 @@
       
       if (data.success) {
         currentModel = selectedModel;
-        storeApiKey(selectedModel, apiKey);
+        
+        // Only store API key if the model requires it
+        if (modelInfo.requiresApiKey !== false && apiKey) {
+          storeApiKey(selectedModel, apiKey);
+        }
+        
         updateModelDisplay();
         showConnectionStatus('success', `Switched to ${modelInfo.display_name}!`);
         
@@ -525,8 +559,28 @@
   document.addEventListener('mousemove', (e) => {
     if (isDragging) {
         e.preventDefault();
-        agentChatPopup.style.left = `${e.clientX - offsetX}px`;
-        agentChatPopup.style.top = `${e.clientY - offsetY}px`;
+        
+        // Calculate new position
+        let newLeft = e.clientX - offsetX;
+        let newTop = e.clientY - offsetY;
+        
+        // Get popup dimensions
+        const rect = agentChatPopup.getBoundingClientRect();
+        const popupWidth = rect.width;
+        const popupHeight = rect.height;
+        
+        // Get viewport dimensions
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        
+        // Apply boundary constraints
+        // Ensure at least 50px of the popup is visible on each side
+        const minVisible = 50;
+        newLeft = Math.max(-popupWidth + minVisible, Math.min(newLeft, viewportWidth - minVisible));
+        newTop = Math.max(0, Math.min(newTop, viewportHeight - minVisible));
+        
+        agentChatPopup.style.left = `${newLeft}px`;
+        agentChatPopup.style.top = `${newTop}px`;
         agentChatPopup.style.bottom = 'auto';
         agentChatPopup.style.right = 'auto';
     } else if (isResizing) {
@@ -541,23 +595,55 @@
         const deltaX = e.clientX - lastX;
         const deltaY = e.clientY - lastY;
 
-        if (resizeDirection.includes('e')) newWidth += deltaX;
-        if (resizeDirection.includes('w')) {
-            newWidth -= deltaX;
-            newLeft += deltaX;
+        // Get viewport dimensions
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        
+        // Calculate new dimensions based on resize direction
+        if (resizeDirection.includes('e')) {
+            newWidth += deltaX;
+            // Prevent resizing beyond viewport
+            newWidth = Math.min(newWidth, viewportWidth - newLeft);
         }
-        if (resizeDirection.includes('s')) newHeight += deltaY;
+        if (resizeDirection.includes('w')) {
+            const potentialWidth = newWidth - deltaX;
+            const potentialLeft = newLeft + deltaX;
+            // Ensure left edge doesn't go beyond viewport
+            if (potentialLeft >= 0 && potentialWidth >= 300) {
+                newWidth = potentialWidth;
+                newLeft = potentialLeft;
+            }
+        }
+        if (resizeDirection.includes('s')) {
+            newHeight += deltaY;
+            // Prevent resizing beyond viewport
+            newHeight = Math.min(newHeight, viewportHeight - newTop);
+        }
         if (resizeDirection.includes('n')) {
-            newHeight -= deltaY;
-            newTop += deltaY;
+            const potentialHeight = newHeight - deltaY;
+            const potentialTop = newTop + deltaY;
+            // Ensure top edge doesn't go beyond viewport
+            if (potentialTop >= 0 && potentialHeight >= 200) {
+                newHeight = potentialHeight;
+                newTop = potentialTop;
+            }
         }
 
-        // Apply minimum size constraints and update style
-        if (newWidth >= 300) {
+        // Apply minimum and maximum size constraints
+        const minWidth = 300;
+        const minHeight = 200;
+        const maxWidth = viewportWidth;
+        const maxHeight = viewportHeight;
+        
+        newWidth = Math.max(minWidth, Math.min(newWidth, maxWidth));
+        newHeight = Math.max(minHeight, Math.min(newHeight, maxHeight));
+        
+        // Update styles
+        if (newWidth >= minWidth) {
             agentChatPopup.style.width = `${newWidth}px`;
             if (resizeDirection.includes('w')) agentChatPopup.style.left = `${newLeft}px`;
         }
-        if (newHeight >= 200) {
+        if (newHeight >= minHeight) {
             agentChatPopup.style.height = `${newHeight}px`;
             if (resizeDirection.includes('n')) agentChatPopup.style.top = `${newTop}px`;
         }
@@ -814,6 +900,33 @@
                         markdownContainer.innerHTML = fullAnswer + '<span class="blinking-cursor"></span>';
                     }
                     chatBody.scrollTop = chatBody.scrollHeight;
+                } else if (event.type === 'message' && event.content) {
+                    // Handle workflow planning messages
+                    fullAnswer += event.content;
+                    
+                    try {
+                        if (typeof marked !== 'undefined' && marked.parse) {
+                            const rendered = marked.parse(fullAnswer);
+                            markdownContainer.innerHTML = rendered + '<span class="blinking-cursor"></span>';
+                            
+                            // Add copy buttons to code blocks during streaming
+                            addCopyButtonsToCodeBlocks(markdownContainer);
+                        } else {
+                            markdownContainer.innerHTML = fullAnswer + '<span class="blinking-cursor"></span>';
+                        }
+                    } catch (error) {
+                        console.error('Error during streaming markdown:', error);
+                        markdownContainer.innerHTML = fullAnswer + '<span class="blinking-cursor"></span>';
+                    }
+                    chatBody.scrollTop = chatBody.scrollHeight;
+                } else if (event.type === 'workflow_plan' && event.plan) {
+                    // Store workflow plan for potential building
+                    window.currentWorkflowPlan = event.plan;
+                    console.log('Received workflow plan:', event.plan);
+                } else if (event.type === 'build_workflow' && (event.workflow || event.workflow_data)) {
+                    // Build workflow on canvas
+                    const workflowData = event.workflow || event.workflow_data;
+                    handleWorkflowBuild(workflowData);
                 } else if (event.type === 'sources' && event.sources) {
                     sources = event.sources;
                 } else if (event.type === 'final_data') {
@@ -980,6 +1093,48 @@
     localStorage.setItem('agentWidgetState', JSON.stringify(state));
   }
 
+  // Function to ensure popup stays within viewport bounds
+  function constrainToViewport() {
+    const rect = agentChatPopup.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    
+    let left = rect.left;
+    let top = rect.top;
+    let width = rect.width;
+    let height = rect.height;
+    
+    // Constrain width and height to viewport
+    if (width > viewportWidth) {
+      width = viewportWidth - 20; // 20px margin
+      agentChatPopup.style.width = `${width}px`;
+    }
+    if (height > viewportHeight) {
+      height = viewportHeight - 20; // 20px margin
+      agentChatPopup.style.height = `${height}px`;
+    }
+    
+    // Constrain position to viewport
+    const minVisible = 50;
+    if (left + width < minVisible) {
+      left = minVisible - width;
+    }
+    if (left > viewportWidth - minVisible) {
+      left = viewportWidth - minVisible;
+    }
+    if (top < 0) {
+      top = 0;
+    }
+    if (top > viewportHeight - minVisible) {
+      top = viewportHeight - minVisible;
+    }
+    
+    agentChatPopup.style.left = `${left}px`;
+    agentChatPopup.style.top = `${top}px`;
+    agentChatPopup.style.bottom = 'auto';
+    agentChatPopup.style.right = 'auto';
+  }
+
   function loadState() {
     const savedState = localStorage.getItem('agentWidgetState');
     if (!savedState) return;
@@ -1020,6 +1175,11 @@
       }
       // Session panel state will be restored after memory features are checked
     }
+    
+    // Ensure popup is within viewport after loading state
+    setTimeout(() => {
+      constrainToViewport();
+    }, 100);
   }
 
   // Memory Functions
@@ -1395,6 +1555,13 @@
 
   
 
+  // Handle window resize to keep popup within bounds
+  window.addEventListener('resize', () => {
+    if (!agentChatPopup.classList.contains('hidden')) {
+      constrainToViewport();
+    }
+  });
+
   // Initial status check and state load (simple like test-marked.html)
   document.addEventListener('DOMContentLoaded', () => {
     // Simple initialization like test-marked.html
@@ -1405,6 +1572,222 @@
     checkAgentStatusLoop();
     }, 100);
   });
+  
+  // Handle workflow building from Agent
+  function handleWorkflowBuild(workflowData) {
+    try {
+      console.log('Building workflow from Agent:', workflowData);
+      
+      // Check if we're on the workflow page
+      if (typeof window.workflowBuilder === 'undefined') {
+        // Not on workflow page, redirect there
+        const workflowUrl = '/workflow';
+        
+        // Store workflow data in sessionStorage for building after redirect
+        sessionStorage.setItem('pendingWorkflow', JSON.stringify(workflowData));
+        
+        // Show notification and redirect automatically
+        console.log('🤖 Redirecting to workflow page to build workflow...');
+        
+        // Show a brief notification before redirect
+        const notification = document.createElement('div');
+        notification.className = 'alert alert-info fixed top-20 right-4 z-50 w-96';
+        notification.innerHTML = `
+          <div class="flex items-center">
+            <i class="ti ti-robot mr-2"></i>
+            <div>
+              <div class="font-semibold">Building Workflow...</div>
+              <div class="text-sm opacity-90">Redirecting to workflow page to build your SPAdes + QUAST pipeline.</div>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(notification);
+        
+        // Redirect after a short delay
+        setTimeout(() => {
+          window.location.href = workflowUrl;
+        }, 1500);
+        return;
+      }
+      
+      // We're on the workflow page, build directly
+      buildWorkflowOnCanvas(workflowData);
+      
+    } catch (error) {
+      console.error('Error handling workflow build:', error);
+      alert('Error building workflow: ' + error.message);
+    }
+  }
+  
+  function buildWorkflowOnCanvas(workflowData) {
+    try {
+      // Clear existing workflow
+      if (window.workflowBuilder) {
+        window.workflowBuilder.clearCanvas();
+        
+        // Add nodes and create ID mapping
+        const nodeIdMapping = new Map(); // Maps Agent IDs to actual node IDs
+        
+        workflowData.nodes.forEach(nodeData => {
+          try {
+            const node = window.workflowBuilder.createNode(
+              nodeData.type,
+              nodeData.component,
+              nodeData.x,
+              nodeData.y
+            );
+            
+            // Check if node was created successfully
+            if (!node || !node.id) {
+              console.error('Failed to create node:', nodeData);
+              return;
+            }
+            
+            // Map Agent ID to actual node ID
+            nodeIdMapping.set(nodeData.id, node.id);
+            console.log(`📍 Node ID mapping (widget): ${nodeData.id} → ${node.id}`);
+            
+            // Configure node parameters
+            if (nodeData.config && Object.keys(nodeData.config).length > 0) {
+              const nodeElement = document.getElementById(node.id);
+              if (nodeElement) {
+                // Store config in node data
+                const nodeMapEntry = window.workflowBuilder.nodes.get(node.id);
+                if (nodeMapEntry) {
+                  nodeMapEntry.config = nodeData.config;
+                }
+                
+                // Update node display to show it's configured
+                const configBtn = nodeElement.querySelector('.config-btn');
+                if (configBtn) {
+                  configBtn.classList.remove('btn-outline');
+                  configBtn.classList.add('btn-primary');
+                  configBtn.innerHTML = '<i class="ti ti-settings-filled mr-1"></i>Configured';
+                }
+              }
+            }
+          } catch (error) {
+            console.error('Error creating node:', nodeData, error);
+          }
+        });
+        
+        // Add connections after delay to ensure nodes are fully initialized
+        setTimeout(() => {
+          console.log('🔗 Creating connections from Agent (widget):', workflowData.connections);
+          
+          if (!workflowData.connections || workflowData.connections.length === 0) {
+            console.warn('⚠️ No connections found in Agent workflow data (widget)');
+            return;
+          }
+          
+          workflowData.connections.forEach((connData, index) => {
+            try {
+              console.log(`🔗 Creating connection ${index + 1} (widget):`, connData);
+              
+              // Map Agent IDs to actual node IDs
+              const actualFromNodeId = nodeIdMapping.get(connData.fromNode);
+              const actualToNodeId = nodeIdMapping.get(connData.toNode);
+              
+              if (!actualFromNodeId) {
+                console.error(`❌ From node ID mapping not found: ${connData.fromNode}`);
+                return;
+              }
+              
+              if (!actualToNodeId) {
+                console.error(`❌ To node ID mapping not found: ${connData.toNode}`);
+                return;
+              }
+              
+              console.log(`🔄 ID mapping (widget): ${connData.fromNode} → ${actualFromNodeId}, ${connData.toNode} → ${actualToNodeId}`);
+              
+              // Verify nodes exist in DOM
+              const fromNodeElement = document.getElementById(actualFromNodeId);
+              const toNodeElement = document.getElementById(actualToNodeId);
+              
+              if (!fromNodeElement) {
+                console.error(`❌ From node not found in DOM: ${actualFromNodeId}`);
+                return;
+              }
+              
+              if (!toNodeElement) {
+                console.error(`❌ To node not found in DOM: ${actualToNodeId}`);
+                return;
+              }
+              
+              console.log(`✅ Nodes verified (widget) - From: ${actualFromNodeId}, To: ${actualToNodeId}`);
+              
+              const result = window.workflowBuilder.createConnection(
+                actualFromNodeId,
+                connData.fromPort,
+                actualToNodeId,
+                connData.toPort
+              );
+              
+              console.log(`✅ Connection ${index + 1} created successfully (widget):`, result);
+              
+            } catch (error) {
+              console.error(`❌ Error creating connection ${index + 1} (widget):`, connData, error);
+            }
+          });
+          
+          // Update canvas placeholder
+          window.workflowBuilder.updateCanvasPlaceholder();
+          
+          console.log('✅ Workflow built successfully on canvas');
+          
+          // Show success message
+          const successMsg = document.createElement('div');
+          successMsg.className = 'alert alert-success fixed top-20 right-4 z-50 w-96';
+          successMsg.innerHTML = `
+            <div class="flex items-center">
+              <i class="ti ti-check-circle mr-2"></i>
+              <div>
+                <div class="font-semibold">Workflow Built Successfully!</div>
+                <div class="text-sm opacity-90">The Agent has created your workflow on the canvas.</div>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(successMsg);
+          
+          // Auto-remove success message
+          setTimeout(() => {
+            if (successMsg.parentNode) {
+              successMsg.remove();
+            }
+          }, 5000);
+          
+        }, 1000); // Increased delay to ensure nodes are fully initialized
+      }
+    } catch (error) {
+      console.error('Error building workflow on canvas:', error);
+      alert('Error building workflow: ' + error.message);
+    }
+  }
+  
+  // Check for pending workflow on page load (for redirected builds)
+  function checkPendingWorkflow() {
+    const pendingWorkflow = sessionStorage.getItem('pendingWorkflow');
+    if (pendingWorkflow && typeof window.workflowBuilder !== 'undefined') {
+      try {
+        const workflowData = JSON.parse(pendingWorkflow);
+        sessionStorage.removeItem('pendingWorkflow');
+        
+        // Small delay to ensure workflow builder is fully initialized
+        setTimeout(() => {
+          buildWorkflowOnCanvas(workflowData);
+        }, 500);
+        
+      } catch (error) {
+        console.error('Error loading pending workflow:', error);
+        sessionStorage.removeItem('pendingWorkflow');
+      }
+    }
+  }
+  
+  // Call checkPendingWorkflow when on workflow page
+  if (typeof window.workflowBuilder !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', checkPendingWorkflow);
+  }
 </script>
 
 <!-- Load highlight.js first, then marked.js (using different CDN) -->

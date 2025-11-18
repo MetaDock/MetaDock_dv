@@ -1,0 +1,130 @@
+[
+    {
+        "category": "Basic options",
+        "short": "-o",
+        "long": "--output-dir",
+        "needs_input": true,
+        "description": "directory to store all the resulting files (required)",
+        "default": "spades_output"
+    },
+    {
+        "category": "Input data",
+        "short": "-1",
+        "long": null,
+        "needs_input": true,
+        "description": "file with forward paired-end reads",
+        "required": true
+    },
+    {
+        "category": "Input data", 
+        "short": "-2",
+        "long": null,
+        "needs_input": true,
+        "description": "file with reverse paired-end reads",
+        "required": true
+    },
+    {
+        "category": "Input data",
+        "short": "-s",
+        "long": null,
+        "needs_input": true,
+        "description": "file with unpaired reads"
+    },
+    {
+        "category": "Input data",
+        "short": "--12",
+        "long": null,
+        "needs_input": true,
+        "description": "file with interlaced forward and reverse paired-end reads"
+    },
+    {
+        "category": "Pipeline options",
+        "short": null,
+        "long": "--only-error-correction",
+        "needs_input": false,
+        "description": "runs only read error correction (without assembling)"
+    },
+    {
+        "category": "Pipeline options",
+        "short": null,
+        "long": "--only-assembler",
+        "needs_input": false,
+        "description": "runs only assembling (without read error correction)"
+    },
+    {
+        "category": "Pipeline options",
+        "short": null,
+        "long": "--careful",
+        "needs_input": false,
+        "description": "tries to reduce number of mismatches and short indels"
+    },
+    {
+        "category": "Pipeline options",
+        "short": null,
+        "long": "--continue",
+        "needs_input": false,
+        "description": "continue run from the last available check-point"
+    },
+    {
+        "category": "Pipeline options",
+        "short": null,
+        "long": "--restart-from",
+        "needs_input": true,
+        "description": "restart run with updated options from the specified check-point"
+    },
+    {
+        "category": "Advanced options",
+        "short": null,
+        "long": "--disable-gzip-output",
+        "needs_input": false,
+        "description": "forces error correction not to compress the corrected reads"
+    },
+    {
+        "category": "Advanced options",
+        "short": null,
+        "long": "--disable-rr",
+        "needs_input": false,
+        "description": "disables repeat resolution stage of assembling"
+    },
+    {
+        "category": "Advanced options",
+        "short": "-k",
+        "long": null,
+        "needs_input": true,
+        "description": "comma-separated list of k-mer sizes (must be odd and less than 128)"
+    },
+    {
+        "category": "Advanced options",
+        "short": null,
+        "long": "--cov-cutoff",
+        "needs_input": true,
+        "description": "coverage cutoff value (a positive float number, or 'auto', or 'off')"
+    },
+    {
+        "category": "Advanced options",
+        "short": "-t",
+        "long": "--threads",
+        "needs_input": true,
+        "description": "number of threads",
+        "default": "16"
+    },
+    {
+        "category": "Advanced options",
+        "short": "-m",
+        "long": "--memory",
+        "needs_input": true,
+        "description": "RAM limit for SPAdes in Gb (terminates if exceeded)"
+    },
+    {
+        "category": "Environment",
+        "short": null,
+        "long": "--conda-env",
+        "needs_input": true,
+        "description": "conda environment to activate",
+        "default": "spades_env"
+    }
+]
+
+
+
+

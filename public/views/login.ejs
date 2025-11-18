@@ -61,6 +61,7 @@
               name="username"
               placeholder="username"
               class="input input-bordered"
+              autocomplete="username"
               required
             >
           </div>
@@ -74,6 +75,7 @@
               id="password" 
               name="password"
               class="input input-bordered"
+              autocomplete="current-password"
               required
             >
           </div>
@@ -107,6 +109,7 @@
             name="username"
             placeholder="admin"
             class="input input-bordered"
+            autocomplete="username"
             required
           >
         </div>
@@ -119,6 +122,7 @@
             type="password" 
             name="password"
             class="input input-bordered"
+            autocomplete="current-password"
             required
           >
         </div>
@@ -202,14 +206,14 @@
       sshForm.classList.remove('hidden');
       adminForm.classList.add('hidden');
     } else {
-      // 检查SSH连接状态
+      // Check SSH connection status
       try {
         const response = await fetch('/check-connection');
         const status = await response.json();
         
         if (!status.connected) {
           showModal('SSH Connection Required', 'Please establish SSH connection first', false);
-          // 切换回SSH标签
+          // Switch back to SSH tab
           tabs[0].click();
           return;
         }

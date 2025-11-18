@@ -71,43 +71,43 @@
               <label class="label">
                 <span class="label-text">Cluster Name</span>
               </label>
-              <input type="text" id="cluster-name" class="input input-bordered input-sm" value="bioinf" placeholder="Cluster name">
+              <input type="text" id="cluster-name" class="input input-bordered input-sm" value="bioinf" placeholder="Cluster name" autocomplete="off" data-form-type="other">
             </div>
             <div class="form-control">
               <label class="label">
                 <span class="label-text">Nodes</span>
               </label>
-              <input type="number" id="cluster-nodes" class="input input-bordered input-sm" value="1" min="1" max="10">
+              <input type="number" id="cluster-nodes" class="input input-bordered input-sm" value="1" min="1" max="10" autocomplete="off" data-form-type="other">
             </div>
             <div class="form-control">
               <label class="label">
                 <span class="label-text">CPUs per Task</span>
               </label>
-              <input type="number" id="cluster-cpus" class="input input-bordered input-sm" value="24" min="1" max="128">
+              <input type="number" id="cluster-cpus" class="input input-bordered input-sm" value="24" min="1" max="128" autocomplete="off" data-form-type="other">
             </div>
             <div class="form-control">
               <label class="label">
                 <span class="label-text">Memory</span>
               </label>
-              <input type="text" id="cluster-memory" class="input input-bordered input-sm" value="64G" placeholder="e.g., 64G, 128G">
+              <input type="text" id="cluster-memory" class="input input-bordered input-sm" value="64G" placeholder="e.g., 64G, 128G" autocomplete="off" data-form-type="other">
             </div>
             <div class="form-control">
               <label class="label">
                 <span class="label-text">Time Limit</span>
               </label>
-              <input type="text" id="cluster-time" class="input input-bordered input-sm" value="06:00:00" placeholder="HH:MM:SS or DD-HH:MM:SS">
+              <input type="text" id="cluster-time" class="input input-bordered input-sm" value="06:00:00" placeholder="HH:MM:SS or DD-HH:MM:SS" autocomplete="off" data-form-type="other">
             </div>
             <div class="form-control">
               <label class="label">
                 <span class="label-text">Number of Tasks</span>
               </label>
-              <input type="number" id="cluster-ntasks" class="input input-bordered input-sm" value="1" min="1">
+              <input type="number" id="cluster-ntasks" class="input input-bordered input-sm" value="1" min="1" autocomplete="off" data-form-type="other">
             </div>
             <div class="form-control">
               <label class="label">
                 <span class="label-text">Threads per Core</span>
               </label>
-              <input type="number" id="cluster-threads" class="input input-bordered input-sm" value="1" min="1" max="4">
+              <input type="number" id="cluster-threads" class="input input-bordered input-sm" value="1" min="1" max="4" autocomplete="off" data-form-type="other">
             </div>
           </div>
       </div>
@@ -122,6 +122,11 @@
             id="<%= toolName %>-input" 
             class="join-item input input-bordered font-mono flex-grow"
             value="<%= toolName %>"
+            autocomplete="off" 
+            autocorrect="off" 
+            autocapitalize="off" 
+            spellcheck="false"
+            data-form-type="other"
           >
           <button id="submit-command" class="join-item btn btn-primary">
             <i class="ti ti-player-play"></i>

@@ -27,7 +27,7 @@ except ImportError:
     logging.warning("LangGraph not available, using simplified implementation")
     LANGGRAPH_AVAILABLE = False
 
-from agent_client import llm
+from agent_client import get_llm_client
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -100,25 +100,11 @@ class AdaptiveRAG:
         # Check if LLM supports structured output
         self.supports_structured_output = self._check_structured_output_support()
         
-        # Initialize LLM based on support
-        if self.supports_structured_output:
-            try:
-                self.router_llm = llm.with_structured_output(RouteQuery)
-                self.doc_grader_llm = llm.with_structured_output(GradeDocuments)
-                self.hallucination_grader_llm = llm.with_structured_output(GradeHallucinations)
-                self.answer_grader_llm = llm.with_structured_output(GradeAnswer)
-                logger.info("Using structured output LLMs")
-            except Exception as e:
-                logger.warning("Structured output failed, falling back to regular LLM: %s", str(e))
-                self.supports_structured_output = False
-        
-        if not self.supports_structured_output:
-            # Use regular LLM
-            self.router_llm = llm
-            self.doc_grader_llm = llm
-            self.hallucination_grader_llm = llm
-            self.answer_grader_llm = llm
-            logger.info("Using regular LLM with text parsing")
+        # Initialize LLM instances - will be set during initialize()
+        self.router_llm = None
+        self.doc_grader_llm = None
+        self.hallucination_grader_llm = None
+        self.answer_grader_llm = None
         
         # Initialize prompt templates
         self._setup_prompts()
@@ -277,7 +263,9 @@ Required Markdown formatting standards:
 - Use `|` for tables if needed
 - Ensure proper spacing between elements
 
-When users ask about your identity, introduce yourself as the MetaDock Bioinformatics Assistant and explain how you can help them with their research and analysis needs."""),
+When users ask about your identity, introduce yourself as the MetaDock Bioinformatics Assistant and explain how you can help them with their research and analysis needs.
+
+**Important:** Do not make assumptions about your underlying model architecture. Focus on your role as the MetaDock Bioinformatics Assistant rather than technical details about the AI model powering you."""),
             ("human", "{question}"),
         ])
         
@@ -469,6 +457,11 @@ Please provide a helpful and informative answer based on the available context."
                 search_filter = {'tool_name': target_tool}
                 logger.info(f"Applying metadata filter for tool '{target_tool}'")
 
+            # Adjust k for local models to reduce context length
+            if self._is_local_model():
+                k = min(k, 3)  # Limit to 3 documents for local models
+                logger.info(f"🏠 Local model detected, limiting to {k} documents")
+            
             # Retrieve documents using the filter
             docs = self.vector_store.similarity_search(question, k=k, filter=search_filter)
             
@@ -594,7 +587,19 @@ Please provide a helpful and informative answer based on the available context."
         
         for attempt in range(max_retries):
             try:
-                context = "\n\n".join([doc.page_content for doc in documents])
+                # Optimize context for local models
+                if self._is_local_model():
+                    max_doc_length = 300
+                    context_parts = []
+                    for doc in documents:
+                        content = doc.page_content
+                        if len(content) > max_doc_length:
+                            content = content[:max_doc_length] + "..."
+                        context_parts.append(content)
+                    context = "\n\n".join(context_parts)
+                    logger.info(f"🏠 Optimized context for local model: {len(context)} chars")
+                else:
+                    context = "\n\n".join([doc.page_content for doc in documents])
                 
                 # Format conversation history for prompt
                 history_text = ""
@@ -608,7 +613,7 @@ Please provide a helpful and informative answer based on the available context."
                 else:
                     history_text = "No previous conversation.\n\nQuestion:\n"
                 
-                chain = self.rag_prompt | llm | StrOutputParser()
+                chain = self.rag_prompt | self._get_current_llm() | StrOutputParser()
                 
                 answer = chain.invoke({
                     "context": context,
@@ -859,7 +864,7 @@ Please provide a helpful and informative answer based on the available context."
         max_retries = 2
         for attempt in range(max_retries):
             try:
-                chain = self.web_search_prompt | llm | StrOutputParser()
+                chain = self.web_search_prompt | self._get_current_llm() | StrOutputParser()
                 answer = chain.invoke({
                     "question": question,
                     "search_results": formatted_results
@@ -890,7 +895,7 @@ Please provide a helpful and informative answer based on the available context."
         
         for attempt in range(max_retries):
             try:
-                chain = self.rewrite_prompt | llm | StrOutputParser()
+                chain = self.rewrite_prompt | self._get_current_llm() | StrOutputParser()
                 rewritten_question = chain.invoke({"question": question})
                 
                 # Print question rewriting for debugging
@@ -940,10 +945,10 @@ Requirements:
 - Highlight the key bioinformatics element
 
 Examples based on actual Q&A content:
-- If user asks "How to use FastQC?" and answer explains FastQC usage → "FastQC质控分析" or "FastQC Analysis"
-- If user asks "What is genome assembly?" and answer explains assembly → "基因组组装" or "Genome Assembly"  
-- If user asks "BLAST search help" and answer provides BLAST guidance → "BLAST比对" or "BLAST Search"
-- If user asks "RNA-seq workflow" and answer describes the process → "RNA测序流程" or "RNA-seq Pipeline"
+- If user asks "How to use FastQC?" and answer explains FastQC usage → "FastQC Quality Control" or "FastQC Analysis"
+- If user asks "What is genome assembly?" and answer explains assembly → "Genome Assembly" or "Genome Assembly"  
+- If user asks "BLAST search help" and answer provides BLAST guidance → "BLAST Sequence Alignment" or "BLAST Search"
+- If user asks "RNA-seq workflow" and answer describes the process → "RNA Sequencing Process" or "RNA-seq Pipeline"
 
 USER'S ACTUAL QUESTION: {question}
 ASSISTANT'S ACTUAL ANSWER: {answer_summary}
@@ -957,11 +962,22 @@ Generate title based on the actual conversation content above:"""),
             
             logger.info(f"Calling LLM for title generation...")
             
-            chain = title_prompt | llm | StrOutputParser()
-            title = chain.invoke({
-                "question": first_question,
-                "answer_summary": answer_summary
-            })
+            try:
+                # Get LLM response first
+                llm_response = self._get_current_llm().invoke(title_prompt.format(
+                    question=first_question,
+                    answer_summary=answer_summary
+                ))
+                
+                # Handle None or invalid response from some models
+                if llm_response is None or not isinstance(llm_response, str) or not llm_response.strip():
+                    title = "New Chat"
+                else:
+                    title = llm_response.strip()
+                    
+            except Exception as e:
+                logger.warning(f"Title generation failed: {e}")
+                title = "New Chat"
             
             # Print title generation for debugging
             logger.info("=" * 80)
@@ -1018,10 +1034,10 @@ Requirements:
 - No punctuation marks
 
 Examples:
-- "FastQC质量控制分析工具使用指南" → "FastQC质控"
+- "FastQC Quality Control Analysis Tool Usage Guide" → "FastQC Quality Control"
 - "Complete Guide to Genome Assembly Methods" → "Genome Assembly" 
-- "RNA序列分析流程详细步骤说明" → "RNA测序流程"
-- "BLAST Sequence Alignment Tutorial" → "BLAST比对"
+- "RNA Sequence Analysis Process Detailed Steps Description" → "RNA Sequencing Process"
+- "BLAST Sequence Alignment Tutorial" → "BLAST Sequence Alignment"
 
 Original title: {long_title}
 User question context: {user_question}
@@ -1030,7 +1046,7 @@ Create a concise title (max 20 characters):"""),
                 ("human", "Summarize the title")
             ])
             
-            chain = summarize_prompt | llm | StrOutputParser()
+            chain = summarize_prompt | self._get_current_llm() | StrOutputParser()
             short_title = chain.invoke({
                 "long_title": long_title,
                 "user_question": user_question[:100]  # First 100 chars for context
@@ -1077,7 +1093,7 @@ Create a concise title (max 20 characters):"""),
             if route == "general_llm":
                 # Use LLM with MetaDock identity
                 try:
-                    chain = self.general_prompt | llm | StrOutputParser()
+                    chain = self.general_prompt | self._get_current_llm() | StrOutputParser()
                     answer = chain.invoke({"question": current_question})
                     return {
                         "answer": answer,
@@ -1245,7 +1261,7 @@ Create a concise title (max 20 characters):"""),
                 logger.info("-" * 40)
                 
                 full_answer = ""
-                for chunk in llm.stream(prompt):
+                for chunk in self._get_current_llm().stream(prompt):
                     content = chunk.content if hasattr(chunk, 'content') else str(chunk)
                     if content:
                         full_answer += content
@@ -1303,7 +1319,7 @@ Create a concise title (max 20 characters):"""),
                 logger.info("-" * 40)
                 
                 full_answer = ""
-                for chunk in llm.stream(prompt):
+                for chunk in self._get_current_llm().stream(prompt):
                     content = chunk.content if hasattr(chunk, 'content') else str(chunk)
                     if content:
                         full_answer += content
@@ -1364,7 +1380,24 @@ Create a concise title (max 20 characters):"""),
         
         for attempt in range(max_retries):
             try:
-                context = "\n\n".join([doc.page_content for doc in filtered_docs])
+                # Optimize context for local models
+                if self._is_local_model():
+                    max_doc_length = 200  # Further reduce for better compatibility
+                    context_parts = []
+                    for doc in filtered_docs:
+                        content = doc.page_content
+                        if len(content) > max_doc_length:
+                            content = content[:max_doc_length] + "..."
+                        context_parts.append(content)
+                    context = "\n\n".join(context_parts)
+                    logger.info(f"🏠 Optimized RAG context for local model: {len(context)} chars")
+                    
+                    # If context is still too long, use only the first document
+                    if len(context) > 800:
+                        context = context_parts[0] if context_parts else ""
+                        logger.info(f"🏠 Further reduced context to first document only: {len(context)} chars")
+                else:
+                    context = "\n\n".join([doc.page_content for doc in filtered_docs])
                 
                 # Format conversation history for prompt
                 history_text = ""
@@ -1396,7 +1429,7 @@ Create a concise title (max 20 characters):"""),
                 logger.info("-" * 40)
                 
                 full_answer = ""
-                for chunk in llm.stream(prompt):
+                for chunk in self._get_current_llm().stream(prompt):
                     content = chunk.content if hasattr(chunk, 'content') else str(chunk)
                     if content:
                         full_answer += content
@@ -1408,6 +1441,53 @@ Create a concise title (max 20 characters):"""),
                 logger.info("Raw Answer:")
                 logger.info("%s", full_answer)
                 logger.info("=" * 80)
+                
+                # Check if local model returned None or empty response
+                if self._is_local_model() and (not full_answer or full_answer.strip().lower() in ['none', 'null', '']):
+                    logger.warning("🏠 Local model RAG failed, falling back to general LLM")
+                    yield {"type": "step", "content": "Local model struggling with RAG, switching to simpler approach...", "steps": steps}
+                    
+                    try:
+                        # Fallback to general LLM without RAG context
+                        fallback_chain = self.general_prompt | self._get_current_llm()
+                        fallback_answer = ""
+                        
+                        # Format simple conversation history for fallback
+                        simple_history = ""
+                        if conversation_history:
+                            simple_history = "Previous conversation:\n"
+                            for turn in conversation_history[-3:]:  # Only last 3 turns for local model
+                                role = turn.get('role', 'user')
+                                content = turn.get('content', '')[:100] + "..." if len(turn.get('content', '')) > 100 else turn.get('content', '')
+                                simple_history += f"{role.title()}: {content}\n"
+                            simple_history += "\nCurrent question:\n"
+                        else:
+                            simple_history = "No previous conversation.\n\nQuestion:\n"
+                        
+                        # Use the chain to get response with conversation history
+                        fallback_response = fallback_chain.invoke({
+                            "question": current_question,
+                            "conversation_history": simple_history
+                        })
+                        
+                        # Simulate streaming for consistency
+                        if fallback_response and str(fallback_response).strip():
+                            fallback_answer = str(fallback_response)
+                            # Split into chunks for streaming effect
+                            chunk_size = 50
+                            for i in range(0, len(fallback_answer), chunk_size):
+                                chunk_content = fallback_answer[i:i + chunk_size]
+                                yield {"type": "chunk", "content": chunk_content}
+                        
+                        logger.info("🏠 Fallback to general LLM successful")
+                        yield {"type": "final", "answer": fallback_answer, "sources": [], "steps": steps}
+                        return
+                        
+                    except Exception as fallback_error:
+                        logger.error(f"🏠 Fallback also failed: {fallback_error}")
+                        error_msg = "I apologize, but I'm having trouble processing your request with the current local model. Please try switching to a cloud-based model for better performance."
+                        yield {"type": "final", "answer": error_msg, "sources": [], "steps": steps}
+                        return
                 
                 yield {"type": "final", "answer": full_answer, "sources": unique_sources, "steps": steps}
                 return
@@ -1444,6 +1524,46 @@ Create a concise title (max 20 characters):"""),
                 seen_sources.add(source_filename)
         return unique_sources
     
+    def _get_current_llm(self):
+        """Get current LLM from global client"""
+        client = get_llm_client()
+        llm_instance = client.get_llm()
+        logger.info(f"🔄 Using LLM: {client.model_name} (provider: {client.SUPPORTED_MODELS[client.model_name]['provider']})")
+        return llm_instance
+    
+    def _is_local_model(self):
+        """Check if current model is a local model (Ollama)"""
+        client = get_llm_client()
+        return client.SUPPORTED_MODELS[client.model_name]['provider'] == 'ollama'
+    
+    def _initialize_llm_instances(self):
+        """Initialize LLM instances with current global client"""
+        # Get current LLM from global client
+        current_llm = self._get_current_llm()
+        
+        # Initialize LLM based on support
+        if self.supports_structured_output:
+            try:
+                self.router_llm = current_llm.with_structured_output(RouteQuery)
+                self.doc_grader_llm = current_llm.with_structured_output(GradeDocuments)
+                self.hallucination_grader_llm = current_llm.with_structured_output(GradeHallucinations)
+                self.answer_grader_llm = current_llm.with_structured_output(GradeAnswer)
+                logger.info("Using structured output LLMs")
+            except Exception as e:
+                logger.warning("Structured output failed, falling back to regular LLM: %s", str(e))
+                self.supports_structured_output = False
+        
+        if not self.supports_structured_output:
+            # Use regular LLM
+            self.router_llm = current_llm
+            self.doc_grader_llm = current_llm
+            self.hallucination_grader_llm = current_llm
+            self.answer_grader_llm = current_llm
+            logger.info("Using regular LLM with text parsing")
+    
     def initialize(self) -> bool:
         """Initialize system"""
+        # Initialize LLM instances with current global client
+        self._initialize_llm_instances()
+        
         return self.load_vector_store() 

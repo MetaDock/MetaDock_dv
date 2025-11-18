@@ -1,0 +1,12 @@
+{
+    "description": "QUAST (QUality ASsessment Tool) - evaluates genome assemblies by computing various metrics",
+    "usage": [
+        "Usage: quast.py [options] <files_with_contigs>",
+        "Example: quast.py spades_output_folder/contigs.fasta -o quast_output_dir"
+    ],
+    "conda_env": "quast_env"
+}
+
+
+
+

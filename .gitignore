@@ -73,3 +73,8 @@ temp/
 temp_uploads/
 *.tmp
 *.log
+
+# read me
+add_new_local_model_guide.md
+conda_setup_guide.md
+test_spades_quast_workflow.md

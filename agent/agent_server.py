@@ -5,11 +5,34 @@ import sys
 import json
 import os
 from pathlib import Path
-from agent_client import get_llm_client
+# Add current directory to Python path for imports
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+# Import modules with fallback
+try:
+    from agent_client import get_llm_client
+except ImportError:
+    try:
+        from .agent_client import get_llm_client
+    except ImportError:
+        # Last resort - try to import from parent directory
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from agent.agent_client import get_llm_client
 
 # Import new Agent system
-from bioinfo_agent_v2 import BioinfoAgentV2 as BioinfoAgent
-from document_processor import DocumentProcessor
+try:
+    from bioinfo_agent import BioinfoAgentV2 as BioinfoAgent
+    from document_processor import DocumentProcessor
+except ImportError:
+    try:
+        from .bioinfo_agent import BioinfoAgentV2 as BioinfoAgent
+        from .document_processor import DocumentProcessor
+    except ImportError:
+        # Last resort - try to import from parent directory
+        from agent.bioinfo_agent import BioinfoAgentV2 as BioinfoAgent
+        from agent.document_processor import DocumentProcessor
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -72,11 +95,11 @@ def initialize_agent():
             # Initialize Agent with specified memory store path
             memory_store_path = r"D:\file\MetaDock_Agent_dev\MetaDock_dv\agent\memory_store"
             agent = BioinfoAgent(memory_store_path=memory_store_path)
-            if agent.initialize():
+            if agent.ensure_vector_store():
                 logging.info("BioinfoAgent initialized successfully!")
                 
                 # Print system status
-                status = agent.get_system_status()
+                status = agent.get_status()
                 logging.info("System Status: %s", status)
                 
             else:
@@ -130,7 +153,7 @@ def ask():
 def health_check():
     """Health check endpoint."""
     if agent and agent.is_initialized:
-        status = agent.get_system_status()
+        status = agent.get_status()
         return jsonify({"status": "ok", "message": "Agent is running.", "system_status": status})
     else:
         return jsonify({"status": "error", "message": "Agent is not initialized."}), 503
@@ -139,7 +162,7 @@ def health_check():
 def get_status():
     """Get detailed system status information"""
     if agent and agent.is_initialized:
-        status = agent.get_system_status()
+        status = agent.get_status()
         return jsonify(status)
     else:
         return jsonify({"error": "Agent is not initialized."}), 503
@@ -214,7 +237,7 @@ def debug_info():
     
     # Get system status
     if agent and agent.is_initialized:
-        debug_data["system_status"] = agent.get_system_status()
+        debug_data["system_status"] = agent.get_status()
     
     return jsonify(debug_data)
 
@@ -330,15 +353,8 @@ def switch_model():
         # Update the agent's LLM if it exists
         global agent
         if agent and agent.is_initialized:
-            # Update the adaptive_rag system to use new model
-            new_client = get_llm_client()
-            new_llm = new_client.get_llm()
-            
-            # Update all LLM references in adaptive_rag
-            agent.adaptive_rag.router_llm = new_llm
-            agent.adaptive_rag.doc_grader_llm = new_llm
-            agent.adaptive_rag.hallucination_grader_llm = new_llm
-            agent.adaptive_rag.answer_grader_llm = new_llm
+            # Re-initialize the adaptive_rag system to use new model
+            agent.adaptive_rag._initialize_llm_instances()
             
             logger.info(f"Updated agent to use model: {model_name}")
         
@@ -355,6 +371,27 @@ def switch_model():
         logger.error(f"Error switching model: {e}")
         return jsonify({"error": str(e)}), 500
 
+@app.route('/workflow-plan', methods=['GET'])
+def get_workflow_plan():
+    """Get current workflow plan"""
+    if agent and agent.is_initialized:
+        plan = agent.get_current_workflow_plan()
+        if plan:
+            return jsonify({"success": True, "plan": plan})
+        else:
+            return jsonify({"success": False, "message": "No active workflow plan"})
+    else:
+        return jsonify({"error": "Agent is not initialized."}), 503
+
+@app.route('/workflow-plan/clear', methods=['POST'])
+def clear_workflow_plan():
+    """Clear current workflow planning state"""
+    if agent and agent.is_initialized:
+        agent.clear_workflow_planning()
+        return jsonify({"success": True, "message": "Workflow planning state cleared"})
+    else:
+        return jsonify({"error": "Agent is not initialized."}), 503
+
 @app.route('/test-model', methods=['POST'])
 def test_model():
     """Test model connection with provided API key"""
@@ -366,14 +403,24 @@ def test_model():
         model_name = data.get('model')
         api_key = data.get('api_key')
         
-        if not model_name or not api_key:
-            return jsonify({"error": "Model name and API key are required"}), 400
+        if not model_name:
+            return jsonify({"error": "Model name is required"}), 400
         
         from agent_client import MultiLLMClient
         
-        # Create a temporary client to test
-        provider = MultiLLMClient.SUPPORTED_MODELS[model_name]["provider"]
-        test_client = MultiLLMClient(model_name, {provider: api_key})
+        model_config = MultiLLMClient.SUPPORTED_MODELS.get(model_name)
+        if not model_config:
+            return jsonify({"error": f"Unsupported model: {model_name}"}), 400
+        
+        # For Ollama models, API key is not required
+        if model_config["provider"] == "ollama":
+            test_client = MultiLLMClient(model_name, {})
+        else:
+            if not api_key:
+                return jsonify({"error": "API key is required for this model"}), 400
+            
+            provider = model_config["provider"]
+            test_client = MultiLLMClient(model_name, {provider: api_key})
         
         # Test with a simple prompt
         test_llm = test_client.get_llm()
@@ -381,7 +428,7 @@ def test_model():
         if hasattr(test_llm, 'invoke'):
             response = test_llm.invoke("Hello, please respond with 'Connection successful'")
         else:
-            # For Gemini adapter
+            # For adapters
             response = test_llm.invoke("Hello, please respond with 'Connection successful'")
         
         return jsonify({

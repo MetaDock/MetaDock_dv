@@ -1,0 +1,157 @@
+[
+    {
+        "category": "Basic options",
+        "short": "-o",
+        "long": "--output-dir",
+        "needs_input": true,
+        "description": "directory to save QUAST results",
+        "default": "quast_output"
+    },
+    {
+        "category": "Input",
+        "short": null,
+        "long": "contigs",
+        "needs_input": true,
+        "description": "assembly files (contigs or scaffolds)",
+        "required": true
+    },
+    {
+        "category": "Reference options",
+        "short": "-r",
+        "long": "--reference",
+        "needs_input": true,
+        "description": "reference genome file"
+    },
+    {
+        "category": "Reference options",
+        "short": "-g",
+        "long": "--features",
+        "needs_input": true,
+        "description": "genomic feature coordinates in the reference (GFF, BED, NCBI or TXT)"
+    },
+    {
+        "category": "Reference options",
+        "short": null,
+        "long": "--operons",
+        "needs_input": true,
+        "description": "operon coordinates in the reference (GFF, BED, NCBI or TXT)"
+    },
+    {
+        "category": "Analysis options",
+        "short": null,
+        "long": "--gene-finding",
+        "needs_input": false,
+        "description": "predict genes using GeneMarkS (prokaryotes, default) or GeneMark-ES (eukaryotes, use --eukaryote)"
+    },
+    {
+        "category": "Analysis options",
+        "short": null,
+        "long": "--eukaryote",
+        "needs_input": false,
+        "description": "genome is eukaryotic (GeneMark-ES is used for gene prediction)"
+    },
+    {
+        "category": "Analysis options",
+        "short": null,
+        "long": "--fungus",
+        "needs_input": false,
+        "description": "genome is fungal (GeneMark-ES is used for gene prediction)"
+    },
+    {
+        "category": "Analysis options", 
+        "short": null,
+        "long": "--large",
+        "needs_input": false,
+        "description": "use optimal parameters for evaluation of large genomes"
+    },
+    {
+        "category": "Analysis options",
+        "short": null,
+        "long": "--k-mer-stats",
+        "needs_input": false,
+        "description": "compute k-mer-based quality metrics (recommended for large genomes)"
+    },
+    {
+        "category": "Analysis options",
+        "short": null,
+        "long": "--k-mer-size",
+        "needs_input": true,
+        "description": "size of k-mer for --k-mer-stats (default is 101)"
+    },
+    {
+        "category": "Output options",
+        "short": null,
+        "long": "--plots-format",
+        "needs_input": true,
+        "description": "format of plots (png, pdf, svg)"
+    },
+    {
+        "category": "Output options",
+        "short": null,
+        "long": "--pdf",
+        "needs_input": false,
+        "description": "save plots in PDF format"
+    },
+    {
+        "category": "Output options",
+        "short": null,
+        "long": "--svg",
+        "needs_input": false,
+        "description": "save plots in SVG format"
+    },
+    {
+        "category": "Performance options",
+        "short": "-t",
+        "long": "--threads",
+        "needs_input": true,
+        "description": "maximum number of threads",
+        "default": "1"
+    },
+    {
+        "category": "Performance options",
+        "short": null,
+        "long": "--memory-efficient",
+        "needs_input": false,
+        "description": "optimize for RAM usage"
+    },
+    {
+        "category": "Advanced options",
+        "short": null,
+        "long": "--min-contig",
+        "needs_input": true,
+        "description": "lower threshold for contig length (default is 500)"
+    },
+    {
+        "category": "Advanced options",
+        "short": null,
+        "long": "--contig-thresholds",
+        "needs_input": true,
+        "description": "comma-separated list of contig length thresholds"
+    },
+    {
+        "category": "Advanced options",
+        "short": null,
+        "long": "--ambiguity-usage",
+        "needs_input": true,
+        "description": "how to treat ambiguous bases in contigs (one, all, none)"
+    },
+    {
+        "category": "Advanced options",
+        "short": null,
+        "long": "--strict-NA",
+        "needs_input": false,
+        "description": "break contigs in any misassembly event when compute NAx and NGAx statistics"
+    },
+    {
+        "category": "Environment",
+        "short": null,
+        "long": "--conda-env",
+        "needs_input": true,
+        "description": "conda environment to activate",
+        "default": "quast_env"
+    }
+]
+
+
+
+

@@ -226,6 +226,15 @@ class DocumentProcessor:
         print(f"   - Tools: {len(available_tools)}")
         
         return True
+    
+    def get_available_tools(self) -> List[str]:
+        """Get list of available tools from metadata"""
+        try:
+            metadata = self.load_metadata()
+            return metadata.get("available_tools", [])
+        except Exception as e:
+            print(f"Error loading available tools: {e}")
+            return []
 
 
 def main():

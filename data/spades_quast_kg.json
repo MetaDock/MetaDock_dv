@@ -1,0 +1,314 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "created_at": "2024-11-11T10:00:00Z",
+    "description": "SPAdes + QUAST Workflow Knowledge Graph",
+    "last_updated": "2024-11-11T10:00:00Z"
+  },
+  
+  "tools": {
+    "spades": {
+      "id": "spades",
+      "name": "SPAdes",
+      "description": "Genome assembler for single-cell and multi-cell bacterial genomes",
+      "category": "assembly",
+      "version": "3.15.5",
+      "conda_env": "spades_env",
+      "executable": "spades.py",
+      
+      "inputs": {
+        "left_reads": {
+          "parameter": "-1",
+          "type": "file",
+          "description": "Left reads file (R1)",
+          "required": true,
+          "formats": [".fastq", ".fastq.gz", ".fq", ".fq.gz"],
+          "example": "left.fastq.gz"
+        },
+        "right_reads": {
+          "parameter": "-2", 
+          "type": "file",
+          "description": "Right reads file (R2)",
+          "required": false,
+          "formats": [".fastq", ".fastq.gz", ".fq", ".fq.gz"],
+          "example": "right.fastq.gz"
+        }
+      },
+      
+      "outputs": {
+        "contigs": {
+          "path": "{output_dir}/contigs.fasta",
+          "type": "file",
+          "description": "Assembled contigs",
+          "format": ".fasta"
+        },
+        "scaffolds": {
+          "path": "{output_dir}/scaffolds.fasta", 
+          "type": "file",
+          "description": "Assembled scaffolds",
+          "format": ".fasta"
+        }
+      },
+      
+      "parameters": {
+        "output_dir": {
+          "parameter": "-o",
+          "type": "string",
+          "description": "Output directory",
+          "required": true,
+          "default": "spades_output_folder"
+        },
+        "threads": {
+          "parameter": "-t",
+          "type": "integer", 
+          "description": "Number of threads",
+          "required": false,
+          "default": 16,
+          "range": [1, 32]
+        },
+        "careful": {
+          "parameter": "--careful",
+          "type": "boolean",
+          "description": "Careful mode (reduces mismatches and indels)",
+          "required": false,
+          "default": false
+        },
+        "memory": {
+          "parameter": "-m",
+          "type": "integer",
+          "description": "Memory limit in GB", 
+          "required": false,
+          "default": 250
+        }
+      },
+      
+      "command_template": "conda activate {conda_env} && {executable} -1 {left_reads} -2 {right_reads} -o {output_dir} -t {threads}",
+      
+      "keywords": [
+        "assembly", "genome assembly", "contig assembly", "spades", 
+        "bacterial genome", "paired-end", "illumina", "reconstruct genome"
+      ],
+      
+      "use_cases": [
+        "bacterial genome assembly",
+        "small genome assembly", 
+        "paired-end read assembly",
+        "single-cell genome assembly"
+      ],
+      
+      "resource_requirements": {
+        "min_memory_gb": 8,
+        "recommended_memory_gb": 16,
+        "min_cpu_cores": 4,
+        "estimated_runtime_minutes": 60
+      }
+    },
+    
+    "quast": {
+      "id": "quast",
+      "name": "QUAST",
+      "description": "Quality assessment tool for genome assemblies",
+      "category": "quality_assessment",
+      "version": "5.2.0",
+      "conda_env": "quast_env",
+      "executable": "quast.py",
+      
+      "inputs": {
+        "contigs": {
+          "parameter": "",
+          "type": "file",
+          "description": "Contigs file for quality assessment",
+          "required": true,
+          "formats": [".fasta", ".fa", ".fas"],
+          "source_tool": "spades",
+          "source_output": "contigs"
+        }
+      },
+      
+      "outputs": {
+        "report_html": {
+          "path": "{output_dir}/report.html",
+          "type": "file", 
+          "description": "HTML quality report",
+          "format": ".html"
+        },
+        "report_txt": {
+          "path": "{output_dir}/report.txt",
+          "type": "file",
+          "description": "Text quality report", 
+          "format": ".txt"
+        }
+      },
+      
+      "parameters": {
+        "output_dir": {
+          "parameter": "-o",
+          "type": "string",
+          "description": "Output directory",
+          "required": true,
+          "default": "quast_output_dir"
+        },
+        "threads": {
+          "parameter": "-t",
+          "type": "integer",
+          "description": "Number of threads",
+          "required": false,
+          "default": 4,
+          "range": [1, 16]
+        },
+        "min_contig": {
+          "parameter": "--min-contig",
+          "type": "integer",
+          "description": "Minimum contig length",
+          "required": false,
+          "default": 500
+        }
+      },
+      
+      "command_template": "conda activate {conda_env} && {executable} {contigs} -o {output_dir} -t {threads}",
+      
+      "keywords": [
+        "quality assessment", "quality control", "assembly quality",
+        "quast", "evaluation", "n50", "statistics", "report"
+      ],
+      
+      "use_cases": [
+        "assembly quality assessment",
+        "genome assembly evaluation",
+        "contig statistics",
+        "assembly comparison"
+      ],
+      
+      "resource_requirements": {
+        "min_memory_gb": 2,
+        "recommended_memory_gb": 4,
+        "min_cpu_cores": 2,
+        "estimated_runtime_minutes": 10
+      }
+    }
+  },
+  
+  "workflows": {
+    "spades_quast_pipeline": {
+      "id": "spades_quast_pipeline",
+      "name": "SPAdes + QUAST Assembly Pipeline",
+      "description": "Complete genome assembly workflow using SPAdes followed by QUAST quality assessment",
+      "category": "genome_assembly",
+      "complexity": "simple",
+      
+      "steps": [
+        {
+          "order": 1,
+          "tool": "spades",
+          "description": "Assemble genome using SPAdes"
+        },
+        {
+          "order": 2, 
+          "tool": "quast",
+          "description": "Assess assembly quality using QUAST"
+        }
+      ],
+      
+      "connections": [
+        {
+          "from_tool": "spades",
+          "from_output": "contigs",
+          "to_tool": "quast", 
+          "to_input": "contigs",
+          "description": "SPAdes contigs feed into QUAST for quality assessment"
+        }
+      ],
+      
+      "input_requirements": {
+        "left_reads": {
+          "description": "Left/forward reads file (R1)",
+          "formats": [".fastq", ".fastq.gz"],
+          "example": "left.fastq.gz"
+        },
+        "right_reads": {
+          "description": "Right/reverse reads file (R2)", 
+          "formats": [".fastq", ".fastq.gz"],
+          "example": "right.fastq.gz",
+          "required": false
+        }
+      },
+      
+      "output_products": {
+        "contigs": "Assembled genome contigs",
+        "scaffolds": "Assembled genome scaffolds", 
+        "quality_report": "Assembly quality assessment report"
+      },
+      
+      "use_cases": [
+        "bacterial genome assembly",
+        "small genome assembly with quality control",
+        "paired-end illumina data assembly",
+        "genome reconstruction from reads"
+      ],
+      
+      "keywords": [
+        "genome assembly", "spades quast", "assembly pipeline",
+        "quality control", "bacterial genome", "paired-end",
+        "reconstruct genome", "assemble contigs", "assembly quality"
+      ],
+      
+      "natural_language_patterns": [
+        "assemble genome with quality control",
+        "spades and quast pipeline", 
+        "genome assembly followed by quality assessment",
+        "reconstruct contigs and evaluate quality",
+        "paired-end assembly with quality check",
+        "bacterial genome assembly pipeline"
+      ],
+      
+      "estimated_runtime": "60-90 minutes",
+      "success_rate": 0.88,
+      "usage_count": 150,
+      
+      "resource_requirements": {
+        "total_memory_gb": 18,
+        "total_cpu_cores": 20,
+        "total_runtime_minutes": 70,
+        "disk_space_gb": 15
+      }
+    }
+  },
+  
+  "knowledge_context": {
+    "domain_knowledge": {
+      "genome_assembly": {
+        "description": "Process of reconstructing a genome from sequencing reads",
+        "key_concepts": ["contigs", "scaffolds", "paired-end reads", "coverage"],
+        "quality_metrics": ["N50", "total length", "contig count", "largest contig"],
+        "common_issues": ["low coverage", "contamination", "repetitive regions"]
+      },
+      
+      "quality_assessment": {
+        "description": "Evaluation of genome assembly quality and completeness",
+        "key_metrics": ["N50", "N90", "total assembly length", "number of contigs"],
+        "interpretation": {
+          "high_quality": "High N50, low contig count, complete genome size",
+          "low_quality": "Low N50, high contig count, fragmented assembly"
+        }
+      }
+    },
+    
+    "semantic_mappings": {
+      "user_intent_to_workflow": {
+        "assembly_keywords": ["assemble", "assembly", "reconstruct", "build genome", "contigs"],
+        "quality_keywords": ["quality", "assessment", "evaluation", "check quality", "qc"],
+        "data_keywords": ["paired-end", "reads", "fastq", "illumina", "sequencing data"],
+        "organism_keywords": ["bacterial", "genome", "microbe", "prokaryote"]
+      },
+      
+      "command_generation": {
+        "spades_command": "spades.py -1 {left_reads} -2 {right_reads} -o {output_dir} -t {threads}",
+        "quast_command": "quast.py {contigs_file} -o {output_dir} -t {threads}",
+        "full_pipeline": [
+          "conda activate spades_env && spades.py -1 left.fastq.gz -2 right.fastq.gz -o spades_output_folder -t 16",
+          "conda activate quast_env && quast.py spades_output_folder/contigs.fasta -o quast_output_dir -t 4"
+        ]
+      }
+    }
+  }
+}

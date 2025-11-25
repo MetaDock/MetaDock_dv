@@ -78,3 +78,5 @@ temp_uploads/
 add_new_local_model_guide.md
 conda_setup_guide.md
 test_spades_quast_workflow.md
+
+vector_store/

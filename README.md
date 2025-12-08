@@ -62,7 +62,7 @@ The agent is powered by a Python backend using Flask, LangChain, and FAISS, whic
     ```
 
 5.  **Configure Environment Variables**
-    Create a `.env` file in the project root directory and add your API keys:
+    Edit the `.env` file in the project root directory and add your API keys:
     
     ```env
     # Qwen API Configuration (Recommended - Default model)
@@ -74,11 +74,6 @@ The agent is powered by a Python backend using Flask, LangChain, and FAISS, whic
     # Gemini API Configuration (Optional)
     # GEMINI_API_KEY=your_gemini_api_key_here
     
-    # SSH Configuration (Optional - for remote tool execution)
-    # SSH_HOST=your_remote_host
-    # SSH_PORT=22
-    # SSH_USER=your_username
-    # SSH_PASSWORD=your_password
     ```
     
     **Note:** 

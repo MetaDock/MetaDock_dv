@@ -61,28 +61,54 @@ The agent is powered by a Python backend using Flask, LangChain, and FAISS, whic
     pip install -r requirements.txt
     ```
 
-5.  **Initialize the AI Agent System (First Time Only)**
-    Initialize the Adaptive RAG system and build the vector database:
+5.  **Configure Environment Variables**
+    Create a `.env` file in the project root directory and add your API keys:
+    
+    ```env
+    # Qwen API Configuration (Recommended - Default model)
+    DASHSCOPE_API_KEY=your_dashscope_api_key_here
+    
+    # Ollama Configuration (Optional - for local models)
+    OLLAMA_HOST=http://localhost:11434
+    
+    # Gemini API Configuration (Optional)
+    # GEMINI_API_KEY=your_gemini_api_key_here
+    
+    # SSH Configuration (Optional - for remote tool execution)
+    # SSH_HOST=your_remote_host
+    # SSH_PORT=22
+    # SSH_USER=your_username
+    # SSH_PASSWORD=your_password
+    ```
+    
+    **Note:** 
+    - At least one API key (Qwen or Gemini) is required for the AI agent to work
+    - Users can also input their API keys through the web interface after starting the application
+    - Get Qwen API key at: https://dashscope.console.aliyun.com/
+    - Get Gemini API key at: https://aistudio.google.com/apikey
+
+6.  **Initialize the AI Agent Vector Database (First Time Only)**
+    Build the vector database for document retrieval:
     ```shell
     cd agent
-    python init_system.py
+    python document_processor.py
     cd ..
     ```
     
     This step:
-    - ✅ Checks all dependencies
-    - ✅ Validates LLM client configuration
-    - ✅ Processes bioinformatics tool documentation
-    - ✅ Builds vector database for fast retrieval
-    - ✅ Tests the complete system
+    - ✅ Processes 12 bioinformatics tool documents from `help_pages_for_test/`
+    - ✅ Builds FAISS vector database for fast semantic search
+    - ✅ Generates metadata for the knowledge base
+    - ⏱️ Takes approximately 1-2 minutes on first run
+    - 🔄 Automatically detects and updates only changed documents on subsequent runs
 
-6.  **Start the application**
+7.  **Start the application**
     This will launch the Node.js server, which automatically starts the Python agent server:
     ```shell
     node server.js
     ```
 
-7.  **Access the application**
+8.  **Access the application**
     Open your browser and navigate to [http://localhost:3010](http://localhost:3010).
 
 ## 🔧 Agent System Maintenance
@@ -112,14 +138,24 @@ cd agent
 python agent_server.py
 ```
 
-### Environment Configuration
+## 🎯 Model Support
 
-You need to manually add environment variables to your `.env` file:
+MetaDock supports multiple AI models:
 
-```env
-# OpenAI API Configuration (if using OpenAI)
-OPENAI_API_KEY=your_openai_api_key_here
+### Supported Models
+- **Qwen Plus** (Default) - Fast and balanced performance
+  - Requires: `DASHSCOPE_API_KEY` environment variable
+  - Get key at: https://dashscope.console.aliyun.com/
 
-# Or other LLM configuration as needed
-# Check agent_client.py for specific requirements
-```
+- **Gemini 2.5 Pro** - Advanced reasoning capabilities
+  - Requires: `GEMINI_API_KEY` environment variable
+  - Get key at: https://aistudio.google.com/apikey
+  - Install package: `pip install google-genai`
+
+- **DeepSeek R1 8B** - Local model via Ollama
+  - No API key required
+  - Requires: Ollama installed and running locally
+  - Install: https://ollama.com/
+
+### Switching Models
+Users can switch between models in the AI Agent settings panel in the web interface.

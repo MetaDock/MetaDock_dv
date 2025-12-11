@@ -62,25 +62,38 @@ The agent is powered by a Python backend using Flask, LangChain, and FAISS, whic
     ```
 
 5.  **Configure Environment Variables**
-    Edit the `.env` file in the project root directory and add your API keys:
+    Modify a `.env` file in the project root directory (`MetaDock_dv/.env`) and use your API keys:
     
     ```env
-    # Qwen API Configuration (Recommended - Default model)
+    # AI Model API Keys
+    # Qwen API Configuration
     DASHSCOPE_API_KEY=your_dashscope_api_key_here
     
-    # Ollama Configuration (Optional - for local models)
-    OLLAMA_HOST=http://localhost:11434
-    
-    # Gemini API Configuration (Optional)
+    # Gemini API Configuration
     # GEMINI_API_KEY=your_gemini_api_key_here
     
+    # Ollama Configuration
+    # OLLAMA_HOST=http://localhost:11434
+    
+    # Server Configuration
+    # PORT=3010
+    # NODE_ENV=development
+    
+    # SSH Configuration
+    # SSH_HOST=localhost
+    # SSH_PORT=22
+    # SSH_USER=root
+    # SSH_PASSWORD=
+    # SSH_KEY=/path/to/your/private/key
     ```
     
     **Note:** 
+    - ✅ **Now supports `.env` file** - All environment variables are automatically loaded from `.env` file
     - At least one API key (Qwen or Gemini) is required for the AI agent to work
     - Users can also input their API keys through the web interface after starting the application
     - Get Qwen API key at: https://dashscope.console.aliyun.com/
     - Get Gemini API key at: https://aistudio.google.com/apikey
+    - For Gemini, also install: `pip install google-genai`
 
 6.  **Initialize the AI Agent Vector Database (First Time Only)**
     Build the vector database for document retrieval:

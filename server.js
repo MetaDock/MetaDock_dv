@@ -1,3 +1,6 @@
+// Load environment variables from .env file
+require('dotenv').config();
+
 const express = require('express');
 const { exec } = require('child_process');
 const { Client } = require('ssh2');

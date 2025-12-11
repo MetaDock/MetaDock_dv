@@ -5,9 +5,13 @@ import sys
 import json
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env file in project root
+env_path = Path(__file__).parent.parent / '.env'
+load_dotenv(dotenv_path=env_path)
+
 # Add current directory to Python path for imports
-import sys
-import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Import modules with fallback

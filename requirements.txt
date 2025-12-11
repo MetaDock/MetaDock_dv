@@ -17,6 +17,7 @@ pydantic>=2.0.0
 requests
 google-genai
 ollama
+python-dotenv
 # Optional: LangGraph for advanced RAG features
 # langgraph
 # tavily-python

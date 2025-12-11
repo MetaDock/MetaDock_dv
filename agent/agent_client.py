@@ -4,7 +4,9 @@ Multi-LLM Client supporting Qwen and Gemini models
 
 import os
 import logging
+from pathlib import Path
 from typing import Optional, Dict, Any, Iterator
+from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
 from langchain_core.runnables import Runnable
@@ -26,6 +28,11 @@ except ImportError:
     OLLAMA_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
+
+# Load environment variables from local .env (if present) so back-end can
+# default to file-based keys when front-end未传递自定义 key。
+env_path = Path(__file__).parent.parent / '.env'
+load_dotenv(dotenv_path=env_path, override=False)
 
 class GeminiStreamAdapter(Runnable):
     """Adapter to make Gemini API compatible with LangChain streaming interface"""
@@ -450,6 +457,15 @@ class MultiLLMClient:
         
         self._initialize_llm()
     
+    @staticmethod
+    def _mask_key(key: Optional[str]) -> str:
+        """Return a partially masked version of the key for safe logging."""
+        if not key:
+            return "N/A"
+        if len(key) <= 8:
+            return "***"
+        return f"{key[:3]}***{key[-4:]}"
+    
     def _get_api_key(self, provider: str, env_var: str) -> Optional[str]:
         """Get API key from custom keys or environment"""
         if provider in self.custom_api_keys:
@@ -474,7 +490,7 @@ class MultiLLMClient:
                     temperature=0.1,
                     streaming=True,
                 )
-                logger.info(f"Initialized Qwen model: {self.model_name}")
+                logger.info(f"Initialized Qwen model: {self.model_name} | key={self._mask_key(api_key)}")
                 
             elif provider == "gemini":
                 if not GENAI_AVAILABLE:
@@ -495,14 +511,14 @@ class MultiLLMClient:
                         temperature=0.1,
                         streaming=True,
                     )
-                    logger.info(f"Initialized Qwen model (fallback): {self.model_name}")
+                    logger.info(f"Initialized Qwen model (fallback): {self.model_name} | key={self._mask_key(api_key)}")
                 else:
                     api_key = self._get_api_key("gemini", model_config["api_key_env"])
                     if not api_key:
                         raise ValueError(f"No API key found for Gemini. Set {model_config['api_key_env']} or provide custom API key")
                     
                     self.current_llm = GeminiStreamAdapter(api_key, self.model_name)
-                    logger.info(f"Initialized Gemini model: {self.model_name}")
+                    logger.info(f"Initialized Gemini model: {self.model_name} | key={self._mask_key(api_key)}")
             
             elif provider == "ollama":
                 if not OLLAMA_AVAILABLE:
@@ -523,7 +539,7 @@ class MultiLLMClient:
                         temperature=0.1,
                         streaming=True,
                     )
-                    logger.info(f"Initialized Qwen model (fallback): qwen-plus")
+                    logger.info(f"Initialized Qwen model (fallback): qwen-plus | key={self._mask_key(api_key)}")
                 else:
                     # Get Ollama host from config or custom settings
                     host = model_config.get("host", "http://localhost:11434")

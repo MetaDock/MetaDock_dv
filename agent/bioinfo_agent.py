@@ -14,6 +14,7 @@ from adaptive_rag import AdaptiveRAG
 from document_processor import DocumentProcessor
 from session_memory import SessionMemory
 from workflow_planner import WorkflowPlanner, EnhancedWorkflowPlanner
+from agent_client import get_llm_client
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -512,3 +513,63 @@ class BioinfoAgentV2:
         """Clear current workflow planning state"""
         self.current_workflow_plan = None
         self.planning_mode = False
+
+    # === Visualization Code Generation ===
+    def generate_viz_code(self, viz_request: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Generate seaborn visualization code based on user request.
+        Returns a dict with 'code' for downstream usage.
+        """
+        try:
+            client = get_llm_client()
+            llm = client.get_llm()
+
+            file_path = viz_request.get("file_path", "")
+            chart_type = viz_request.get("chart_type", "scatter")
+            x_col = viz_request.get("x") or viz_request.get("x_col") or ""
+            y_col = viz_request.get("y") or viz_request.get("y_col") or ""
+            hue = viz_request.get("hue", "")
+            style = viz_request.get("style", "")
+            title = viz_request.get("title", "Seaborn Plot")
+            width = viz_request.get("width", 10)
+            height = viz_request.get("height", 6)
+            detected_columns = viz_request.get("detected_columns") or []
+            file_head = viz_request.get("file_head") or ""
+            user_prompt = viz_request.get("prompt", "").strip()
+
+            logger.info("[viz_codegen] model=%s file=%s cols_hint=%s", client.model_name, file_path, detected_columns)
+
+            prompt = f"""
+You are a Python data viz assistant. Generate a complete, runnable Python script that uses pandas + seaborn + matplotlib to produce ONE plot and save it to OUTPUT_PATH.
+
+User requirement (follow this first): {user_prompt}
+
+Available columns (from file head): {detected_columns}
+File head preview:
+{file_head}
+
+Constraints:
+- Do not use plt.show(); always save with plt.savefig(OUTPUT_PATH, dpi=300, bbox_inches="tight").
+- Always set matplotlib.use("Agg") at the top to avoid GUI.
+- Use sns.set_theme(); set figure size to ({width}, {height}).
+- Read the data from: {file_path!r}. If the extension is .tsv/.txt use sep="\\t", else sep=",".
+- Use columns: x={x_col!r}, y={y_col!r}, hue={hue!r}, style={style!r} (ignore if blank).
+- Chart type: {chart_type}. Choose the appropriate seaborn API (e.g., scatterplot, lineplot, histplot, boxplot, barplot, kdeplot, pairplot; if pairplot, still save the figure).
+- Title: {title!r}.
+- Handle missing columns gracefully with a clear error message before plotting.
+- Keep imports minimal: pandas as pd, seaborn as sns, matplotlib.pyplot as plt, matplotlib.
+
+Return ONLY the Python code (no markdown, no fences, no extra text). The code must reference the variable OUTPUT_PATH for saving.
+"""
+
+            raw_code = llm.invoke(prompt)
+            # llm.invoke may return string or message; normalize to string
+            if hasattr(raw_code, "content"):
+                raw_code = raw_code.content
+            code = str(raw_code).strip()
+            logger.info("[viz_codegen] generated code length=%d", len(code))
+            logger.debug("[viz_codegen] prompt preview: %s", prompt[:500].replace("\n", "\\n"))
+            return {"code": code}
+        except Exception as e:
+            logger.error(f"Error generating viz code: {e}", exc_info=True)
+            return {"code": "", "error": str(e)}

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.20/dist/full.min.css" rel="stylesheet" type="text/css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css" rel="stylesheet">
+  <style>
+    body { background: #f8fafc; }
+    #agent-widget-container { display: none !important; }
+    .table th, .table td { font-size: 0.9rem; }
+  </style>
+</head>
+<body class="p-4 space-y-4">
+  <div class="text-sm breadcrumbs">
+    <ul>
+      <li><a href="/picker/file-picker?dir=/">root</a></li>
+      <% 
+        const pathParts = currentDir.split('/').filter(Boolean);
+        const pathBuild = [];
+        pathParts.forEach(part => {
+          pathBuild.push(part);
+          const p = '/' + pathBuild.join('/');
+      %>
+          <li><a href="/picker/file-picker?dir=<%= encodeURIComponent(p) %>"><%= part %></a></li>
+      <% }) %>
+    </ul>
+  </div>
+
+  <div class="join w-full">
+    <input id="dirInput" class="join-item input input-bordered w-full text-sm" value="<%= currentDir %>" autocomplete="off" placeholder="/path/to/dir">
+    <button class="join-item btn btn-primary" onclick="goToFolder()"><i class="ti ti-arrow-right"></i></button>
+  </div>
+
+  <div class="overflow-x-auto rounded-lg border border-base-300 max-h-[60vh]">
+    <table class="table table-zebra">
+      <thead class="bg-base-200">
+        <tr>
+          <th class="w-[120px]">Perm</th>
+          <th class="w-[120px]">Size</th>
+          <th class="w-[180px]">Date</th>
+          <th>Item</th>
+          <th class="w-[120px]">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (filelist.length > 0) { %>
+          <% filelist.forEach(file => { %>
+            <tr>
+              <td><%= file.permissions %></td>
+              <td><%= file.size %></td>
+              <td><%= file.date %></td>
+              <td><%= file.filename %></td>
+              <td>
+                <% if (file.isDirectory) { %>
+                  <button class="btn btn-xs btn-outline" onclick="navigateToFolder('<%= file.filename %>')">Open</button>
+                <% } else { %>
+                  <button class="btn btn-xs btn-primary" onclick="selectFile('<%= file.filename %>')">Select</button>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr><td colspan="5" class="text-center py-6 text-gray-500">No files</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="flex flex-wrap gap-2">
+    <button class="btn btn-primary" onclick="completeSelection()">
+      <i class="ti ti-check"></i> Complete
+    </button>
+    <button class="btn btn-outline btn-error" onclick="clearSelection()">
+      <i class="ti ti-trash"></i> Clear
+    </button>
+    <div class="badge badge-neutral" id="selected-count">0 selected</div>
+  </div>
+
+  <script>
+    const currentDir = '<%= currentDir %>';
+    let selectedFiles = [];
+
+    const path = {
+      posix: {
+        join: (...parts) => parts.join('/').replace(/\/+/g, '/')
+      }
+    };
+
+    function updateCount() {
+      document.getElementById('selected-count').textContent = `${selectedFiles.length} selected`;
+    }
+
+    function navigateToFolder(folder) {
+      const base = document.getElementById('dirInput').value.trim() || '/';
+      const target = path.posix.join(base, folder).replace(/^\/?/, '/');
+      window.location.href = `/picker/file-picker?dir=${encodeURIComponent(target)}`;
+    }
+
+    function goToFolder() {
+      const dir = document.getElementById('dirInput').value.trim() || '/';
+      const norm = dir.replace(/\/+/g, '/').replace(/^\/?/, '/');
+      window.location.href = `/picker/file-picker?dir=${encodeURIComponent(norm)}`;
+    }
+
+    function selectFile(filename) {
+      if (!filename) return;
+      if (!selectedFiles.includes(filename)) {
+        selectedFiles = [filename]; // single select to avoid confusion
+      }
+      updateCount();
+    }
+
+    function clearSelection() {
+      selectedFiles = [];
+      updateCount();
+    }
+
+    function completeSelection() {
+      if (selectedFiles.length === 0) {
+        alert('Please click Select to choose a file first');
+        return;
+      }
+      const fullPaths = selectedFiles.map(f => path.posix.join(currentDir || '/', f).replace(/\/+/g, '/'));
+      window.parent.postMessage({ type: 'file-selected', paths: fullPaths }, '*');
+    }
+
+    document.getElementById('dirInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') goToFolder();
+    });
+
+    updateCount();
+  </script>
+</body>
+</html>
+

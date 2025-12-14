@@ -30,7 +30,7 @@
       </div>
     </div>
 
-    <!-- Session Sidebar (側拉) -->
+    <!-- Session Sidebar (side drawer) -->
     <div id="session-sidebar" class="fixed left-0 top-0 h-full w-80 bg-base-100 shadow-2xl border-r border-base-300 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 hidden">
       <div class="flex flex-col h-full">
         <!-- Sidebar Header -->
@@ -92,7 +92,7 @@
 
     <!-- Input Area -->
     <div class="card-footer bg-base-200 p-4 border-t border-base-300">
-      <div class="flex items-center space-x-2">
+      <div class="flex items-center space-x-2 mb-2">
         <input type="text" id="chat-input" class="input input-bordered w-full" placeholder="Ask a question..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-form-type="other">
         <button id="chat-send-btn" class="btn btn-primary btn-circle">
           <i class="ti ti-send"></i>
@@ -101,6 +101,16 @@
         <button id="stop-generation-btn" class="btn btn-error btn-circle hidden" title="Stop generation">
           <i class="ti ti-square"></i>
         </button>
+        <button id="viz-generate-btn" class="btn btn-ghost btn-sm gap-1" title="Generate visualization code from current input">
+          <i class="ti ti-wand"></i>
+          Generate Code
+        </button>
+      </div>
+      <div class="flex items-center gap-2 text-sm">
+        <span class="opacity-70">Selected data file:</span>
+        <span id="selected-viz-file" class="truncate flex-1" title=""></span>
+        <button id="select-file-btn" class="btn btn-xs btn-outline">Pick File</button>
+        <button id="set-file-btn" class="btn btn-xs btn-ghost">Paste Path</button>
       </div>
     </div>
     <!-- Model Settings Modal -->
@@ -179,6 +189,19 @@
     <div class="resize-handle sw"></div><div class="resize-handle se"></div>
   </div>
 </div>
+
+<!-- Embedded file picker modal -->
+<dialog id="file-picker-modal" class="modal">
+  <div class="modal-box w-11/12 max-w-4xl p-0">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-base-300">
+      <div class="font-semibold">Select Remote Data File</div>
+      <button id="close-picker-btn" class="btn btn-sm btn-ghost btn-circle"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="h-[70vh]">
+      <iframe id="file-picker-frame" src="" class="w-full h-full border-0"></iframe>
+    </div>
+  </div>
+</dialog>
 
 <script>
   const agentFab = document.getElementById('agent-fab');
@@ -511,6 +534,8 @@
   let currentSessionId = null;
   let sessions = [];
   let isMemoryEnabled = false;
+  let lastVizCode = '';
+  let selectedVizFile = '';
 
 
 
@@ -927,6 +952,9 @@
                     // Build workflow on canvas
                     const workflowData = event.workflow || event.workflow_data;
                     handleWorkflowBuild(workflowData);
+            } else if (event.type === 'viz_code' && event.code) {
+                lastVizCode = event.code;
+                renderVizCodeCard(event.code);
                 } else if (event.type === 'sources' && event.sources) {
                     sources = event.sources;
                 } else if (event.type === 'final_data') {
@@ -1208,7 +1236,7 @@
       
       sessionSidebar.classList.remove('hidden');
       sidebarOverlay.classList.remove('hidden');
-      // 触发动画
+      // Trigger animation
       setTimeout(() => {
           sessionSidebar.classList.remove('-translate-x-full');
       }, 10);
@@ -1570,6 +1598,7 @@
       checkMarkdownSupport();
     loadState();
     checkAgentStatusLoop();
+    loadStoredVizFile();
     }, 100);
   });
   
@@ -1951,6 +1980,194 @@ function initializeMarked() {
     }
   });
 
+  // === File selection for viz ===
+  const selectedVizFileEl = document.getElementById('selected-viz-file');
+  const selectFileBtn = document.getElementById('select-file-btn');
+  const setFileBtn = document.getElementById('set-file-btn');
+  const filePickerModal = document.getElementById('file-picker-modal');
+  const filePickerFrame = document.getElementById('file-picker-frame');
+  const closePickerBtn = document.getElementById('close-picker-btn');
+  const vizGenerateBtn = document.getElementById('viz-generate-btn');
+
+  function loadStoredVizFile() {
+    const stored = localStorage.getItem('selectedVizFile');
+    if (stored) {
+      selectedVizFile = stored;
+      updateVizFileDisplay();
+    }
+  }
+
+  function updateVizFileDisplay() {
+    if (selectedVizFile) {
+      selectedVizFileEl.textContent = selectedVizFile;
+      selectedVizFileEl.title = selectedVizFile;
+    } else {
+      selectedVizFileEl.textContent = 'None';
+      selectedVizFileEl.title = '';
+    }
+  }
+
+  selectFileBtn.addEventListener('click', () => {
+    // Open embedded file picker
+    if (filePickerFrame) {
+      filePickerFrame.src = '/picker/file-picker?dir=/&type=input&picker=1';
+    }
+    if (filePickerModal) {
+      filePickerModal.showModal();
+    }
+  });
+
+  setFileBtn.addEventListener('click', () => {
+    const val = prompt('Please enter/paste the remote data file path (e.g., /home/xxx/data.csv):', selectedVizFile);
+    if (val && val.trim()) {
+      selectedVizFile = val.trim();
+      localStorage.setItem('selectedVizFile', selectedVizFile);
+      updateVizFileDisplay();
+    }
+  });
+
+  if (vizGenerateBtn) {
+    vizGenerateBtn.addEventListener('click', async () => {
+      const prompt = chatInput.value.trim();
+      if (!prompt) {
+        alert('Please enter a visualization request before generating code');
+        return;
+      }
+      vizGenerateBtn.disabled = true;
+      vizGenerateBtn.classList.add('loading');
+      try {
+        const resp = await fetch('/api/viz/codegen', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt,
+            file_path: selectedVizFile || undefined
+          })
+        });
+        const data = await resp.json();
+        if (!data.success) {
+          throw new Error(data.error || 'Code generation failed');
+        }
+        lastVizCode = data.code || '';
+        if (lastVizCode) {
+          renderVizCodeCard(lastVizCode);
+        } else {
+          alert('Generated successfully but code is empty');
+        }
+      } catch (err) {
+        console.error('viz codegen error', err);
+        alert(`Code generation failed: ${err.message}`);
+      } finally {
+        vizGenerateBtn.disabled = false;
+        vizGenerateBtn.classList.remove('loading');
+      }
+    });
+  }
+
+  if (closePickerBtn && filePickerModal) {
+    closePickerBtn.addEventListener('click', () => {
+      filePickerModal.close();
+    });
+  }
+
+  // Listen for file selection event from iframe
+  window.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'file-selected') {
+      const picked = event.data.path || (event.data.paths && event.data.paths[0]);
+      if (picked) {
+        selectedVizFile = picked;
+        localStorage.setItem('selectedVizFile', selectedVizFile);
+        updateVizFileDisplay();
+      }
+      if (filePickerModal) filePickerModal.close();
+    }
+  });
+
+  // === Visualization helpers ===
+  function renderVizCodeCard(code) {
+    const card = document.createElement('div');
+    card.className = 'mt-3 border border-base-300 rounded-lg p-3 bg-base-200';
+    card.innerHTML = `
+      <div class="flex items-center justify-between mb-2">
+    <div class="font-semibold">Seaborn Code Preview</div>
+        <div class="flex gap-2">
+          <button class="btn btn-xs btn-primary" data-action="viz-run">Run</button>
+          <button class="btn btn-xs btn-ghost" data-action="viz-regen">Regenerate</button>
+        </div>
+      </div>
+      <pre class="overflow-auto text-xs bg-base-100 p-2 rounded code-block"><code>${escapeHtml(code)}</code></pre>
+      <div class="viz-status text-sm mt-2 opacity-70">Not run yet</div>
+      <div class="viz-image mt-2"></div>
+    `;
+    chatBody.appendChild(card);
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    card.querySelector('[data-action="viz-run"]').addEventListener('click', async () => {
+      await runVizCode(card, code);
+    });
+    card.querySelector('[data-action="viz-regen"]').addEventListener('click', async () => {
+      await regenerateVizCode(card);
+    });
+  }
+
+  async function runVizCode(card, code) {
+    const statusEl = card.querySelector('.viz-status');
+    const imgEl = card.querySelector('.viz-image');
+    statusEl.textContent = 'Running...';
+    imgEl.innerHTML = '';
+    try {
+      const resp = await fetch('/api/viz/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      const data = await resp.json();
+      if (!data.success) {
+        throw new Error(data.error || 'Run failed');
+      }
+      statusEl.textContent = 'Completed';
+      const img = document.createElement('img');
+      img.src = `data:image/${data.format || 'png'};base64,${data.imageBase64}`;
+      img.alt = 'viz output';
+      img.className = 'max-w-full border border-base-300 rounded';
+      imgEl.appendChild(img);
+    } catch (err) {
+      statusEl.textContent = `Run failed: ${err.message}`;
+    }
+  }
+
+  async function regenerateVizCode(card) {
+    const statusEl = card.querySelector('.viz-status');
+    statusEl.textContent = 'Regenerating...';
+    try {
+      const resp = await fetch('/api/viz/codegen', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: 'Regenerate seaborn code with same intent but improved defaults.',
+          previous_code: lastVizCode || undefined,
+          file_path: selectedVizFile || undefined
+        })
+      });
+      const data = await resp.json();
+      if (!data.success) {
+        throw new Error(data.error || 'Generation failed');
+      }
+      lastVizCode = data.code || '';
+      const codeEl = card.querySelector('code');
+      codeEl.textContent = data.code;
+      statusEl.textContent = 'Regenerated, click run';
+    } catch (err) {
+      statusEl.textContent = `Regeneration failed: ${err.message}`;
+    }
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/[&<>"']/g, function(m) {
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];
+    });
+  }
+
   // Simple test function (like test-marked.html)
   window.testMarkdown = function(text) {
     try {
@@ -2271,6 +2488,19 @@ function initializeMarked() {
 .markdown-content > h5, .markdown-content > h6 {
   margin-top: 1rem;
   margin-bottom: 0.5rem;
+}
+
+/* Ensure file picker modal is above the chat widget */
+#file-picker-modal {
+  z-index: 999;
+}
+#file-picker-modal::backdrop {
+  z-index: 998;
+}
+
+/* Lower chat widget vs picker overlay */
+#agent-widget-container {
+  z-index: 50;
 }
 
 /* First element adjustments */

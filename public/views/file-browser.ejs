@@ -82,8 +82,8 @@
         </table>
     </div>
 
-    <div class="flex items-center justify-between bg-base-200 p-4 rounded-box">
-        <div class="flex gap-2">
+    <div class="flex flex-col gap-2 bg-base-200 p-4 rounded-box">
+        <div class="flex flex-wrap gap-2">
             <button onclick="goBack()" class="btn btn-outline">
                 <i class="ti ti-arrow-left"></i>
                 Back
@@ -104,8 +104,6 @@
                 <i class="ti ti-trash"></i>
                 Clear Selection
             </button>
-        </div>
-        <div class="flex gap-2">
             <label class="btn btn-outline">
                 <i class="ti ti-upload"></i>
                 Upload Files
@@ -216,8 +214,7 @@
 </style>
 
 <script>
-    // Get the tool name from the URL
-    const toolName = window.location.pathname.split('/')[1];
+    const toolName = window.location.pathname.split('/')[1] || 'picker';
     let selectedFiles = JSON.parse(localStorage.getItem(`${toolName}_selectedFiles`) || '[]');
 
     // Create a simple path module for browser environment
@@ -231,7 +228,10 @@
 
     // Update the displayed count of selected files
     function updateSelectionCounter() {
-        document.getElementById('selected-count').textContent = `${selectedFiles.length} selected`;
+        const counter = document.getElementById('selected-count');
+        if (counter) {
+            counter.textContent = `${selectedFiles.length} selected`;
+        }
     }
 
     /**
@@ -350,7 +350,7 @@
             });
     }
 
-    // Add event listener for Enter key in directory input
+        // Add event listener for Enter key in directory input
     document.getElementById('dirInput').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             goToFolder();
@@ -393,9 +393,9 @@
             completeBtn.style.backgroundColor = '#4CAF50';
             
             setTimeout(() => {
-                const basePath = window.location.pathname.split('/').slice(0, 2).join('/'); 
-                window.location.href = basePath;
-            }, 500);
+                    const basePath = window.location.pathname.split('/').slice(0, 2).join('/') || '/'; 
+                    window.location.href = basePath;
+            }, 200);
 
         } catch (error) {
             console.error('Error:', error);

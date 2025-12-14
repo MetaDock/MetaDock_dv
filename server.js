@@ -374,7 +374,8 @@ app.get('/:tool/file-browser', async (req, res) => {
         res.render('file-browser', {
             currentDir: dir,
             filelist: filelist,
-            tool: tool
+            tool: tool,
+            picker: false
         });
     } catch (error) {
         console.error('Error in file browser:', error);
@@ -1963,7 +1964,83 @@ app.get('/api/server-files', checkConnection, async (req, res) => {
 // 文件浏览器页面路由
 app.get('/browse-files', checkConnection, (req, res) => {
   const { type = 'input' } = req.query;
-  res.render('browse-files', { type });
+  // 模板文件名为 file-browser.ejs
+  res.render('file-browser', { 
+    type,
+    currentDir: '/',
+    filelist: [],
+    tool: 'browse-files',
+    picker: false
+  });
+});
+
+// 轻量文件选择器（用于嵌入式弹窗）
+app.get('/picker/file-browser', checkConnection, async (req, res) => {
+  try {
+    let dir = req.query.dir || '/';
+    dir = dir.replace(/\/+/g, '/');
+    if (!dir.startsWith('/')) dir = '/' + dir;
+
+    const connectionDetails = req.app.locals.connectionDetails;
+    if (!connectionDetails) {
+      return res.status(401).send('Not connected to remote server');
+    }
+
+    const filelist = await getRemoteFileList(dir, {
+      host: connectionDetails.host,
+      port: connectionDetails.port,
+      username: connectionDetails.username,
+      password: connectionDetails.password
+    });
+
+    res.render('file-picker', {
+      type: req.query.type || 'input',
+      currentDir: dir,
+      filelist,
+      tool: 'picker',
+      picker: true
+    });
+  } catch (error) {
+    console.error('Error in picker file browser:', error);
+    res.status(500).send('Error accessing file browser: ' + error.message);
+  }
+});
+
+// 方便直接访问 /picker 时跳转到嵌入式文件选择器
+app.get('/picker', checkConnection, (req, res) => {
+  res.redirect('/picker/file-picker?dir=/&type=input&picker=1');
+});
+
+// 新路径 /picker/file-picker 指向同一模板
+app.get('/picker/file-picker', checkConnection, async (req, res) => {
+  try {
+    let dir = req.query.dir || '/';
+    dir = dir.replace(/\/+/g, '/');
+    if (!dir.startsWith('/')) dir = '/' + dir;
+
+    const connectionDetails = req.app.locals.connectionDetails;
+    if (!connectionDetails) {
+      return res.status(401).send('Not connected to remote server');
+    }
+
+    const filelist = await getRemoteFileList(dir, {
+      host: connectionDetails.host,
+      port: connectionDetails.port,
+      username: connectionDetails.username,
+      password: connectionDetails.password
+    });
+
+    res.render('file-picker', {
+      type: req.query.type || 'input',
+      currentDir: dir,
+      filelist,
+      tool: 'picker',
+      picker: true
+    });
+  } catch (error) {
+    console.error('Error in picker file picker:', error);
+    res.status(500).send('Error accessing file picker: ' + error.message);
+  }
 });
 
 app.get('/api/server-folders', checkConnection, async (req, res) => {
@@ -2214,6 +2291,123 @@ app.post('/api/agent/clear-history', async (req, res) => {
   } catch (error) {
     console.error('Error clearing conversation history:', error.message);
     res.status(500).json({ error: 'Failed to clear conversation history' });
+  }
+});
+
+// 读取远程文件头部，返回原文与列名（简单 CSV/TSV 推断）
+async function getRemoteFileHead(filePath, connectionDetails, lines = 5) {
+  const safePath = filePath.replace(/(["'\\])/g, '\\$1');
+  const { stdout } = await executeRemoteCommand(`head -n ${lines} "${safePath}"`, connectionDetails);
+  const headContent = stdout || '';
+  const firstLine = headContent.split(/\r?\n/).find(Boolean) || '';
+  // 估算分隔符
+  let delimiter = ',';
+  if (firstLine.includes('\t')) delimiter = '\t';
+  else if (firstLine.includes(';')) delimiter = ';';
+  const cols = firstLine.split(delimiter).map(c => c.trim()).filter(Boolean);
+  return { headContent, columns: cols };
+}
+
+// === Visualization Codegen & Run ===
+// Proxy to Python agent for seaborn code generation
+app.post('/api/viz/codegen', async (req, res) => {
+  try {
+    let payload = { ...req.body };
+
+    // 如果提供 file_path，先读取头部，传给 Agent 作为列提示
+    if (payload.file_path && req.app.locals.connectionDetails) {
+      try {
+        const { headContent, columns } = await getRemoteFileHead(payload.file_path, req.app.locals.connectionDetails, 5);
+        payload.detected_columns = columns;
+        payload.file_head = headContent;
+      } catch (err) {
+        console.warn('Failed to read remote file head:', err.message);
+      }
+    }
+
+    const response = await axios.post('http://127.0.0.1:5111/viz/codegen', payload);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error generating viz code:', error.message);
+    if (error.response) {
+      return res.status(error.response.status || 500).json(error.response.data);
+    }
+    res.status(500).json({ error: 'Failed to generate visualization code' });
+  }
+});
+
+// Run generated seaborn code on remote server and return image
+app.post('/api/viz/run', checkConnectionAPI, async (req, res) => {
+  try {
+    const { code, format = 'png' } = req.body;
+    if (!code) {
+      return res.status(400).json({ error: 'Code is required' });
+    }
+
+    const connectionDetails = req.app.locals.connectionDetails;
+    if (!connectionDetails) {
+      return res.status(401).json({ error: 'No connection established' });
+    }
+
+    const remoteTmp = process.env.VIZ_REMOTE_TMP || '/home/hoshigawarei/tmp/metadock_viz';
+    const ts = Date.now();
+    const scriptPath = `${remoteTmp}/viz_${ts}.py`;
+    let imagePath = `${remoteTmp}/viz_${ts}.${format}`;
+
+    // Ensure remote tmp directory exists
+    await ensureRemoteDir(remoteTmp, connectionDetails);
+
+    // Prepare final script content - force OUTPUT_PATH override
+    let finalCode = code.replace(/__OUTPUT_PATH__/g, imagePath);
+    // Always override OUTPUT_PATH to ensure absolute path
+    finalCode = `OUTPUT_PATH = r"${imagePath}"\n` + finalCode.replace(/OUTPUT_PATH\\s*=\\s*['"][^'"]+['"]/g, '');
+
+    // Prepend Agg backend to avoid GUI issues
+    if (!finalCode.includes('matplotlib.use("Agg")')) {
+      finalCode = `import matplotlib\\nmatplotlib.use("Agg")\\n` + finalCode;
+    }
+
+    const scriptContent = `
+import os, pathlib
+${finalCode}
+if not os.path.isfile(OUTPUT_PATH):
+    raise SystemExit(f"Output image not found: {OUTPUT_PATH}")
+print(f"[VIZ_OUTPUT]{OUTPUT_PATH}")
+`;
+
+    await uploadTextFile(scriptPath, scriptContent, connectionDetails);
+
+    // Execute script
+    const execResult = await executeRemoteCommand(`cd ${remoteTmp} && ${process.env.VIZ_PYTHON || 'python3'} ${scriptPath}`, connectionDetails);    
+
+    // Ensure image exists before download
+    let exists = await remoteFileExists(imagePath, connectionDetails);
+    if (!exists) {
+      const fallback = await findRecentPng(remoteTmp, ts, connectionDetails);
+      if (fallback) {
+        imagePath = fallback.fullPath;
+        exists = true;
+      }
+    }
+    if (!exists) {
+      return res.status(500).json({ error: `Output image not found at ${imagePath}`, stdout: execResult?.stdout, stderr: execResult?.stderr });
+    }
+
+    // Download image
+    const imageBuffer = await downloadRemoteFile(imagePath, connectionDetails);
+    const base64 = imageBuffer.toString('base64');
+
+    res.json({
+      success: true,
+      imageBase64: base64,
+      imagePath,
+      format,
+      stdout: execResult?.stdout,
+      stderr: execResult?.stderr
+    });
+  } catch (error) {
+    console.error('Error running visualization:', error);
+    res.status(500).json({ error: 'Failed to run visualization', details: error.message, stderr: error.stderr, stdout: error.stdout });
   }
 });
 
@@ -2561,6 +2755,115 @@ async function executeRemoteCommand(command, connectionDetails) {
     }).on('error', (err) => {
       reject(err);
     }).connect(connectionDetails);
+  });
+}
+
+async function ensureRemoteDir(dirPath, connectionDetails) {
+  const safeDir = dirPath.replace(/"/g, '\\"');
+  await executeRemoteCommand(`mkdir -p "${safeDir}"`, connectionDetails);
+}
+
+async function uploadTextFile(remotePath, content, connectionDetails) {
+  return new Promise((resolve, reject) => {
+    const conn = new Client();
+    conn.on('ready', () => {
+      conn.sftp((err, sftp) => {
+        if (err) {
+          conn.end();
+          return reject(err);
+        }
+        const writeStream = sftp.createWriteStream(remotePath, { encoding: 'utf8' });
+        writeStream.on('close', () => {
+          conn.end();
+          resolve(true);
+        });
+        writeStream.on('error', (error) => {
+          conn.end();
+          reject(error);
+        });
+        writeStream.write(content);
+        writeStream.end();
+      });
+    }).on('error', (err) => {
+      reject(err);
+    }).connect(connectionDetails);
+  });
+}
+
+async function downloadRemoteFile(remotePath, connectionDetails) {
+  return new Promise((resolve, reject) => {
+    const conn = new Client();
+    conn.on('ready', () => {
+      conn.sftp((err, sftp) => {
+        if (err) {
+          conn.end();
+          return reject(err);
+        }
+        sftp.readFile(remotePath, (readErr, data) => {
+          conn.end();
+          if (readErr) {
+            return reject(readErr);
+          }
+          resolve(data);
+        });
+      });
+    }).on('error', (err) => {
+      reject(err);
+    }).connect(connectionDetails);
+  });
+}
+
+async function remoteFileExists(remotePath, connectionDetails) {
+  return new Promise((resolve, reject) => {
+    const conn = new Client();
+    conn.on('ready', () => {
+      conn.sftp((err, sftp) => {
+        if (err) {
+          conn.end();
+          return reject(err);
+        }
+        sftp.stat(remotePath, (statErr) => {
+          conn.end();
+          if (statErr) {
+            return resolve(false);
+          }
+          return resolve(true);
+        });
+      });
+    }).on('error', (err) => {
+      reject(err);
+    }).connect(connectionDetails);
+  });
+}
+
+// Find recent png in directory (mtime >= sinceTs - 5s)
+async function findRecentPng(dirPath, sinceTs, connectionDetails) {
+  return new Promise((resolve, reject) => {
+    const conn = new Client();
+    conn.on('ready', () => {
+      conn.sftp((err, sftp) => {
+        if (err) {
+          conn.end();
+          return reject(err);
+        }
+        sftp.readdir(dirPath, (readErr, list) => {
+          conn.end();
+          if (readErr) return reject(readErr);
+          const threshold = sinceTs - 5000; // 5s tolerance
+          const candidates = list
+            .filter(f => f.filename.endsWith('.png') && f.attrs.mtime * 1000 >= threshold)
+            .sort((a, b) => b.attrs.mtime - a.attrs.mtime);
+          if (candidates.length === 0) return resolve(null);
+          const picked = candidates[0];
+          return resolve({
+            filename: picked.filename,
+            fullPath: path.posix.join(dirPath, picked.filename),
+            mtime: picked.attrs.mtime * 1000
+          });
+        });
+      });
+    }).on('error', (err) => reject(err))
+      .connect(connectionDetails);
   });
 }
 

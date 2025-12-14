@@ -153,6 +153,25 @@ def ask():
 
     return Response(generate(), mimetype='text/event-stream')
 
+@app.route('/viz/codegen', methods=['POST'])
+def viz_codegen():
+    """Generate seaborn visualization code via Agent"""
+    if agent is None or not agent.is_initialized:
+        return jsonify({"error": "Agent is not initialized."}), 503
+
+    data = request.json or {}
+    if not data:
+        return jsonify({"error": "Invalid request body"}), 400
+
+    try:
+        result = agent.generate_viz_code(data)
+        if result.get("error"):
+            return jsonify({"success": False, "error": result["error"]}), 500
+        return jsonify({"success": True, "code": result.get("code", "")})
+    except Exception as e:
+        logger.error(f"Error generating viz code: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
 @app.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint."""

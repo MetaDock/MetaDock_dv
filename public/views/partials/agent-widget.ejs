@@ -111,6 +111,14 @@
         <span id="selected-viz-file" class="truncate flex-1" title=""></span>
         <button id="select-file-btn" class="btn btn-xs btn-outline">Pick File</button>
         <button id="set-file-btn" class="btn btn-xs btn-ghost">Paste Path</button>
+        <label class="flex items-center gap-1 text-xs whitespace-nowrap">
+          Lib:
+          <select id="viz-lib-select" class="select select-xs select-bordered">
+            <option value="seaborn">seaborn</option>
+            <option value="matplotlib">matplotlib</option>
+            <option value="bokeh">bokeh</option>
+          </select>
+        </label>
       </div>
     </div>
     <!-- Model Settings Modal -->
@@ -1988,6 +1996,7 @@ function initializeMarked() {
   const filePickerFrame = document.getElementById('file-picker-frame');
   const closePickerBtn = document.getElementById('close-picker-btn');
   const vizGenerateBtn = document.getElementById('viz-generate-btn');
+  const vizLibSelect = document.getElementById('viz-lib-select');
 
   function loadStoredVizFile() {
     const stored = localStorage.getItem('selectedVizFile');
@@ -2033,6 +2042,9 @@ function initializeMarked() {
         alert('Please enter a visualization request before generating code');
         return;
       }
+      // Echo user intent to chat for context
+      addMessage(prompt, 'user');
+      chatInput.value = '';
       vizGenerateBtn.disabled = true;
       vizGenerateBtn.classList.add('loading');
       try {
@@ -2041,7 +2053,8 @@ function initializeMarked() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             prompt,
-            file_path: selectedVizFile || undefined
+            file_path: selectedVizFile || undefined,
+            viz_lib: vizLibSelect ? vizLibSelect.value : undefined
           })
         });
         const data = await resp.json();
@@ -2116,21 +2129,31 @@ function initializeMarked() {
     statusEl.textContent = 'Running...';
     imgEl.innerHTML = '';
     try {
+      const selectedLib = vizLibSelect ? vizLibSelect.value : 'seaborn';
+      const desiredFormat = selectedLib === 'bokeh' ? 'html' : 'png';
       const resp = await fetch('/api/viz/run', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code })
+        body: JSON.stringify({ code, format: desiredFormat })
       });
       const data = await resp.json();
       if (!data.success) {
         throw new Error(data.error || 'Run failed');
       }
       statusEl.textContent = 'Completed';
-      const img = document.createElement('img');
-      img.src = `data:image/${data.format || 'png'};base64,${data.imageBase64}`;
-      img.alt = 'viz output';
-      img.className = 'max-w-full border border-base-300 rounded';
-      imgEl.appendChild(img);
+      imgEl.innerHTML = '';
+      if (data.format === 'html' && data.htmlContent) {
+        const iframe = document.createElement('iframe');
+        iframe.className = 'w-full h-96 border border-base-300 rounded';
+        iframe.srcdoc = data.htmlContent;
+        imgEl.appendChild(iframe);
+      } else {
+        const img = document.createElement('img');
+        img.src = `data:image/${data.format || 'png'};base64,${data.imageBase64}`;
+        img.alt = 'viz output';
+        img.className = 'max-w-full border border-base-300 rounded';
+        imgEl.appendChild(img);
+      }
     } catch (err) {
       statusEl.textContent = `Run failed: ${err.message}`;
     }

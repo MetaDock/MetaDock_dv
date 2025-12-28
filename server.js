@@ -1961,10 +1961,10 @@ app.get('/api/server-files', checkConnection, async (req, res) => {
   }
 });
 
-// 文件浏览器页面路由
+// file browser route
 app.get('/browse-files', checkConnection, (req, res) => {
   const { type = 'input' } = req.query;
-  // 模板文件名为 file-browser.ejs
+  // template file name is file-browser.ejs
   res.render('file-browser', { 
     type,
     currentDir: '/',
@@ -1974,7 +1974,7 @@ app.get('/browse-files', checkConnection, (req, res) => {
   });
 });
 
-// 轻量文件选择器（用于嵌入式弹窗）
+// lightweight file picker (for embedded popup)
 app.get('/picker/file-browser', checkConnection, async (req, res) => {
   try {
     let dir = req.query.dir || '/';
@@ -2006,12 +2006,12 @@ app.get('/picker/file-browser', checkConnection, async (req, res) => {
   }
 });
 
-// 方便直接访问 /picker 时跳转到嵌入式文件选择器
+// convenient to jump to embedded file picker when accessing /picker
 app.get('/picker', checkConnection, (req, res) => {
   res.redirect('/picker/file-picker?dir=/&type=input&picker=1');
 });
 
-// 新路径 /picker/file-picker 指向同一模板
+// new path /picker/file-picker points to the same template
 app.get('/picker/file-picker', checkConnection, async (req, res) => {
   try {
     let dir = req.query.dir || '/';
@@ -2190,7 +2190,7 @@ app.post('/api/agent/test-model', async (req, res) => {
 
 // === Session Management Routes ===
 
-// 获取所有会话列表
+// Access all sessions list
 app.get('/api/agent/sessions', async (req, res) => {
   try {
     const response = await axios.get('http://127.0.0.1:5111/sessions');
@@ -2201,7 +2201,7 @@ app.get('/api/agent/sessions', async (req, res) => {
   }
 });
 
-// 开始新会话
+// start new session
 app.post('/api/agent/sessions/new', async (req, res) => {
   try {
     const { sessionId } = req.body;
@@ -2215,7 +2215,7 @@ app.post('/api/agent/sessions/new', async (req, res) => {
   }
 });
 
-// 加载指定会话
+// load specified session
 app.post('/api/agent/sessions/:sessionId/load', async (req, res) => {
   try {
     const { sessionId } = req.params;
@@ -2231,7 +2231,7 @@ app.post('/api/agent/sessions/:sessionId/load', async (req, res) => {
   }
 });
 
-// 删除指定会话
+// delete specified session
 app.delete('/api/agent/sessions/:sessionId', async (req, res) => {
   try {
     const { sessionId } = req.params;
@@ -2247,7 +2247,7 @@ app.delete('/api/agent/sessions/:sessionId', async (req, res) => {
   }
 });
 
-// 保存当前会话
+// save current session
 app.post('/api/agent/sessions/save', async (req, res) => {
   try {
     const response = await axios.post('http://127.0.0.1:5111/sessions/save');
@@ -2258,7 +2258,7 @@ app.post('/api/agent/sessions/save', async (req, res) => {
   }
 });
 
-// 清理旧会话
+// clean up old sessions
 app.post('/api/agent/sessions/cleanup', async (req, res) => {
   try {
     const { daysToKeep = 30 } = req.body;
@@ -2272,7 +2272,7 @@ app.post('/api/agent/sessions/cleanup', async (req, res) => {
   }
 });
 
-// 获取会话历史记录
+// get session history
 app.get('/api/agent/history', async (req, res) => {
   try {
     const response = await axios.get('http://127.0.0.1:5111/history');
@@ -2283,7 +2283,7 @@ app.get('/api/agent/history', async (req, res) => {
   }
 });
 
-// 清除会话历史记录
+// clear session history
 app.post('/api/agent/clear-history', async (req, res) => {
   try {
     const response = await axios.post('http://127.0.0.1:5111/clear-history');
@@ -2294,13 +2294,13 @@ app.post('/api/agent/clear-history', async (req, res) => {
   }
 });
 
-// 读取远程文件头部，返回原文与列名（简单 CSV/TSV 推断）
+// read remote file head, return original content and column names (simple CSV/TSV inference)
 async function getRemoteFileHead(filePath, connectionDetails, lines = 5) {
   const safePath = filePath.replace(/(["'\\])/g, '\\$1');
   const { stdout } = await executeRemoteCommand(`head -n ${lines} "${safePath}"`, connectionDetails);
   const headContent = stdout || '';
   const firstLine = headContent.split(/\r?\n/).find(Boolean) || '';
-  // 估算分隔符
+  // estimate delimiter
   let delimiter = ',';
   if (firstLine.includes('\t')) delimiter = '\t';
   else if (firstLine.includes(';')) delimiter = ';';
@@ -2314,7 +2314,7 @@ app.post('/api/viz/codegen', async (req, res) => {
   try {
     let payload = { ...req.body };
 
-    // 如果提供 file_path，先读取头部，传给 Agent 作为列提示
+    // if file_path is provided, read head first, pass to Agent as column hint
     if (payload.file_path && req.app.locals.connectionDetails) {
       try {
         const { headContent, columns } = await getRemoteFileHead(payload.file_path, req.app.locals.connectionDetails, 5);
@@ -2362,16 +2362,18 @@ app.post('/api/viz/run', checkConnectionAPI, async (req, res) => {
     // Always override OUTPUT_PATH to ensure absolute path
     finalCode = `OUTPUT_PATH = r"${imagePath}"\n` + finalCode.replace(/OUTPUT_PATH\\s*=\\s*['"][^'"]+['"]/g, '');
 
-    // Prepend Agg backend to avoid GUI issues
+    // Prepend Agg backend to avoid GUI issues (real newlines)
     if (!finalCode.includes('matplotlib.use("Agg")')) {
-      finalCode = `import matplotlib\\nmatplotlib.use("Agg")\\n` + finalCode;
+      finalCode = `import matplotlib
+matplotlib.use("Agg")
+` + finalCode;
     }
 
     const scriptContent = `
 import os, pathlib
 ${finalCode}
 if not os.path.isfile(OUTPUT_PATH):
-    raise SystemExit(f"Output image not found: {OUTPUT_PATH}")
+    raise SystemExit(f"Output file not found: {OUTPUT_PATH}")
 print(f"[VIZ_OUTPUT]{OUTPUT_PATH}")
 `;
 
@@ -2380,9 +2382,9 @@ print(f"[VIZ_OUTPUT]{OUTPUT_PATH}")
     // Execute script
     const execResult = await executeRemoteCommand(`cd ${remoteTmp} && ${process.env.VIZ_PYTHON || 'python3'} ${scriptPath}`, connectionDetails);    
 
-    // Ensure image exists before download
+    // Ensure output exists before download
     let exists = await remoteFileExists(imagePath, connectionDetails);
-    if (!exists) {
+    if (!exists && format === 'png') {
       const fallback = await findRecentPng(remoteTmp, ts, connectionDetails);
       if (fallback) {
         imagePath = fallback.fullPath;
@@ -2390,21 +2392,34 @@ print(f"[VIZ_OUTPUT]{OUTPUT_PATH}")
       }
     }
     if (!exists) {
-      return res.status(500).json({ error: `Output image not found at ${imagePath}`, stdout: execResult?.stdout, stderr: execResult?.stderr });
+      return res.status(500).json({ error: `Output file not found at ${imagePath}`, stdout: execResult?.stdout, stderr: execResult?.stderr });
     }
 
-    // Download image
-    const imageBuffer = await downloadRemoteFile(imagePath, connectionDetails);
-    const base64 = imageBuffer.toString('base64');
+    if (format === 'html') {
+      // Return HTML content directly
+      const htmlBuffer = await downloadRemoteFile(imagePath, connectionDetails);
+      res.json({
+        success: true,
+        htmlContent: htmlBuffer.toString('utf-8'),
+        imagePath,
+        format,
+        stdout: execResult?.stdout,
+        stderr: execResult?.stderr
+      });
+    } else {
+      // Download image
+      const imageBuffer = await downloadRemoteFile(imagePath, connectionDetails);
+      const base64 = imageBuffer.toString('base64');
 
-    res.json({
-      success: true,
-      imageBase64: base64,
-      imagePath,
-      format,
-      stdout: execResult?.stdout,
-      stderr: execResult?.stderr
-    });
+      res.json({
+        success: true,
+        imageBase64: base64,
+        imagePath,
+        format,
+        stdout: execResult?.stdout,
+        stderr: execResult?.stderr
+      });
+    }
   } catch (error) {
     console.error('Error running visualization:', error);
     res.status(500).json({ error: 'Failed to run visualization', details: error.message, stderr: error.stderr, stdout: error.stdout });

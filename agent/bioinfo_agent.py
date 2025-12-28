@@ -536,30 +536,55 @@ class BioinfoAgentV2:
             detected_columns = viz_request.get("detected_columns") or []
             file_head = viz_request.get("file_head") or ""
             user_prompt = viz_request.get("prompt", "").strip()
+            viz_lib = viz_request.get("viz_lib", "seaborn").lower()
 
             logger.info("[viz_codegen] model=%s file=%s cols_hint=%s", client.model_name, file_path, detected_columns)
 
+            if viz_lib == "bokeh":
+                lib_instruction = f"""
+Use Bokeh to create ONE plot and save to OUTPUT_PATH as HTML (not PNG).
+- Use pandas to read the file {file_path!r}. If .tsv/.txt then sep="\\t", else sep=",".
+- Use columns x={x_col!r}, y={y_col!r}, hue/group={hue!r}, style={style!r} if provided (ignore empty).
+- Create a figure with width={int(width*70)} height={int(height*70)} (~{width}x{height} inches).
+- Use output_file(OUTPUT_PATH) and save(fig).
+- Do NOT use show(), do NOT use plt.
+- If hue/group is provided, build a palette safely:
+  from bokeh.palettes import Category10, Category20
+  groups = sorted(df[{hue!r}].unique()) if {bool(hue)} else []
+  if len(groups) <= 10: palette = Category10[10][:len(groups)] if len(groups)>0 else []
+  else: palette = Category20[20][:len(groups)]
+  map group -> color; if hue is empty, just use a single color.
+- If style/sample is provided, vary marker type; add legend_label only (no legend_field/legend_group).
+- Title: {title!r}.
+- Validate required columns; if missing, raise ValueError listing missing columns.
+Return ONLY the Python code (no markdown, no fences, no extra text)."""
+            elif viz_lib == "matplotlib":
+                lib_instruction = f"""
+Use pure matplotlib (no seaborn) to create ONE plot and save to OUTPUT_PATH (PNG).
+- import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt; import pandas as pd.
+- Read file {file_path!r} (sep="\\t" if .tsv/.txt else ",").
+- Plot using plt.plot/plt.scatter as appropriate; use x={x_col!r}, y={y_col!r}; if hue provided, plot per group with legend; if style provided, vary marker/linestyle.
+- figsize=({width}, {height}); title={title!r}; savefig(OUTPUT_PATH, dpi=300, bbox_inches="tight"); no plt.show().
+- Validate required columns; if missing, raise ValueError listing missing columns.
+Return ONLY the Python code (no markdown, no fences, no extra text)."""
+            else:
+                lib_instruction = f"""
+Use pandas + seaborn + matplotlib (Agg) to create ONE plot and save to OUTPUT_PATH (PNG).
+- sns.set_theme(); figsize=({width}, {height}); read {file_path!r} (sep="\\t" if .tsv/.txt else ",").
+- Use columns x={x_col!r}, y={y_col!r}, hue={hue!r}, style={style!r} (ignore if blank).
+- Chart type: {chart_type}; prefer lineplot/scatterplot/barplot/boxplot/kdeplot/histplot/pairplot as appropriate.
+- Title: {title!r}; savefig(OUTPUT_PATH, dpi=300, bbox_inches="tight"); no plt.show().
+- Validate required columns; if missing, raise ValueError listing missing columns.
+Return ONLY the Python code (no markdown, no fences, no extra text)."""
+
             prompt = f"""
-You are a Python data viz assistant. Generate a complete, runnable Python script that uses pandas + seaborn + matplotlib to produce ONE plot and save it to OUTPUT_PATH.
-
-User requirement (follow this first): {user_prompt}
-
-Available columns (from file head): {detected_columns}
+You are a Python data viz assistant. User requirement: {user_prompt}
+Available columns: {detected_columns}
 File head preview:
 {file_head}
 
-Constraints:
-- Do not use plt.show(); always save with plt.savefig(OUTPUT_PATH, dpi=300, bbox_inches="tight").
-- Always set matplotlib.use("Agg") at the top to avoid GUI.
-- Use sns.set_theme(); set figure size to ({width}, {height}).
-- Read the data from: {file_path!r}. If the extension is .tsv/.txt use sep="\\t", else sep=",".
-- Use columns: x={x_col!r}, y={y_col!r}, hue={hue!r}, style={style!r} (ignore if blank).
-- Chart type: {chart_type}. Choose the appropriate seaborn API (e.g., scatterplot, lineplot, histplot, boxplot, barplot, kdeplot, pairplot; if pairplot, still save the figure).
-- Title: {title!r}.
-- Handle missing columns gracefully with a clear error message before plotting.
-- Keep imports minimal: pandas as pd, seaborn as sns, matplotlib.pyplot as plt, matplotlib.
-
-Return ONLY the Python code (no markdown, no fences, no extra text). The code must reference the variable OUTPUT_PATH for saving.
+Instructions:
+{lib_instruction}
 """
 
             raw_code = llm.invoke(prompt)

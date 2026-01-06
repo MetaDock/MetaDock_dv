@@ -172,6 +172,85 @@ def viz_codegen():
         logger.error(f"Error generating viz code: {e}", exc_info=True)
         return jsonify({"success": False, "error": str(e)}), 500
 
+@app.route('/kg/enrich', methods=['POST'])
+def kg_enrich_workflow():
+    """Enrich user-provided workflow (nodes/connections) with metadata via LLM"""
+    if agent is None or not agent.is_initialized:
+        return jsonify({"error": "Agent is not initialized."}), 503
+
+    data = request.json or {}
+    required_fields = ["id", "name", "nodes", "connections"]
+    missing = [f for f in required_fields if f not in data or data[f] is None]
+    if missing:
+        return jsonify({"error": f"Missing fields: {missing}"}), 400
+
+    try:
+        client = get_llm_client()
+        llm = client.get_llm()
+
+        nodes = data.get("nodes", [])
+        connections = data.get("connections", [])
+        description = data.get("description", "")
+        tags = data.get("tags", [])
+        category = data.get("category", "metagenomics")
+
+        prompt = f"""
+You are a bioinformatics workflow knowledge graph assistant. Given a canvas workflow (nodes + connections) and basic metadata, produce a rich workflow entry compatible with the existing KG schema (similar to spades_quast_kg.json). Output strictly valid JSON with these fields:
+- id (use provided id)
+- name (use provided name)
+- description (concise; if user provided, refine it)
+- category (use provided or infer)
+- complexity: one of simple | moderate | complex
+- keywords: short list of relevant terms
+- use_cases: list of brief use cases
+- natural_language_patterns: phrases users might say to trigger this workflow
+- steps: ordered list with order, tool, description (tool comes from nodes.component)
+- connections: edges between steps/tools (from connections)
+- resource_requirements: rough estimates (memory/cpu/runtime)
+- tags: include provided tags if any
+Input metadata:
+id: {data.get("id")}
+name: {data.get("name")}
+description: {description}
+category: {category}
+tags: {tags}
+Nodes (as JSON):
+{json.dumps(nodes)}
+Connections (as JSON):
+{json.dumps(connections)}
+
+Return ONLY the JSON object, no extra text, no markdown, and ensure it is parseable.
+"""
+
+        raw = llm.invoke(prompt)
+        enriched = raw.content if hasattr(raw, "content") else raw
+        enriched_str = str(enriched).strip()
+        # Validate JSON
+        enriched_json = json.loads(enriched_str)
+        return jsonify({"success": True, "workflow": enriched_json})
+    except Exception as e:
+        logger.error("Error enriching workflow: %s", e, exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/kg/reload', methods=['POST'])
+def kg_reload():
+    """Reload custom workflows from storage without restarting the agent"""
+    if agent is None or not agent.is_initialized:
+        return jsonify({"error": "Agent is not initialized."}), 503
+    try:
+        # Prefer workflow_planner attribute (BioinfoAgentV2)
+        if hasattr(agent, "workflow_planner") and hasattr(agent.workflow_planner, "_load_custom_workflows"):
+            agent.workflow_planner._load_custom_workflows()
+            return jsonify({"success": True, "message": "Custom workflows reloaded."})
+        # Legacy fallback: planner
+        if hasattr(agent, "planner") and hasattr(agent.planner, "_load_custom_workflows"):
+            agent.planner._load_custom_workflows()
+            return jsonify({"success": True, "message": "Custom workflows reloaded (legacy planner)."})
+        return jsonify({"error": "Planner does not support reload."}), 500
+    except Exception as e:
+        logger.error("Error reloading custom workflows: %s", e, exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
 @app.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint."""

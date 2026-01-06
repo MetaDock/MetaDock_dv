@@ -1,0 +1,359 @@
+[
+    {
+        "category": "optional arguments",
+        "short": "-h",
+        "long": "--help",
+        "needs_input": false,
+        "description": "show this help message and exit"
+    },
+    {
+        "category": "[0] Common settings:",
+        "short": "-i",
+        "long": "<input.fastq>",
+        "needs_input": true,
+        "description": "input file of type {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom} \n[REQUIRED]"
+    },
+    {
+        "category": "[0] Common settings:",
+        "short": "--input",
+        "long": "<input.fastq>",
+        "needs_input": true,
+        "description": "input file of type {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom} \n[REQUIRED]"
+    },
+    {
+        "category": "[0] Common settings:",
+        "short": "-o",
+        "long": "<output>",
+        "needs_input": true,
+        "description": "directory to write output files\n[REQUIRED]"
+    },
+    {
+        "category": "[0] Common settings:",
+        "short": "--output",
+        "long": "<output>",
+        "needs_input": true,
+        "description": "directory to write output files\n[REQUIRED]"
+    },
+    {
+        "category": "[0] Common settings:",
+        "short": "--threads",
+        "long": "<1>",
+        "needs_input": true,
+        "description": "number of threads/processes\n[DEFAULT: 1]"
+    },
+    {
+        "category": "[0] Common settings:",
+        "short": "--version",
+        "long": null,
+        "needs_input": false,
+        "description": "show program's version number and exit"
+    },
+    {
+        "category": "[1] Workflow refinement:",
+        "short": "-r",
+        "long": "--resume",
+        "needs_input": false,
+        "description": "bypass commands if the output files exist"
+    },
+    {
+        "category": "[1] Workflow refinement:",
+        "short": "--bypass-nucleotide-index",
+        "long": null,
+        "needs_input": false,
+        "description": "bypass the nucleotide index step and run on the indexed ChocoPhlAn database"
+    },
+    {
+        "category": "[1] Workflow refinement:",
+        "short": "--bypass-nucleotide-search",
+        "long": null,
+        "needs_input": false,
+        "description": "bypass the nucleotide search steps"
+    },
+    {
+        "category": "[1] Workflow refinement:",
+        "short": "--bypass-prescreen",
+        "long": null,
+        "needs_input": false,
+        "description": "bypass the prescreen step and run on the full ChocoPhlAn database"
+    },
+    {
+        "category": "[1] Workflow refinement:",
+        "short": "--bypass-translated-search",
+        "long": null,
+        "needs_input": false,
+        "description": "bypass the translated search step"
+    },
+    {
+        "category": "[1] Workflow refinement:",
+        "short": "--taxonomic-profile",
+        "long": "<taxonomic_profile.tsv>",
+        "needs_input": true,
+        "description": "a taxonomic profile (the output file created by metaphlan)\n[DEFAULT: file will be created]"
+    },
+    {
+        "category": "[1] Workflow refinement:",
+        "short": "--memory-use",
+        "long": "{minimum,maximum}",
+        "needs_input": true,
+        "description": "the amount of memory to use\n[DEFAULT: minimum]"
+    },
+    {
+        "category": "[1] Workflow refinement:",
+        "short": "--input-format",
+        "long": "{fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}",
+        "needs_input": true,
+        "description": "the format of the input file\n[DEFAULT: format identified by software]"
+    },
+    {
+        "category": "[1] Workflow refinement:",
+        "short": "--search-mode",
+        "long": "{uniref50,uniref90}",
+        "needs_input": true,
+        "description": "search for uniref50 or uniref90 gene families\n[DEFAULT: based on translated database selected]"
+    },
+    {
+        "category": "[1] Workflow refinement:",
+        "short": "-v",
+        "long": "--verbose",
+        "needs_input": false,
+        "description": "additional output is printed"
+    },
+    {
+        "category": "[2] Configure tier 1: prescreen:",
+        "short": "--metaphlan",
+        "long": "<metaphlan>",
+        "needs_input": true,
+        "description": "directory containing the MetaPhlAn software\n[DEFAULT: $PATH]"
+    },
+    {
+        "category": "[2] Configure tier 1: prescreen:",
+        "short": "--metaphlan-options",
+        "long": "<metaphlan_options>",
+        "needs_input": true,
+        "description": "options to be provided to the MetaPhlAn software\n[DEFAULT: \"-t rel_ab\"]"
+    },
+    {
+        "category": "[2] Configure tier 1: prescreen:",
+        "short": "--prescreen-threshold",
+        "long": "<0.01>",
+        "needs_input": true,
+        "description": "minimum percentage of reads matching a species\n[DEFAULT: 0.01]"
+    },
+    {
+        "category": "[3] Configure tier 2: nucleotide search:",
+        "short": "--bowtie2",
+        "long": "<bowtie2>",
+        "needs_input": true,
+        "description": "directory containing the bowtie2 executable\n[DEFAULT: $PATH]"
+    },
+    {
+        "category": "[3] Configure tier 2: nucleotide search:",
+        "short": "--bowtie-options",
+        "long": "<bowtie_options>",
+        "needs_input": true,
+        "description": "options to be provided to the bowtie software\n[DEFAULT: \"--very-sensitive\"]"
+    },
+    {
+        "category": "[3] Configure tier 2: nucleotide search:",
+        "short": "--nucleotide-database",
+        "long": "<nucleotide_database>",
+        "needs_input": true,
+        "description": "directory containing the nucleotide database\n[DEFAULT: /home/hoshigawarei/miniconda3/envs/humann/lib/python3.9/site-packages/humann/data/chocophlan_DEMO]"
+    },
+    {
+        "category": "[3] Configure tier 2: nucleotide search:",
+        "short": "--nucleotide-identity-threshold",
+        "long": "<0.0>",
+        "needs_input": true,
+        "description": "identity threshold for nuclotide alignments\n[DEFAULT: 0.0]"
+    },
+    {
+        "category": "[3] Configure tier 2: nucleotide search:",
+        "short": "--nucleotide-query-coverage-threshold",
+        "long": "<90.0>",
+        "needs_input": true,
+        "description": "query coverage threshold for nucleotide alignments\n[DEFAULT: 90.0]"
+    },
+    {
+        "category": "[3] Configure tier 2: nucleotide search:",
+        "short": "--nucleotide-subject-coverage-threshold",
+        "long": "<50.0>",
+        "needs_input": true,
+        "description": "subject coverage threshold for nucleotide alignments\n[DEFAULT: 50.0]"
+    },
+    {
+        "category": "[3] Configure tier 2: translated search:",
+        "short": "--diamond",
+        "long": "<diamond>",
+        "needs_input": true,
+        "description": "directory containing the diamond executable\n[DEFAULT: $PATH]"
+    },
+    {
+        "category": "[3] Configure tier 2: translated search:",
+        "short": "--diamond-options",
+        "long": "<diamond_options>",
+        "needs_input": true,
+        "description": "options to be provided to the diamond software\n[DEFAULT: \"--top 1 --outfmt 6\"]"
+    },
+    {
+        "category": "[3] Configure tier 2: translated search:",
+        "short": "--evalue",
+        "long": "<1.0>",
+        "needs_input": true,
+        "description": "the evalue threshold to use with the translated search\n[DEFAULT: 1.0]"
+    },
+    {
+        "category": "[3] Configure tier 2: translated search:",
+        "short": "--protein-database",
+        "long": "<protein_database>",
+        "needs_input": true,
+        "description": "directory containing the protein database\n[DEFAULT: /home/hoshigawarei/miniconda3/envs/humann/lib/python3.9/site-packages/humann/data/uniref_DEMO]"
+    },
+    {
+        "category": "[3] Configure tier 2: translated search:",
+        "short": "--rapsearch",
+        "long": "<rapsearch>",
+        "needs_input": true,
+        "description": "directory containing the rapsearch executable\n[DEFAULT: $PATH]"
+    },
+    {
+        "category": "[3] Configure tier 2: translated search:",
+        "short": "--translated-alignment",
+        "long": "{usearch,rapsearch,diamond}",
+        "needs_input": true,
+        "description": "software to use for translated alignment\n[DEFAULT: diamond]"
+    },
+    {
+        "category": "[3] Configure tier 2: translated search:",
+        "short": "--translated-identity-threshold",
+        "long": "<Automatically: 50.0 or 80.0, Custom: 0.0-100.0>",
+        "needs_input": true,
+        "description": "identity threshold for translated alignments\n[DEFAULT: Tuned automatically (based on uniref mode) unless a custom value is specified]"
+    },
+    {
+        "category": "[3] Configure tier 2: translated search:",
+        "short": "--translated-query-coverage-threshold",
+        "long": "<90.0>",
+        "needs_input": true,
+        "description": "query coverage threshold for translated alignments\n[DEFAULT: 90.0]"
+    },
+    {
+        "category": "[3] Configure tier 2: translated search:",
+        "short": "--translated-subject-coverage-threshold",
+        "long": "<50.0>",
+        "needs_input": true,
+        "description": "subject coverage threshold for translated alignments\n[DEFAULT: 50.0]"
+    },
+    {
+        "category": "[3] Configure tier 2: translated search:",
+        "short": "--usearch",
+        "long": "<usearch>",
+        "needs_input": true,
+        "description": "directory containing the usearch executable\n[DEFAULT: $PATH]"
+    },
+    {
+        "category": "[5] Gene and pathway quantification:",
+        "short": "--gap-fill",
+        "long": "{on,off}",
+        "needs_input": true,
+        "description": "turn on/off the gap fill computation\n[DEFAULT: on]"
+    },
+    {
+        "category": "[5] Gene and pathway quantification:",
+        "short": "--minpath",
+        "long": "{on,off}",
+        "needs_input": true,
+        "description": "turn on/off the minpath computation\n[DEFAULT: on]"
+    },
+    {
+        "category": "[5] Gene and pathway quantification:",
+        "short": "--pathways",
+        "long": "{metacyc,unipathway}",
+        "needs_input": true,
+        "description": "the database to use for pathway computations\n[DEFAULT: metacyc]"
+    },
+    {
+        "category": "[5] Gene and pathway quantification:",
+        "short": "--pathways-database",
+        "long": "<pathways_database.tsv>",
+        "needs_input": true,
+        "description": "mapping file (or files, at most two in a comma-delimited list) to use for pathway computations\n[DEFAULT: metacyc database ]"
+    },
+    {
+        "category": "[5] Gene and pathway quantification:",
+        "short": "--xipe",
+        "long": "{on,off}",
+        "needs_input": true,
+        "description": "turn on/off the xipe computation\n[DEFAULT: off]"
+    },
+    {
+        "category": "[5] Gene and pathway quantification:",
+        "short": "--annotation-gene-index",
+        "long": "<3>",
+        "needs_input": true,
+        "description": "the index of the gene in the sequence annotation\n[DEFAULT: 3]"
+    },
+    {
+        "category": "[5] Gene and pathway quantification:",
+        "short": "--id-mapping",
+        "long": "<id_mapping.tsv>",
+        "needs_input": true,
+        "description": "id mapping file for alignments\n[DEFAULT: alignment reference used]"
+    },
+    {
+        "category": "[6] More output configuration:",
+        "short": "--remove-temp-output",
+        "long": null,
+        "needs_input": false,
+        "description": "remove temp output files\n[DEFAULT: temp files are not removed]"
+    },
+    {
+        "category": "[6] More output configuration:",
+        "short": "--log-level",
+        "long": "{DEBUG,INFO,WARNING,ERROR,CRITICAL}",
+        "needs_input": true,
+        "description": "level of messages to display in log\n[DEFAULT: DEBUG]"
+    },
+    {
+        "category": "[6] More output configuration:",
+        "short": "--o-log",
+        "long": "<sample.log>",
+        "needs_input": true,
+        "description": "log file\n[DEFAULT: temp/sample.log]"
+    },
+    {
+        "category": "[6] More output configuration:",
+        "short": "--output-basename",
+        "long": "<sample_name>",
+        "needs_input": true,
+        "description": "the basename for the output files\n[DEFAULT: input file basename]"
+    },
+    {
+        "category": "[6] More output configuration:",
+        "short": "--output-format",
+        "long": "{tsv,biom}",
+        "needs_input": true,
+        "description": "the format of the output files\n[DEFAULT: tsv]"
+    },
+    {
+        "category": "[6] More output configuration:",
+        "short": "--output-max-decimals",
+        "long": "<10>",
+        "needs_input": true,
+        "description": "the number of decimals to output\n[DEFAULT: 10]"
+    },
+    {
+        "category": "[6] More output configuration:",
+        "short": "--remove-column-description-output",
+        "long": null,
+        "needs_input": false,
+        "description": "remove the description in the output column\n[DEFAULT: output column includes description]"
+    },
+    {
+        "category": "[6] More output configuration:",
+        "short": "--remove-stratified-output",
+        "long": null,
+        "needs_input": false,
+        "description": "remove stratification from output\n[DEFAULT: output is stratified]"
+    }
+]

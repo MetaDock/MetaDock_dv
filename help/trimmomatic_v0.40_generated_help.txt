@@ -1,0 +1,93 @@
+Usage:                                                                          
+       PE [-version] [-threads <threads>] [-phred33|-phred64] [-trimlog <trimLogFile>] [-summary <statsSummaryFile>] [-quiet] [-validatePairs] [-basein <inputBase> | <inputFile1> <inputFile2>] [-baseout <outputBase> | <outputFile1P> <outputFile1U> <outputFile2P> <outputFile2U>] <trimmer1>...                            
+   or:                                                                          
+       SE [-version] [-threads <threads>] [-phred33|-phred64] [-trimlog <trimLogFile>] [-summary <statsSummaryFile>] [-quiet] <inputFile> <outputFile> <trimmer1>...                                                                            
+   or:                                                                          
+       -version   
+
+positional_arguments:
+  PE
+                        Perform paired-end mode
+                        trimming.
+  SE
+                        Perform single-end mode
+                        trimming.
+  -version
+                        Print version and exit.
+
+Java Parameters:
+  -version
+                        Print version and exit.
+  -threads, <threads>
+                        Number of threads to use.
+  -phred33
+                        Use Phred33 quality scores
+                        (default).
+  -phred64
+                        Use Phred64 quality scores.
+  -trimlog, <trimLogFile>
+                        Write trim log to file.
+  -summary, <statsSummaryFile>
+                        Write summary stats to file.
+  -quiet
+                        Suppress progress reporting.
+  -validatePairs
+                        Check that forward and reverse
+                        reads are properly paired.
+  -version
+                        Print version and exit.
+  -threads, <threads>
+                        Number of threads to use.
+  -phred33
+                        Use Phred33 quality scores
+                        (default).
+  -phred64
+                        Use Phred64 quality scores.
+  -trimlog, <trimLogFile>
+                        Write trim log to file.
+  -summary, <statsSummaryFile>
+                        Write summary stats to file.
+  -quiet
+                        Suppress progress reporting.
+
+Input parameters:
+  -basein, <inputBase>
+                        Use input base name for paired-
+                        end inputs.
+  <inputFile1>
+                        First input file in paired-end
+                        mode.
+  <inputFile2>
+                        Second input file in paired-end
+                        mode.
+  <inputFile>
+                        Input file in single-end mode.
+
+Output parameters:
+  -baseout, <outputBase>
+                        Use output base name for paired-
+                        end outputs.
+  <outputFile1P>
+                        Paired output for first input
+                        file.
+  <outputFile1U>
+                        Unpaired output for first input
+                        file.
+  <outputFile2P>
+                        Paired output for second input
+                        file.
+  <outputFile2U>
+                        Unpaired output for second input
+                        file.
+  <outputFile>
+                        Output file in single-end mode.
+
+Processing parameters:
+  <trimmer1>
+                        One or more trimmers to apply
+                        (e.g., ILLUMINACLIP,
+                        SLIDINGWINDOW).
+  <trimmer1>
+                        One or more trimmers to apply
+                        (e.g., ILLUMINACLIP,
+                        SLIDINGWINDOW).

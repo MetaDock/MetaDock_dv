@@ -1,0 +1,142 @@
+[
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--db",
+        "needs_input": true,
+        "description": "Name for Kraken 2 DB                          (default: none)"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--threads",
+        "needs_input": true,
+        "description": "Number of threads (default: 1)"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--quick",
+        "needs_input": false,
+        "description": "Quick operation (use first hit or hits)"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--unclassified-out",
+        "needs_input": true,
+        "description": "Print unclassified sequences to filename"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--classified-out",
+        "needs_input": true,
+        "description": "Print classified sequences to filename"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--output",
+        "needs_input": true,
+        "description": "Print output to filename (default: stdout); \"-\" will suppress normal output"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--confidence",
+        "needs_input": true,
+        "description": "Confidence score threshold (default: 0.0); must be in [0, 1]."
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--minimum-base-quality",
+        "needs_input": true,
+        "description": "Minimum base quality used in classification (def: 0, only effective with FASTQ input)."
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--report",
+        "needs_input": true,
+        "description": "Print a report with aggregrate counts/clade to file"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--use-mpa-style",
+        "needs_input": false,
+        "description": "With --report, format report output like Kraken 1's kraken-mpa-report"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--report-zero-counts",
+        "needs_input": false,
+        "description": "With --report, report counts for ALL taxa, even if counts are zero"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--report-minimizer-data",
+        "needs_input": false,
+        "description": "With --report, report minimizer and distinct minimizer count information in addition to normal Kraken report"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--memory-mapping",
+        "needs_input": false,
+        "description": "Avoids loading database into RAM"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--paired",
+        "needs_input": false,
+        "description": "The filenames provided have paired-end reads"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--use-names",
+        "needs_input": false,
+        "description": "Print scientific names instead of just taxids"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--gzip-compressed",
+        "needs_input": false,
+        "description": "Input files are compressed with gzip"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--bzip2-compressed",
+        "needs_input": false,
+        "description": "Input files are compressed with bzip2"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--minimum-hit-groups",
+        "needs_input": true,
+        "description": "Minimum number of hit groups (overlapping k-mers sharing the same minimizer) needed to make a call (default: 2)"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--help",
+        "needs_input": false,
+        "description": "Print this message"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--version",
+        "needs_input": false,
+        "description": "Print version information"
+    }
+]

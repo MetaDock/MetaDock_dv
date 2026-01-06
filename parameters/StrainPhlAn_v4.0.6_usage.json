@@ -1,0 +1,20 @@
+{
+    "usage": [
+        "usage: strainphlan [-h] [-d DATABASE] [-m CLADE_MARKERS]",
+        "                   [-s SAMPLES [SAMPLES ...]] [-r REFERENCES [REFERENCES ...]]",
+        "                   [-c CLADE] [-o OUTPUT_DIR] [-n NPROCS]",
+        "                   [--secondary_samples SECONDARY_SAMPLES [SECONDARY_SAMPLES ...]]",
+        "                   [--secondary_references SECONDARY_REFERENCES [SECONDARY_REFERENCES ...]]",
+        "                   [--trim_sequences TRIM_SEQUENCES]",
+        "                   [--marker_in_n_samples MARKER_IN_N_SAMPLES]",
+        "                   [--sample_with_n_markers SAMPLE_WITH_N_MARKERS]",
+        "                   [--secondary_sample_with_n_markers SECONDARY_SAMPLE_WITH_N_MARKERS]",
+        "                   [--sample_with_n_markers_after_filt SAMPLE_WITH_N_MARKERS_AFTER_FILT]",
+        "                   [--abs_n_markers_thres] [--abs_n_samples_thres]",
+        "                   [--breadth_thres BREADTH_THRES]",
+        "                   [--phylophlan_mode {accurate,fast}]",
+        "                   [--phylophlan_configuration PHYLOPHLAN_CONFIGURATION]",
+        "                   [--tmp TMP] [--mutation_rates] [--print_clades_only]",
+        "                   [--non_interactive] [--treeshrink] [--debug] [-v]"
+    ]
+}

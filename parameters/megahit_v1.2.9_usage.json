@@ -1,0 +1,5 @@
+{
+    "usage": [
+        "  megahit [options] {-1 <pe1> -2 <pe2> | --12 <pe12> | -r <se>} [-o <out_dir>]"
+    ]
+}

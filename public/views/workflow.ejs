@@ -11,6 +11,10 @@
           Workflow Builder
         </h2>
         <div class="flex gap-2">
+          <button id="save-to-kg" class="btn btn-accent">
+            <i class="ti ti-books mr-2"></i>
+            Save to KG
+          </button>
           <button id="save-workflow" class="btn btn-primary">
             <i class="ti ti-device-floppy mr-2"></i>
             Save Workflow
@@ -319,6 +323,33 @@
     <div class="modal-action">
       <button class="btn btn-outline" onclick="closeFileBrowser()">Cancel</button>
       <button class="btn btn-primary" onclick="selectFile()">Select</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- KG Enriched Result Modal -->
+<dialog id="kg-result-modal" class="modal">
+  <div class="modal-box w-11/12 max-w-4xl bg-base-100">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-bold text-lg flex items-center">
+        <i class="ti ti-books mr-2 text-accent"></i>
+        Knowledge Graph Enriched Workflow
+      </h3>
+      <button class="btn btn-sm btn-circle btn-ghost" onclick="closeKgResultModal()">
+        <i class="ti ti-x"></i>
+      </button>
+    </div>
+    <div class="space-y-3">
+      <p class="text-sm opacity-70">Review and edit the enriched workflow JSON before finalizing.</p>
+      <textarea id="kg-result-textarea" class="textarea textarea-bordered w-full h-96 font-mono text-sm"></textarea>
+      <div class="text-xs opacity-60">Edit carefully; must be valid JSON with id, name, nodes, connections.</div>
+    </div>
+    <div class="modal-action">
+      <button class="btn btn-outline" onclick="closeKgResultModal()">Close</button>
+      <button class="btn btn-primary" onclick="updateKgWorkflowFromModal()">
+        <i class="ti ti-device-floppy mr-1"></i>
+        Update KG
+      </button>
     </div>
   </div>
 </dialog>
@@ -1150,6 +1181,68 @@ body.connecting .node-connection-point.incompatible {
     }
   }
 
+  async function saveWorkflowToKG() {
+    if (!window.workflowBuilder || !window.workflowBuilder.exportWorkflow) {
+      alert('WorkflowBuilder is not ready.');
+      return;
+    }
+
+    const exported = window.workflowBuilder.exportWorkflow();
+    if (!exported || !exported.nodes || exported.nodes.length === 0) {
+      alert('Canvas is empty. Please build a workflow first.');
+      return;
+    }
+
+    const defaultName = (exported.metadata && exported.metadata.name) || 'Custom Workflow';
+    const name = prompt('Workflow name (required)', defaultName);
+    if (!name) return;
+
+    const id = prompt('Workflow ID (required, must be unique)', `wf_${Date.now()}`);
+    if (!id) return;
+
+    const description = prompt('Workflow description (optional)', (exported.metadata && exported.metadata.description) || '');
+    const tagsInput = prompt('Tags (comma-separated, optional)', '');
+    const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(Boolean) : [];
+
+    const payload = {
+      id,
+      name,
+      description: description || '',
+      tags,
+      category: 'custom',
+      nodes: exported.nodes,
+      connections: exported.connections
+    };
+
+    const btn = document.getElementById('save-to-kg');
+    const originalBtnContent = btn ? btn.innerHTML : '';
+    if (btn) btn.disabled = true;
+    if (btn) btn.innerHTML = '<span class="loading loading-spinner loading-sm mr-1"></span>Waiting for LLM...';
+
+    try {
+      const resp = await fetch('/api/kg/workflows/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.success) {
+        throw new Error(data.error || data.details || 'Failed to save workflow');
+      }
+      const saved = data.saved || data.workflow || payload;
+      const normalized = normalizeWorkflowForKG(saved);
+      showKgResultModal(normalized);
+    } catch (err) {
+      console.error('Failed to save workflow to KG:', err);
+      alert('Failed to save workflow: ' + err.message);
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = originalBtnContent || 'Save to KG';
+      }
+    }
+  }
+
   function toggleGrid() {
     const canvas = document.getElementById('workflow-canvas');
     const gridElement = canvas.querySelector('.absolute.inset-0.opacity-30');
@@ -1679,6 +1772,10 @@ body.connecting .node-connection-point.incompatible {
     updateComponentCounts();
     setupComponentSearch();
     setupCanvasWheelZoom();
+    const saveKgBtn = document.getElementById('save-to-kg');
+    if (saveKgBtn) {
+      saveKgBtn.addEventListener('click', saveWorkflowToKG);
+    }
     
     // Center canvas after a short delay to ensure layout is ready
     setTimeout(() => {
@@ -3066,4 +3163,141 @@ body.connecting .node-connection-point.incompatible {
   });
 
   document.addEventListener('DOMContentLoaded', initializeWorkflowBuilder);
+
+  // ===== KG Result Modal =====
+  function normalizeWorkflowForKG(wf) {
+    const cloned = JSON.parse(JSON.stringify(wf || {}));
+    // If nodes already exist and non-empty, return as-is
+    if (Array.isArray(cloned.nodes) && cloned.nodes.length > 0) {
+      return cloned;
+    }
+
+    // Build nodes from steps
+    const steps = Array.isArray(cloned.steps) ? cloned.steps : [];
+    const nodes = steps.map((step, idx) => ({
+      id: `node_${idx + 1}`,
+      type: 'tool',
+      component: step.tool || `step_${idx + 1}`,
+      x: 150 + idx * 220,
+      y: 150,
+      config: { description: step.description || '', order: step.order || idx + 1 }
+    }));
+
+    // Map for resolving references
+    const toolToNode = new Map();
+    nodes.forEach((n, i) => {
+      const toolName = steps[i]?.tool;
+      if (toolName) toolToNode.set(toolName, n.id);
+    });
+
+    // Build connections from provided connections or chain fallback
+    const rawConns = Array.isArray(cloned.connections) ? cloned.connections : [];
+    const connections = [];
+    rawConns.forEach((conn, i) => {
+      let fromNode = null;
+      let toNode = null;
+
+      // Prefer step index refs
+      if (conn.from_step && nodes[conn.from_step - 1]) {
+        fromNode = nodes[conn.from_step - 1].id;
+      }
+      if (conn.to_step && nodes[conn.to_step - 1]) {
+        toNode = nodes[conn.to_step - 1].id;
+      }
+
+      // Fallback to tool name refs
+      if (!fromNode && conn.from_tool) {
+        fromNode = toolToNode.get(conn.from_tool);
+      }
+      if (!toNode && conn.to_tool) {
+        toNode = toolToNode.get(conn.to_tool);
+      }
+
+      if (fromNode && toNode) {
+        connections.push({
+          id: `connection_${connections.length + 1}`,
+          from: fromNode,
+          from_port: 'output',
+          to: toNode,
+          to_port: 'input'
+        });
+      }
+    });
+
+    // If still no connections and we have nodes, chain sequentially
+    if (connections.length === 0 && nodes.length > 1) {
+      for (let i = 0; i < nodes.length - 1; i++) {
+        connections.push({
+          id: `connection_${connections.length + 1}`,
+          from: nodes[i].id,
+          from_port: 'output',
+          to: nodes[i + 1].id,
+          to_port: 'input'
+        });
+      }
+    }
+
+    cloned.nodes = nodes;
+    cloned.connections = connections;
+    return cloned;
+  }
+
+  function showKgResultModal(workflow) {
+    const modal = document.getElementById('kg-result-modal');
+    const textarea = document.getElementById('kg-result-textarea');
+    if (!modal || !textarea) return;
+    textarea.value = JSON.stringify(workflow, null, 2);
+    modal.showModal();
+  }
+
+  function closeKgResultModal() {
+    const modal = document.getElementById('kg-result-modal');
+    if (modal) modal.close();
+  }
+
+  async function updateKgWorkflowFromModal() {
+    const textarea = document.getElementById('kg-result-textarea');
+    if (!textarea) return;
+    let parsed;
+    try {
+      parsed = JSON.parse(textarea.value);
+    } catch (err) {
+      alert('Invalid JSON: ' + err.message);
+      return;
+    }
+
+    if (!parsed.id || !parsed.name || !parsed.nodes || !parsed.connections) {
+      alert('JSON must include id, name, nodes, connections.');
+      return;
+    }
+
+    const normalized = normalizeWorkflowForKG(parsed);
+
+    const payload = {
+      id: normalized.id,
+      name: normalized.name,
+      description: normalized.description || '',
+      tags: normalized.tags || [],
+      category: normalized.category || 'custom',
+      nodes: normalized.nodes,
+      connections: normalized.connections
+    };
+
+    try {
+      const resp = await fetch('/api/kg/workflows/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.success) {
+        throw new Error(data.error || data.details || 'Failed to update workflow');
+      }
+      alert('Knowledge Graph updated.');
+      closeKgResultModal();
+    } catch (err) {
+      console.error('Failed to update KG workflow:', err);
+      alert('Update failed: ' + err.message);
+    }
+  }
 </script> 

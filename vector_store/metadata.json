@@ -1,8 +1,8 @@
 {
-  "last_update": "2025-11-24T16:14:50.171350",
-  "docs_hash": "ffb80e2c0b01b80999c4514f288d72a4",
-  "total_documents": 13,
-  "total_chunks": 153,
+  "last_update": "2026-01-06T21:17:12.409748",
+  "docs_hash": "f0b919d50392c150e02b09b6e85ef53d",
+  "total_documents": 20,
+  "total_chunks": 196,
   "available_tools": [
     "MetaDock-Platform",
     "bakta",
@@ -14,9 +14,16 @@
     "fastqc",
     "gtdb",
     "gtdbtk",
+    "humann",
+    "kraken",
+    "megahit",
+    "metabat2",
     "metaphlan",
     "metaspades",
-    "pyani"
+    "prokka",
+    "pyani",
+    "strainphlan",
+    "trimmomatic"
   ],
   "embedding_model": "sentence-transformers/all-MiniLM-L6-v2"
 }

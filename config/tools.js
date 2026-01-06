@@ -156,5 +156,89 @@ module.exports = {
     "env": "quast_env",
     "hasStderr": true,
     "conda_env": "quast_env"
+  },
+  "StrainPhlAn_v4.0.6": {
+    "title": "StrainPhlAn_v4.0.6 Parameters",
+    "toolName": "StrainPhlAn_v4.0.6",
+    "route": "StrainPhlAn_v4.0.6",
+    "commandRoute": "/run-command-StrainPhlAn_v4.0.6",
+    "usagePath": "parameters/StrainPhlAn_v4.0.6_usage.json",
+    "paraPath": "parameters/StrainPhlAn_v4.0.6_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-StrainPhlAn_v4.0.6",
+    "env": "",
+    "hasStderr": true
+  },
+  "trimmomatic_v0.40": {
+    "title": "trimmomatic_v0.40 Parameters",
+    "toolName": "trimmomatic_v0.40",
+    "route": "trimmomatic_v0.40",
+    "commandRoute": "/run-command-trimmomatic_v0.40",
+    "usagePath": "parameters/trimmomatic_v0.40_usage.json",
+    "paraPath": "parameters/trimmomatic_v0.40_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-trimmomatic_v0.40",
+    "env": "",
+    "hasStderr": true
+  },
+  "kraken_v2.1.3": {
+    "title": "kraken_v2.1.3 Parameters",
+    "toolName": "kraken_v2.1.3",
+    "route": "kraken_v2.1.3",
+    "commandRoute": "/run-command-kraken_v2.1.3",
+    "usagePath": "parameters/kraken_v2.1.3_usage.json",
+    "paraPath": "parameters/kraken_v2.1.3_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-kraken_v2.1.3",
+    "env": "",
+    "hasStderr": true
+  },
+  "humann_v3.9": {
+    "title": "humann_v3.9 Parameters",
+    "toolName": "humann_v3.9",
+    "route": "humann_v3.9",
+    "commandRoute": "/run-command-humann_v3.9",
+    "usagePath": "parameters/humann_v3.9_usage.json",
+    "paraPath": "parameters/humann_v3.9_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-humann_v3.9",
+    "env": "",
+    "hasStderr": true
+  },
+  "megahit_v1.2.9": {
+    "title": "megahit_v1.2.9 Parameters",
+    "toolName": "megahit_v1.2.9",
+    "route": "megahit_v1.2.9",
+    "commandRoute": "/run-command-megahit_v1.2.9",
+    "usagePath": "parameters/megahit_v1.2.9_usage.json",
+    "paraPath": "parameters/megahit_v1.2.9_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-megahit_v1.2.9",
+    "env": "",
+    "hasStderr": true
+  },
+  "metabat2_v2.12.1": {
+    "title": "metabat2_v2.12.1 Parameters",
+    "toolName": "metabat2_v2.12.1",
+    "route": "metabat2_v2.12.1",
+    "commandRoute": "/run-command-metabat2_v2.12.1",
+    "usagePath": "parameters/metabat2_v2.12.1_usage.json",
+    "paraPath": "parameters/metabat2_v2.12.1_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-metabat2_v2.12.1",
+    "env": "",
+    "hasStderr": true
+  },
+  "prokka_v1.14.6": {
+    "title": "prokka_v1.14.6 Parameters",
+    "toolName": "prokka_v1.14.6",
+    "route": "prokka_v1.14.6",
+    "commandRoute": "/run-command-prokka_v1.14.6",
+    "usagePath": "parameters/prokka_v1.14.6_usage.json",
+    "paraPath": "parameters/prokka_v1.14.6_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-prokka_v1.14.6",
+    "env": "",
+    "hasStderr": true
   }
 };

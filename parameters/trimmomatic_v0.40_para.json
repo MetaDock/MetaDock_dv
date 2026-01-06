@@ -1,0 +1,212 @@
+[
+    {
+        "category": "positional_arguments",
+        "short": null,
+        "long": "PE",
+        "needs_input": true,
+        "description": "Perform paired-end mode trimming."
+    },
+    {
+        "category": "Java Parameters",
+        "short": "-version",
+        "long": null,
+        "needs_input": false,
+        "description": "Print version and exit."
+    },
+    {
+        "category": "Java Parameters",
+        "short": "-threads",
+        "long": "<threads>",
+        "needs_input": true,
+        "description": "Number of threads to use."
+    },
+    {
+        "category": "Java Parameters",
+        "short": "-phred33",
+        "long": null,
+        "needs_input": false,
+        "description": "Use Phred33 quality scores (default)."
+    },
+    {
+        "category": "Java Parameters",
+        "short": "-phred64",
+        "long": null,
+        "needs_input": false,
+        "description": "Use Phred64 quality scores."
+    },
+    {
+        "category": "Java Parameters",
+        "short": "-trimlog",
+        "long": "<trimLogFile>",
+        "needs_input": true,
+        "description": "Write trim log to file."
+    },
+    {
+        "category": "Java Parameters",
+        "short": "-summary",
+        "long": "<statsSummaryFile>",
+        "needs_input": true,
+        "description": "Write summary stats to file."
+    },
+    {
+        "category": "Java Parameters",
+        "short": "-quiet",
+        "long": null,
+        "needs_input": false,
+        "description": "Suppress progress reporting."
+    },
+    {
+        "category": "Java Parameters",
+        "short": "-validatePairs",
+        "long": null,
+        "needs_input": false,
+        "description": "Check that forward and reverse reads are properly paired."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-basein",
+        "long": "<inputBase>",
+        "needs_input": true,
+        "description": "Use input base name for paired-end inputs."
+    },
+    {
+        "category": "Input parameters",
+        "short": null,
+        "long": "<inputFile1>",
+        "needs_input": true,
+        "description": "First input file in paired-end mode."
+    },
+    {
+        "category": "Input parameters",
+        "short": null,
+        "long": "<inputFile2>",
+        "needs_input": true,
+        "description": "Second input file in paired-end mode."
+    },
+    {
+        "category": "Output parameters",
+        "short": "-baseout",
+        "long": "<outputBase>",
+        "needs_input": true,
+        "description": "Use output base name for paired-end outputs."
+    },
+    {
+        "category": "Output parameters",
+        "short": null,
+        "long": "<outputFile1P>",
+        "needs_input": true,
+        "description": "Paired output for first input file."
+    },
+    {
+        "category": "Output parameters",
+        "short": null,
+        "long": "<outputFile1U>",
+        "needs_input": true,
+        "description": "Unpaired output for first input file."
+    },
+    {
+        "category": "Output parameters",
+        "short": null,
+        "long": "<outputFile2P>",
+        "needs_input": true,
+        "description": "Paired output for second input file."
+    },
+    {
+        "category": "Output parameters",
+        "short": null,
+        "long": "<outputFile2U>",
+        "needs_input": true,
+        "description": "Unpaired output for second input file."
+    },
+    {
+        "category": "Processing parameters",
+        "short": null,
+        "long": "<trimmer1>",
+        "needs_input": true,
+        "description": "One or more trimmers to apply (e.g., ILLUMINACLIP, SLIDINGWINDOW)."
+    },
+    {
+        "category": "positional_arguments",
+        "short": null,
+        "long": "SE",
+        "needs_input": true,
+        "description": "Perform single-end mode trimming."
+    },
+    {
+        "category": "Java Parameters",
+        "short": "-version",
+        "long": null,
+        "needs_input": false,
+        "description": "Print version and exit."
+    },
+    {
+        "category": "Java Parameters",
+        "short": "-threads",
+        "long": "<threads>",
+        "needs_input": true,
+        "description": "Number of threads to use."
+    },
+    {
+        "category": "Java Parameters",
+        "short": "-phred33",
+        "long": null,
+        "needs_input": false,
+        "description": "Use Phred33 quality scores (default)."
+    },
+    {
+        "category": "Java Parameters",
+        "short": "-phred64",
+        "long": null,
+        "needs_input": false,
+        "description": "Use Phred64 quality scores."
+    },
+    {
+        "category": "Java Parameters",
+        "short": "-trimlog",
+        "long": "<trimLogFile>",
+        "needs_input": true,
+        "description": "Write trim log to file."
+    },
+    {
+        "category": "Java Parameters",
+        "short": "-summary",
+        "long": "<statsSummaryFile>",
+        "needs_input": true,
+        "description": "Write summary stats to file."
+    },
+    {
+        "category": "Java Parameters",
+        "short": "-quiet",
+        "long": null,
+        "needs_input": false,
+        "description": "Suppress progress reporting."
+    },
+    {
+        "category": "Input parameters",
+        "short": null,
+        "long": "<inputFile>",
+        "needs_input": true,
+        "description": "Input file in single-end mode."
+    },
+    {
+        "category": "Output parameters",
+        "short": null,
+        "long": "<outputFile>",
+        "needs_input": true,
+        "description": "Output file in single-end mode."
+    },
+    {
+        "category": "Processing parameters",
+        "short": null,
+        "long": "<trimmer1>",
+        "needs_input": true,
+        "description": "One or more trimmers to apply (e.g., ILLUMINACLIP, SLIDINGWINDOW)."
+    },
+    {
+        "category": "positional_arguments",
+        "short": null,
+        "long": "-version",
+        "needs_input": true,
+        "description": "Print version and exit."
+    }
+]

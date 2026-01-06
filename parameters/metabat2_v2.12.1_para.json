@@ -1,0 +1,156 @@
+[
+    {
+        "category": "Allowed options",
+        "short": "-h",
+        "long": "--help",
+        "needs_input": false,
+        "description": "produce help message"
+    },
+    {
+        "category": "Allowed options",
+        "short": "-i",
+        "long": "--inFile",
+        "needs_input": true,
+        "description": "Contigs in (gzipped) fasta file format [Mandatory]"
+    },
+    {
+        "category": "Allowed options",
+        "short": "-o",
+        "long": "--outFile",
+        "needs_input": true,
+        "description": "Base file name and path for each bin. The default output is fasta format.\n                                    Use -l option to output only contig names [Mandatory]."
+    },
+    {
+        "category": "Allowed options",
+        "short": "-a",
+        "long": "--abdFile",
+        "needs_input": true,
+        "description": "A file having mean and variance of base coverage depth (tab delimited; \n                                    the first column should be contig names, and the first row will be \n                                    considered as the header and be skipped) [Optional]."
+    },
+    {
+        "category": "Allowed options",
+        "short": "-m",
+        "long": "--minContig",
+        "needs_input": true,
+        "description": "Minimum size of a contig for binning (should be >=1500)."
+    },
+    {
+        "category": "Allowed options",
+        "short": null,
+        "long": "--maxP",
+        "needs_input": true,
+        "description": "Percentage of 'good' contigs considered for binning decided by connection\n                                    among contigs. The greater, the more sensitive."
+    },
+    {
+        "category": "Allowed options",
+        "short": null,
+        "long": "--minS",
+        "needs_input": true,
+        "description": "Minimum score of a edge for binning (should be between 1 and 99). The \n                                    greater, the more specific."
+    },
+    {
+        "category": "Allowed options",
+        "short": null,
+        "long": "--maxEdges",
+        "needs_input": true,
+        "description": "Maximum number of edges per node. The greater, the more sensitive."
+    },
+    {
+        "category": "Allowed options",
+        "short": null,
+        "long": "--pTNF",
+        "needs_input": true,
+        "description": "TNF probability cutoff for building TNF graph. Use it to skip the \n                                    preparation step. (0: auto)."
+    },
+    {
+        "category": "Allowed options",
+        "short": null,
+        "long": "--noAdd",
+        "needs_input": false,
+        "description": "Turning off additional binning for lost or small contigs."
+    },
+    {
+        "category": "Allowed options",
+        "short": null,
+        "long": "--cvExt",
+        "needs_input": false,
+        "description": "When a coverage file without variance (from third party tools) is used \n                                    instead of abdFile from jgi_summarize_bam_contig_depths."
+    },
+    {
+        "category": "Allowed options",
+        "short": "-x",
+        "long": "--minCV",
+        "needs_input": true,
+        "description": "Minimum mean coverage of a contig in each library for binning."
+    },
+    {
+        "category": "Allowed options",
+        "short": null,
+        "long": "--minCVSum",
+        "needs_input": true,
+        "description": "Minimum total effective mean coverage of a contig (sum of depth over \n                                    minCV) for binning."
+    },
+    {
+        "category": "Allowed options",
+        "short": "-s",
+        "long": "--minClsSize",
+        "needs_input": true,
+        "description": "Minimum size of a bin as the output."
+    },
+    {
+        "category": "Allowed options",
+        "short": "-t",
+        "long": "--numThreads",
+        "needs_input": true,
+        "description": "Number of threads to use (0: use all cores)."
+    },
+    {
+        "category": "Allowed options",
+        "short": "-l",
+        "long": "--onlyLabel",
+        "needs_input": false,
+        "description": "Output only sequence labels as a list in a column without sequences."
+    },
+    {
+        "category": "Allowed options",
+        "short": null,
+        "long": "--saveCls",
+        "needs_input": false,
+        "description": "Save cluster memberships as a matrix format"
+    },
+    {
+        "category": "Allowed options",
+        "short": null,
+        "long": "--unbinned",
+        "needs_input": false,
+        "description": "Generate [outFile].unbinned.fa file for unbinned contigs"
+    },
+    {
+        "category": "Allowed options",
+        "short": null,
+        "long": "--noBinOut",
+        "needs_input": false,
+        "description": "No bin output. Usually combined with --saveCls to check only contig \n                                    memberships"
+    },
+    {
+        "category": "Allowed options",
+        "short": null,
+        "long": "--seed",
+        "needs_input": true,
+        "description": "For exact reproducibility. (0: use random seed)"
+    },
+    {
+        "category": "Allowed options",
+        "short": "-d",
+        "long": "--debug",
+        "needs_input": false,
+        "description": "Debug output"
+    },
+    {
+        "category": "Allowed options",
+        "short": "-v",
+        "long": "--verbose",
+        "needs_input": false,
+        "description": "Verbose output"
+    }
+]

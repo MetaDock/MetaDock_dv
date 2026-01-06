@@ -5,6 +5,7 @@ const express = require('express');
 const { exec } = require('child_process');
 const { Client } = require('ssh2');
 const fs = require('fs').promises;
+const fsSync = require('fs');
 const multer = require('multer');
 const toolsConfig = require('./config/tools');
 const visualizationConfig = require('./config/visualization');
@@ -2040,6 +2041,147 @@ app.get('/picker/file-picker', checkConnection, async (req, res) => {
   } catch (error) {
     console.error('Error in picker file picker:', error);
     res.status(500).send('Error accessing file picker: ' + error.message);
+  }
+});
+
+// Save workflow to custom KG with LLM enrichment
+app.post('/api/kg/workflows/add', async (req, res) => {
+  try {
+    const { id, name, description = '', tags = [], category = 'metagenomics', nodes = [], connections = [] } = req.body;
+    if (!id || !name || !Array.isArray(nodes) || !Array.isArray(connections)) {
+      return res.status(400).json({ error: 'id, name, nodes, and connections are required' });
+    }
+
+    // Basic validation: no cycles? (skip heavy) ensure nodes have ids
+    const nodeIds = new Set(nodes.map(n => n.id));
+    const invalidConn = connections.find(conn => {
+      const fromNode = conn.fromNode || conn.from;
+      const toNode = conn.toNode || conn.to;
+      return !nodeIds.has(fromNode) || !nodeIds.has(toNode);
+    });
+    if (invalidConn) {
+      return res.status(400).json({ error: 'Connections reference unknown nodes' });
+    }
+
+    // Call Python agent to enrich workflow
+    let enriched = null;
+    try {
+      const enrichResp = await axios.post('http://127.0.0.1:5111/kg/enrich', {
+        id,
+        name,
+        description,
+        tags,
+        category,
+        nodes,
+        connections
+      });
+      if (enrichResp.data && enrichResp.data.success) {
+        enriched = enrichResp.data.workflow;
+      }
+    } catch (err) {
+      console.warn('Workflow enrich failed, fallback to raw save:', err.message);
+    }
+
+    const workflowToSave = enriched || {
+      id,
+      name,
+      description,
+      category,
+      tags,
+      nodes,
+      connections
+    };
+
+    // Normalize to KG-like schema (workflows.<id>)
+    const kgWorkflow = {
+      id: workflowToSave.id,
+      name: workflowToSave.name,
+      description: workflowToSave.description || '',
+      category: workflowToSave.category || 'custom',
+      complexity: workflowToSave.complexity || workflowToSave.resource_requirements?.complexity || 'moderate',
+      keywords: workflowToSave.keywords || [],
+      use_cases: workflowToSave.use_cases || [],
+      natural_language_patterns: workflowToSave.natural_language_patterns || [],
+      resource_requirements: workflowToSave.resource_requirements || {},
+      tags: workflowToSave.tags || [],
+      steps: workflowToSave.steps || [],
+      connections: workflowToSave.connections || []
+    };
+
+    // If steps missing but nodes exist, derive steps
+    if ((!kgWorkflow.steps || kgWorkflow.steps.length === 0) && Array.isArray(nodes) && nodes.length > 0) {
+      kgWorkflow.steps = nodes.map((n, idx) => ({
+        order: idx + 1,
+        tool: n.component || n.name || n.id || `step_${idx + 1}`,
+        description: (n.config && n.config.description) || ''
+      }));
+    }
+
+    // If connections missing, derive chain
+    if (!kgWorkflow.connections || kgWorkflow.connections.length === 0) {
+      if (Array.isArray(connections) && connections.length > 0) {
+        kgWorkflow.connections = connections.map((c, idx) => ({
+          from_tool: c.from_tool || c.fromNode || c.from || '',
+          to_tool: c.to_tool || c.toNode || c.to || '',
+          description: c.description || '',
+          id: c.id || `connection_${idx + 1}`
+        }));
+      } else if (kgWorkflow.steps.length > 1) {
+        kgWorkflow.connections = [];
+        for (let i = 0; i < kgWorkflow.steps.length - 1; i++) {
+          kgWorkflow.connections.push({
+            from_tool: kgWorkflow.steps[i].tool,
+            to_tool: kgWorkflow.steps[i + 1].tool,
+            description: '',
+            id: `connection_${i + 1}`
+          });
+        }
+      }
+    } else {
+      // normalize provided connections to from_tool/to_tool
+      kgWorkflow.connections = kgWorkflow.connections.map((c, idx) => ({
+        id: c.id || `connection_${idx + 1}`,
+        from_tool: c.from_tool || c.fromNode || c.from || '',
+        to_tool: c.to_tool || c.toNode || c.to || '',
+        description: c.description || '',
+        type: c.type || c.from_port || ''
+      }));
+    }
+
+    // Load existing KG-like custom store
+    const customPath = path.join(__dirname, 'data', 'custom_workflows.json');
+    let existing = { metadata: {}, tools: {}, workflows: {} };
+    try {
+      if (fsSync.existsSync(customPath)) {
+        const raw = await fs.readFile(customPath, 'utf-8');
+        const parsed = JSON.parse(raw || '{}');
+        if (parsed && typeof parsed === 'object') {
+          existing = {
+            metadata: parsed.metadata || {},
+            tools: parsed.tools || {},
+            workflows: parsed.workflows || {}
+          };
+        }
+      }
+    } catch (err) {
+      console.warn('Failed reading custom_workflows.json, using empty object:', err.message);
+    }
+
+    // Upsert workflow
+    existing.workflows[kgWorkflow.id] = kgWorkflow;
+
+    await fs.writeFile(customPath, JSON.stringify(existing, null, 2), 'utf-8');
+    // Trigger agent reload (best effort)
+    try {
+      await axios.post('http://127.0.0.1:5111/kg/reload', {});
+    } catch (reloadErr) {
+      console.warn('Failed to trigger agent KG reload:', reloadErr.message);
+    }
+
+    res.json({ success: true, saved: kgWorkflow });
+  } catch (error) {
+    console.error('Error saving workflow:', error);
+    res.status(500).json({ error: 'Failed to save workflow', details: error.message });
   }
 });
 

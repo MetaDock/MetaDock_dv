@@ -1,0 +1,461 @@
+{
+  "metadata": {},
+  "tools": {},
+  "workflows": {
+    "wf_1767698396606": {
+      "id": "wf_1767698396606",
+      "name": "Marker-based Metagenomic Strain Resolution Workflow",
+      "description": "A workflow for resolving microbial strains from metagenomic data using marker gene profiling and strain-level analysis tools.",
+      "category": "metagenomics",
+      "complexity": "moderate",
+      "keywords": [
+        "metagenomics",
+        "strain resolution",
+        "marker genes",
+        "taxonomic profiling",
+        "microbial genomics",
+        "NGS",
+        "sequencing"
+      ],
+      "use_cases": [
+        "Identifying strain-level variation in gut microbiome samples",
+        "Tracking pathogenic strains in clinical metagenomic datasets",
+        "Comparative analysis of microbial communities across environments"
+      ],
+      "natural_language_patterns": [
+        "I want to resolve bacterial strains from my metagenomic data",
+        "How can I analyze strain-level differences using marker genes?",
+        "Find microbial strains in my sequencing data with profiling tools",
+        "Workflow for strain detection using MetaPhlAn and StrainPhlAn",
+        "Analyze metagenomes at the strain level"
+      ],
+      "resource_requirements": {
+        "cpu": "8-16 cores",
+        "memory": "16-32 GB",
+        "runtime": "2-6 hours depending on dataset size"
+      },
+      "tags": [],
+      "steps": [
+        {
+          "description": "Input raw metagenomic sequencing reads from a server directory.",
+          "order": 1,
+          "tool": "server-file"
+        },
+        {
+          "description": "Use BBMap to process and map reads, preparing them for quality control.",
+          "order": 2,
+          "tool": "bbmap_v37.62"
+        },
+        {
+          "description": "Filter and trim sequencing reads using BBDuk to remove adapters and low-quality bases.",
+          "order": 3,
+          "tool": "bbduk_v37.62"
+        },
+        {
+          "description": "Perform taxonomic profiling of the metagenomic sample using MetaPhlAn to identify microbial composition.",
+          "order": 4,
+          "tool": "metaphlan_v4.1.1"
+        },
+        {
+          "description": "Conduct strain-level analysis using StrainPhlAn to resolve intra-species variants based on marker genes.",
+          "order": 5,
+          "tool": "StrainPhlAn_v4.0.6"
+        },
+        {
+          "description": "Output final strain-resolution results to a server folder for downstream analysis.",
+          "order": 6,
+          "tool": "server-folder"
+        }
+      ],
+      "connections": [
+        {
+          "id": "connection_1",
+          "from_tool": "node_1",
+          "to_tool": "node_2",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_2",
+          "from_tool": "node_2",
+          "to_tool": "node_3",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_3",
+          "from_tool": "node_3",
+          "to_tool": "node_4",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_4",
+          "from_tool": "node_4",
+          "to_tool": "node_5",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_5",
+          "from_tool": "node_5",
+          "to_tool": "node_6",
+          "description": "",
+          "type": "output"
+        }
+      ]
+    },
+    "wf_1767701112167": {
+      "id": "wf_1767701112167",
+      "name": "TMS Workflow",
+      "description": "A bioinformatics workflow for metagenomic analysis that performs quality trimming, taxonomic profiling, and strain-level analysis using Trimmomatic, MetaPhlAn, and StrainPhlAn.",
+      "category": "metagenomics",
+      "complexity": "moderate",
+      "keywords": [
+        "metagenomics",
+        "quality trimming",
+        "taxonomic profiling",
+        "strain-level analysis",
+        "Trimmomatic",
+        "MetaPhlAn",
+        "StrainPhlAn"
+      ],
+      "use_cases": [
+        "Processing raw metagenomic sequencing data to assess microbial community composition",
+        "Identifying species and strain-level variants in microbiome samples",
+        "Preparing cleaned reads for downstream taxonomic and functional analysis"
+      ],
+      "natural_language_patterns": [
+        "I want to analyze my metagenomic data for species and strains",
+        "Run taxonomic and strain-level profiling on my raw reads",
+        "Process microbiome samples with quality control, classification, and strain analysis",
+        "Build a pipeline for metagenomic profiling using Trimmomatic and MetaPhlAn"
+      ],
+      "resource_requirements": {
+        "cpu": "8 cores",
+        "memory": "16 GB",
+        "runtime": "2-6 hours depending on dataset size"
+      },
+      "tags": [],
+      "steps": [
+        {
+          "description": "Input raw sequencing files from the server directory",
+          "order": 1,
+          "tool": "server-file"
+        },
+        {
+          "description": "Perform quality trimming of raw reads to remove adapters and low-quality bases",
+          "order": 2,
+          "tool": "trimmomatic_v0.40"
+        },
+        {
+          "description": "Conduct taxonomic profiling to determine microbial composition of the sample",
+          "order": 3,
+          "tool": "metaphlan_v4.1.1"
+        },
+        {
+          "description": "Perform strain-level analysis to identify intra-species variants",
+          "order": 4,
+          "tool": "StrainPhlAn_v4.0.6"
+        },
+        {
+          "description": "Output results to a designated server folder",
+          "order": 5,
+          "tool": "server-folder"
+        }
+      ],
+      "connections": [
+        {
+          "id": "connection_1",
+          "from_tool": "node_1",
+          "to_tool": "node_2",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_2",
+          "from_tool": "node_2",
+          "to_tool": "node_3",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_3",
+          "from_tool": "node_3",
+          "to_tool": "node_4",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_4",
+          "from_tool": "node_4",
+          "to_tool": "node_5",
+          "description": "",
+          "type": "output"
+        }
+      ]
+    },
+    "wf_1767701541155": {
+      "id": "wf_1767701541155",
+      "name": "BB-HUMAnN Workflow",
+      "description": "A bioinformatics workflow that processes metagenomic sequencing data using BBTools for quality control and HUMAnN for functional profiling.",
+      "category": "metagenomics",
+      "complexity": "moderate",
+      "keywords": [
+        "metagenomics",
+        "functional profiling",
+        "quality control",
+        "BBTools",
+        "HUMAnN",
+        "host contamination removal",
+        "read trimming"
+      ],
+      "use_cases": [
+        "Removing host DNA from human microbiome samples",
+        "Preprocessing metagenomic reads for downstream analysis",
+        "Inferring microbial metabolic pathways from shotgun sequencing data",
+        "Generating gene family and pathway abundance profiles"
+      ],
+      "natural_language_patterns": [
+        "I want to analyze metagenomic data and get functional profiles",
+        "Remove host reads and do functional annotation",
+        "Process microbiome data with BBTools and HUMAnN",
+        "How can I go from raw metagenomic reads to pathway abundances?",
+        "Workflow for filtering and functional profiling of metagenomes"
+      ],
+      "resource_requirements": {
+        "cpu": "4-8 cores",
+        "memory": "16-32 GB",
+        "runtime": "2-6 hours depending on dataset size"
+      },
+      "tags": [],
+      "steps": [
+        {
+          "description": "Input raw sequencing data (e.g., FASTQ files) into the workflow.",
+          "order": 1,
+          "tool": "server-file"
+        },
+        {
+          "description": "Align reads to a reference genome (e.g., human, host) using BBMap to identify and remove host-derived sequences.",
+          "order": 2,
+          "tool": "bbmap_v37.62"
+        },
+        {
+          "description": "Perform quality trimming, adapter removal, and additional filtering of reads using BBduk.",
+          "order": 3,
+          "tool": "bbduk_v37.62"
+        },
+        {
+          "description": "Conduct functional profiling of filtered metagenomic reads using HUMAnN to infer gene families, pathways, and metabolic functions.",
+          "order": 4,
+          "tool": "humann_v3.9"
+        },
+        {
+          "description": "Output processed results (e.g., pathway abundances, gene tables) to a designated folder.",
+          "order": 5,
+          "tool": "server-folder"
+        }
+      ],
+      "connections": [
+        {
+          "id": "connection_1",
+          "from_tool": "node_1",
+          "to_tool": "node_2",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_2",
+          "from_tool": "node_2",
+          "to_tool": "node_3",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_3",
+          "from_tool": "node_3",
+          "to_tool": "node_4",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_4",
+          "from_tool": "node_4",
+          "to_tool": "node_5",
+          "description": "",
+          "type": "output"
+        }
+      ]
+    },
+    "wf_1767702095290": {
+      "id": "wf_1767702095290",
+      "name": "BB-Kraken Workflow",
+      "description": "A bioinformatics workflow that processes raw sequencing reads using BBTools for quality control and alignment, followed by taxonomic classification with Kraken.",
+      "category": "metagenomics",
+      "complexity": "moderate",
+      "keywords": [
+        "metagenomics",
+        "taxonomic classification",
+        "quality control",
+        "BBTools",
+        "Kraken",
+        "FASTQ",
+        "k-mer"
+      ],
+      "use_cases": [
+        "Classifying microbial communities from environmental sequencing data",
+        "Filtering and trimming low-quality reads prior to analysis",
+        "Aligning reads to reference genomes for host contamination removal",
+        "Preparing metagenomic samples for downstream abundance profiling"
+      ],
+      "natural_language_patterns": [
+        "I want to classify species in my metagenomic sample",
+        "Process FASTQ reads with quality filtering and taxonomic assignment",
+        "Run Kraken on cleaned sequencing data",
+        "Use BBTools and Kraken for metagenome analysis",
+        "How do I go from raw reads to taxonomy labels?"
+      ],
+      "resource_requirements": {
+        "cpu": "4-8 cores",
+        "memory": "16-32 GB",
+        "runtime": "1-6 hours depending on dataset size"
+      },
+      "tags": [],
+      "steps": [
+        {
+          "description": "Input raw sequencing reads (e.g., FASTQ) from server storage.",
+          "order": 1,
+          "tool": "server-file"
+        },
+        {
+          "description": "Align reads to a reference using BBMap for initial processing or filtering.",
+          "order": 2,
+          "tool": "bbmap_v37.62"
+        },
+        {
+          "description": "Perform quality trimming, adapter removal, and filtering of reads using BBDuk.",
+          "order": 3,
+          "tool": "bbduk_v37.62"
+        },
+        {
+          "description": "Assign taxonomic labels to reads using Kraken with a k-mer based approach.",
+          "order": 4,
+          "tool": "kraken_v2.1.3"
+        },
+        {
+          "description": "Save classified output to a designated folder on the server.",
+          "order": 5,
+          "tool": "server-folder"
+        }
+      ],
+      "connections": [
+        {
+          "id": "connection_1",
+          "from_tool": "node_1",
+          "to_tool": "node_2",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_2",
+          "from_tool": "node_2",
+          "to_tool": "node_3",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_3",
+          "from_tool": "node_3",
+          "to_tool": "node_4",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_4",
+          "from_tool": "node_4",
+          "to_tool": "node_5",
+          "description": "",
+          "type": "output"
+        }
+      ]
+    },
+    "wf_1767705215217": {
+      "id": "wf_1767705215217",
+      "name": "TH Workflow",
+      "description": "A bioinformatics workflow that processes raw sequencing reads by trimming adapters and removing host contamination, followed by functional profiling of microbial communities using HUMAnN.",
+      "category": "metagenomics",
+      "complexity": "moderate",
+      "keywords": [
+        "metagenomics",
+        "quality trimming",
+        "adapter removal",
+        "functional profiling",
+        "HUMAnN",
+        "Trimmomatic",
+        "microbial communities"
+      ],
+      "use_cases": [
+        "Functional analysis of microbiome samples from human or environmental sources",
+        "Removal of host-derived contamination in metagenomic datasets",
+        "Preprocessing and metabolic pathway inference from raw FASTQ reads"
+      ],
+      "natural_language_patterns": [
+        "I want to analyze microbial function from my metagenomic reads",
+        "Process raw sequencing data to remove adapters and host contamination, then run functional profiling",
+        "Use Trimmomatic and HUMAnN in a pipeline for microbiome analysis",
+        "Trim reads and perform pathway-level analysis on metagenomes"
+      ],
+      "resource_requirements": {
+        "cpu": "8 cores",
+        "memory": "16 GB",
+        "runtime": "2-6 hours depending on dataset size"
+      },
+      "tags": [],
+      "steps": [
+        {
+          "description": "Input raw sequencing data (e.g., FASTQ files) into the workflow.",
+          "order": 1,
+          "tool": "server-file"
+        },
+        {
+          "description": "Trim adapters, low-quality bases, and filter reads using Trimmomatic.",
+          "order": 2,
+          "tool": "trimmomatic_v0.40"
+        },
+        {
+          "description": "Perform functional profiling of trimmed reads using HUMAnN to infer metabolic pathways and gene families.",
+          "order": 3,
+          "tool": "humann_v3.9"
+        },
+        {
+          "description": "Output processed results to a designated server folder for storage or further analysis.",
+          "order": 4,
+          "tool": "server-folder"
+        }
+      ],
+      "connections": [
+        {
+          "id": "connection_1",
+          "from_tool": "server-file",
+          "to_tool": "trimmomatic_v0.40",
+          "description": "",
+          "type": "data"
+        },
+        {
+          "id": "connection_2",
+          "from_tool": "trimmomatic_v0.40",
+          "to_tool": "humann_v3.9",
+          "description": "",
+          "type": "data"
+        },
+        {
+          "id": "connection_3",
+          "from_tool": "humann_v3.9",
+          "to_tool": "server-folder",
+          "description": "",
+          "type": "data"
+        }
+      ]
+    }
+  }
+}

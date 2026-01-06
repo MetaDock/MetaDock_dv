@@ -9,6 +9,7 @@ from typing import Dict, List, Any, Optional, Tuple
 from datetime import datetime
 import re
 from pathlib import Path
+import os
 
 # Import the SPAdes + QUAST Knowledge Graph
 try:
@@ -82,7 +83,6 @@ class WorkflowPlanner:
             }
         }
         
-
         self.workflow_patterns = {
              "spades_quast_workflow": {
                  "description": "SPAdes assembly followed by QUAST quality assessment",
@@ -114,6 +114,92 @@ class WorkflowPlanner:
                  "connections": []
              }
          }
+
+        # Load custom workflows (enriched KG entries)
+        self.custom_workflows: List[Dict[str, Any]] = []
+        self._load_custom_workflows()
+
+    def _load_custom_workflows(self):
+        """Load additional workflows from data/custom_workflows.json if present"""
+        try:
+            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            custom_path = os.path.join(base_dir, "data", "custom_workflows.json")
+            if not os.path.exists(custom_path):
+                return
+            with open(custom_path, "r", encoding="utf-8") as f:
+                custom_data = json.load(f)
+
+            workflows = []
+            if isinstance(custom_data, list):
+                # legacy list format
+                workflows = custom_data
+            elif isinstance(custom_data, dict):
+                wf_map = custom_data.get("workflows") or {}
+                workflows = list(wf_map.values())
+            else:
+                workflows = []
+
+            self.custom_workflows = workflows
+            logging.info("Loaded %d custom workflows into KG (custom_workflows.json)", len(workflows))
+        except Exception as e:
+            logging.error("Failed to load custom workflows: %s", e)
+
+    def get_custom_workflows(self) -> List[Dict[str, Any]]:
+        """Expose loaded custom workflows"""
+        return self.custom_workflows
+    
+    def _match_custom_workflow(self, user_request: str) -> Optional[Dict[str, Any]]:
+        """Find the best matching custom workflow based on keywords and patterns"""
+        if not self.custom_workflows:
+            return None
+
+        text = user_request.lower()
+        best_match = None
+        best_score = 0.0
+
+        for wf in self.custom_workflows:
+            score = 0.0
+            # Helper to check plural/singular simple variants
+            def matches_token(tok: str) -> bool:
+                if not tok:
+                    return False
+                t = tok.lower()
+                if t in text:
+                    return True
+                if t.endswith("s") and t[:-1] in text:
+                    return True
+                if (t + "s") in text:
+                    return True
+                return False
+
+            for kw in wf.get("keywords", []):
+                if matches_token(kw):
+                    score += 1.0
+            for phrase in wf.get("natural_language_patterns", []):
+                if matches_token(phrase):
+                    score += 1.5
+            for uc in wf.get("use_cases", []):
+                if matches_token(uc):
+                    score += 0.5
+
+            if wf.get("category") and wf["category"].lower() in text:
+                score += 0.5
+
+            # Boost if workflow name/description matches
+            if matches_token(wf.get("name", "")):
+                score += 0.5
+            if matches_token(wf.get("description", "")):
+                score += 0.5
+
+            if score > best_score:
+                best_score = score
+                best_match = wf
+
+        if best_match and best_score >= 1.0:
+            confidence = min(1.0, best_score / 4.0)
+            return {"workflow": best_match, "score": confidence}
+
+        return None
     
     def analyze_user_request(self, user_request: str) -> Dict[str, Any]:
          analysis = {
@@ -634,14 +720,28 @@ class EnhancedWorkflowPlanner(WorkflowPlanner):
     
     def analyze_user_request_with_kg(self, user_request: str) -> Dict[str, Any]:
         """Enhanced user request analysis using Knowledge Graph"""
-        
+        # First try custom workflows from KG (user-saved)
+        custom_match = self._match_custom_workflow(user_request)
+        if custom_match:
+            wf = custom_match["workflow"]
+            logger.info("Matched custom KG workflow: %s (confidence %.2f)", wf.get("id"), custom_match["score"])
+            return {
+                "source": "custom_knowledge_graph",
+                "workflow_type": wf.get("id"),
+                "confidence": custom_match["score"],
+                "analysis": wf,
+                "suggested_pattern": wf.get("id"),  # keep id for display
+                "match_reasons": wf.get("keywords", []) or wf.get("natural_language_patterns", [])
+            }
+
         # First try Knowledge Graph analysis
         if self.spades_quast_kg:
             try:
                 kg_analysis = self.spades_quast_kg.analyze_user_intent(user_request)
                 
                 # If KG matches workflow with good confidence, use KG result
-                if kg_analysis["matched_workflow"] and kg_analysis["confidence_score"] > 0.6:
+                # Lowered threshold to prefer KG match if any reasonable confidence
+                if kg_analysis["matched_workflow"] and kg_analysis["confidence_score"] >= 0.4:
                     logger.info(f"Knowledge Graph matched workflow: {kg_analysis['matched_workflow']} (confidence: {kg_analysis['confidence_score']:.2f})")
                     
                     return {
@@ -676,6 +776,42 @@ class EnhancedWorkflowPlanner(WorkflowPlanner):
         # Use enhanced analysis
         enhanced_analysis = self.analyze_user_request_with_kg(user_request)
         
+        if enhanced_analysis["source"] == "custom_knowledge_graph":
+            wf = enhanced_analysis["analysis"]
+            steps = wf.get("steps", [])
+            tools = [step.get("tool") for step in steps if step.get("tool")]
+            connections = wf.get("connections") or []
+
+            # If no connections, make a simple chain based on steps order
+            if not connections and len(tools) > 1:
+                connections = []
+                for idx in range(len(tools) - 1):
+                    connections.append({
+                        "from": tools[idx],
+                        "to": tools[idx + 1],
+                        "from_port": "output",
+                        "to_port": "input"
+                    })
+
+            plan = {
+                "analysis": enhanced_analysis,
+                "workflow": {
+                    "name": wf.get("name", "Custom Workflow"),
+                    "description": wf.get("description", ""),
+                    "tools": tools,
+                    "connections": connections,
+                    "parameters": wf.get("parameters", {}),
+                    "commands": wf.get("command_preview", [])
+                },
+                "frontend_workflow": self._build_frontend_workflow_from_custom(wf),
+                "explanation": wf.get("description", ""),
+                "confidence": enhanced_analysis.get("confidence", 0.6),
+                "match_reasons": enhanced_analysis.get("match_reasons", [])
+            }
+
+            logger.info("Generated plan from custom KG workflow: %s", wf.get("id"))
+            return plan
+
         if enhanced_analysis["source"] == "knowledge_graph":
             # Use Knowledge Graph to generate detailed plan
             kg_analysis = enhanced_analysis["analysis"]
@@ -715,3 +851,133 @@ class EnhancedWorkflowPlanner(WorkflowPlanner):
         except Exception as e:
             logger.error(f"Error checking KG enhancement: {e}")
             return False
+
+    def _build_frontend_workflow_from_custom(self, wf: Dict[str, Any]) -> Dict[str, Any]:
+        """Build a lightweight frontend workflow structure from custom KG entry"""
+        steps = wf.get("steps", [])
+        nodes: List[Dict[str, Any]] = []
+        tool_to_node: Dict[str, str] = {}
+        node_types: Dict[str, str] = {}
+
+        def _classify_node(tool_name: str) -> Tuple[str, str]:
+            """Return (node_type, component) based on tool name"""
+            if not tool_name:
+                return "tool", tool_name
+            t = tool_name.lower()
+            if "folder" in t:
+                return "file-output", tool_name
+            if "file" in t:
+                return "file-input", tool_name
+            return "tool", tool_name
+
+        for idx, step in enumerate(steps):
+            tool_name = step.get("tool") or f"step_{idx+1}"
+            # Align with stored connections that may use node_# refs
+            node_id = f"node_{idx+1}"
+            tool_to_node[tool_name] = node_id
+            node_type, component_name = _classify_node(tool_name)
+            node_types[node_id] = node_type
+            nodes.append({
+                "id": node_id,
+                "type": node_type,
+                "component": component_name,
+                "x": 150 + idx * 250,
+                "y": 150,
+                "config": {
+                    "description": step.get("description", ""),
+                    "order": step.get("order", idx + 1)
+                }
+            })
+
+        connections_raw = wf.get("connections") or []
+        connections: List[Dict[str, Any]] = []
+
+        if connections_raw:
+            for i, conn in enumerate(connections_raw):
+                from_ref = conn.get("from") or conn.get("fromNode") or conn.get("source") or conn.get("from_tool") or conn.get("fromTool")
+                to_ref = conn.get("to") or conn.get("toNode") or conn.get("target") or conn.get("to_tool") or conn.get("toTool")
+                # Default ports with awareness of file nodes
+                from_port = conn.get("from_port") or conn.get("fromPort") or conn.get("type")
+                to_port = conn.get("to_port") or conn.get("toPort")
+
+                from_node = tool_to_node.get(str(from_ref), tool_to_node.get(from_ref)) if isinstance(from_ref, str) else None
+                to_node = tool_to_node.get(str(to_ref), tool_to_node.get(to_ref)) if isinstance(to_ref, str) else None
+
+                # If references are numeric (orders), map to list position
+                if from_node is None and isinstance(from_ref, int) and 0 <= from_ref - 1 < len(nodes):
+                    from_node = nodes[from_ref - 1]["id"]
+                if to_node is None and isinstance(to_ref, int) and 0 <= to_ref - 1 < len(nodes):
+                    to_node = nodes[to_ref - 1]["id"]
+
+                # If references look like node_x, map directly to existing node ids
+                if from_node is None and isinstance(from_ref, str) and from_ref.startswith("node_"):
+                    if any(n["id"] == from_ref for n in nodes):
+                        from_node = from_ref
+                if to_node is None and isinstance(to_ref, str) and to_ref.startswith("node_"):
+                    if any(n["id"] == to_ref for n in nodes):
+                        to_node = to_ref
+
+                # Apply sensible defaults for ports based on node types
+                if not from_port:
+                    if from_node and node_types.get(from_node) == "file-input":
+                        from_port = "file"
+                    else:
+                        from_port = "output"
+                # Normalize mismatched defaults for file-input nodes
+                if from_node and node_types.get(from_node) == "file-input" and from_port in ["output", "input", ""]:
+                    from_port = "file"
+                if from_node and node_types.get(from_node) == "file-output" and from_port in ["output", ""]:
+                    from_port = "file"
+
+                if not to_port:
+                    if to_node and node_types.get(to_node) == "file-output":
+                        to_port = "file"
+                    else:
+                        to_port = "input"
+                # Normalize mismatched defaults for file-output nodes
+                if to_node and node_types.get(to_node) == "file-output" and to_port in ["output", "input", ""]:
+                    to_port = "file"
+                if to_node and node_types.get(to_node) == "file-input" and to_port in ["input", ""]:
+                    to_port = "file"
+
+                if from_node and to_node:
+                    connections.append({
+                        "id": f"connection_{i+1}",
+                        "from": from_node,
+                        "fromPort": from_port,
+                        "fromNode": from_node,  # duplicate for frontend compatibility
+                        "from_port": from_port,
+                        "to": to_node,
+                        "toPort": to_port,
+                        "toNode": to_node,      # duplicate for frontend compatibility
+                        "to_port": to_port
+                    })
+        # Fallback: if still no valid connections, chain in order
+        if len(connections) == 0 and len(nodes) > 1:
+            for idx in range(len(nodes) - 1):
+                from_id = nodes[idx]["id"]
+                to_id = nodes[idx + 1]["id"]
+                # Determine ports based on node type (file vs tool)
+                from_port = "file" if node_types.get(from_id) == "file-input" else "output"
+                to_port = "file" if node_types.get(to_id) == "file-output" else "input"
+                connections.append({
+                    "id": f"connection_{idx+1}",
+                    "from": from_id,
+                    "fromPort": from_port,
+                    "fromNode": from_id,
+                    "from_port": from_port,
+                    "to": to_id,
+                    "toPort": to_port,
+                    "toNode": to_id,
+                    "to_port": to_port
+                })
+
+        return {
+            "nodes": nodes,
+            "connections": connections,
+            "metadata": {
+                "name": wf.get("name", "Custom Workflow"),
+                "description": wf.get("description", ""),
+                "created_at": datetime.now().isoformat()
+            }
+        }

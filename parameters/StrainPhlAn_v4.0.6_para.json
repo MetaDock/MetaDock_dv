@@ -1,0 +1,191 @@
+[
+    {
+        "category": "optional arguments",
+        "short": "-h",
+        "long": "--help",
+        "needs_input": false,
+        "description": "show this help message and exit"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-d",
+        "long": "--database",
+        "needs_input": true,
+        "description": "The input MetaPhlAn 4.0.6 database (default: latest)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-m",
+        "long": "--clade_markers",
+        "needs_input": true,
+        "description": "The clade markers as FASTA file (default: None)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-s",
+        "long": "--samples",
+        "needs_input": true,
+        "description": "The reconstructed markers for each sample (default: [])"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-r",
+        "long": "--references",
+        "needs_input": true,
+        "description": "The reference genomes (default: [])"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-c",
+        "long": "--clade",
+        "needs_input": true,
+        "description": "The clade to investigate (default: None)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-o",
+        "long": "--output_dir",
+        "needs_input": true,
+        "description": "The output directory (default: None)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-n",
+        "long": "--nprocs",
+        "needs_input": true,
+        "description": "The number of threads to use (default: 1)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "--secondary_samples",
+        "long": null,
+        "needs_input": true,
+        "description": "The reconstructed markers for each secondary sample\n                        (default: [])"
+    },
+    {
+        "category": "optional arguments",
+        "short": "--secondary_references",
+        "long": null,
+        "needs_input": true,
+        "description": "The secondary reference genomes (default: [])"
+    },
+    {
+        "category": "optional arguments",
+        "short": "--trim_sequences",
+        "long": null,
+        "needs_input": true,
+        "description": "The number of bases to remove from both ends when\n                        trimming markers (default: 50)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "--marker_in_n_samples",
+        "long": null,
+        "needs_input": true,
+        "description": "Theshold defining the minimum percentage of samples to\n                        keep a marker (default: 80)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "--sample_with_n_markers",
+        "long": null,
+        "needs_input": true,
+        "description": "Threshold defining the minimun percentage of markers\n                        to keep a sample (default: 80)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "--secondary_sample_with_n_markers",
+        "long": null,
+        "needs_input": true,
+        "description": "Threshold defining the minimun percentage of markers\n                        to keep a secondary sample (default: 80)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "--sample_with_n_markers_after_filt",
+        "long": null,
+        "needs_input": true,
+        "description": "Threshold defining the minimun percentage of markers\n                        to keep a sample after filtering the markers [only for\n                        dev] (default: None)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "--abs_n_markers_thres",
+        "long": null,
+        "needs_input": false,
+        "description": "If specified, the *sample_with_n_markers* thresholds\n                        will be specified as absolute numbers (default: False)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "--abs_n_samples_thres",
+        "long": null,
+        "needs_input": false,
+        "description": "If specified, the marker_in_n_samples threshold will\n                        be specified as absolute numbers (default: False)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "--breadth_thres",
+        "long": null,
+        "needs_input": true,
+        "description": "Threshold defining the minimum breadth of coverage for\n                        the markers (default: 80)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "--phylophlan_mode",
+        "long": null,
+        "needs_input": true,
+        "description": "The presets for fast or accurate phylogenetic analysis\n                        (default: fast)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "--phylophlan_configuration",
+        "long": null,
+        "needs_input": true,
+        "description": "The PhyloPhlAn configuration file (default: None)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "--tmp",
+        "long": null,
+        "needs_input": true,
+        "description": "If specified, the directory where to store the\n                        temporal files. (default: None)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "--mutation_rates",
+        "long": null,
+        "needs_input": false,
+        "description": "If specified, StrainPhlAn will produce a mutation\n                        rates table for each of the aligned markers and a\n                        summary table for the concatenated MSA. This operation\n                        can take long time to finish (default: False)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "--print_clades_only",
+        "long": null,
+        "needs_input": false,
+        "description": "If specified, StrainPhlAn will only print the\n                        potential clades and stop the execution (default:\n                        False)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "--non_interactive",
+        "long": null,
+        "needs_input": false,
+        "description": "If specified, StrainPhlAn will select the first SGB\n                        available when the clade is specified at the species\n                        level (default: False)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "--treeshrink",
+        "long": null,
+        "needs_input": false,
+        "description": "If specified, StrainPhlAn will execute TreeShrink\n                        after building the tree (default: False)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "--debug",
+        "long": null,
+        "needs_input": false,
+        "description": "If specified, StrainPhlAn will not remove the temporal\n                        folders (default: False)"
+    },
+    {
+        "category": "optional arguments",
+        "short": "-v",
+        "long": "--version",
+        "needs_input": false,
+        "description": "Shows this help message and exit (default: False)"
+    }
+]

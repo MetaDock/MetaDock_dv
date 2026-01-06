@@ -288,6 +288,50 @@ class BioinfoAgentV2:
                             })
                             time.sleep(0.1)
                 
+            elif plan.get("analysis", {}).get("source") == "custom_knowledge_graph":
+                wf_meta = plan.get("workflow", {}) or {}
+                # If frontend_workflow carries nodes with ids, use them for counts
+                frontend = plan.get("frontend_workflow") or {}
+                nodes = frontend.get("nodes", [])
+                conns = frontend.get("connections", [])
+                steps_count = len(wf_meta.get("steps", [])) if wf_meta.get("steps") else len(nodes)
+                conn_count = len(wf_meta.get("connections", [])) if wf_meta.get("connections") else len(conns)
+
+                yield json.dumps({
+                    "type": "message",
+                    "content": "\n\n📋 **Matched Custom Knowledge Graph Workflow:**"
+                })
+                time.sleep(0.2)
+                yield json.dumps({
+                    "type": "message",
+                    "content": f"\n- **Workflow ID:** {wf_meta.get('id', 'unknown')}"
+                })
+                time.sleep(0.1)
+                yield json.dumps({
+                    "type": "message",
+                    "content": f"\n- **Name:** {wf_meta.get('name', 'Unnamed workflow')}"
+                })
+                time.sleep(0.1)
+                yield json.dumps({
+                    "type": "message",
+                    "content": f"\n- **Category:** {wf_meta.get('category', 'custom')}  |  **Complexity:** {wf_meta.get('complexity', 'moderate')}"
+                })
+                time.sleep(0.1)
+                yield json.dumps({
+                    "type": "message",
+                    "content": f"\n- **Steps:** {steps_count}  |  **Connections:** {conn_count}"
+                })
+                if wf_meta.get("keywords"):
+                    time.sleep(0.1)
+                    yield json.dumps({
+                        "type": "message",
+                        "content": f"\n- **Keywords:** {', '.join(wf_meta.get('keywords', []))}"
+                    })
+                time.sleep(0.2)
+                yield json.dumps({
+                    "type": "message",
+                    "content": "\n\n📊 **Recommendation:** Use the matched custom workflow above."
+                })
             else:
                 # Original analysis method
                 analysis = plan.get("analysis", {})
@@ -356,20 +400,21 @@ class BioinfoAgentV2:
                 time.sleep(0.5)
                 
                 # Check if this is a KG-enhanced workflow
-                if (self.current_workflow_plan and 
-                    self.current_workflow_plan.get('analysis', {}).get('source') == 'knowledge_graph'):
-                    
+                source = self.current_workflow_plan.get('analysis', {}).get('source')
+
+                if source in ['knowledge_graph', 'custom_knowledge_graph']:
                     # Use KG-generated frontend workflow definition
-                    workflow_data = self.current_workflow_plan['frontend_workflow']
+                    workflow_data = self.current_workflow_plan.get('frontend_workflow')
                     
                     yield json.dumps({
                         "type": "build_workflow",
                         "workflow_data": workflow_data
                     })
                     
+                    success_name = self.current_workflow_plan.get('analysis', {}).get('name') or 'workflow'
                     yield json.dumps({
                         "type": "message", 
-                        "content": "✅ SPAdes + QUAST workflow has been successfully built on the canvas! You can configure parameters or run it directly."
+                        "content": f"✅ {success_name} has been built on the canvas! You can configure parameters or run it directly."
                     })
                     
                 else:
@@ -513,6 +558,7 @@ class BioinfoAgentV2:
         """Clear current workflow planning state"""
         self.current_workflow_plan = None
         self.planning_mode = False
+
 
     # === Visualization Code Generation ===
     def generate_viz_code(self, viz_request: Dict[str, Any]) -> Dict[str, Any]:

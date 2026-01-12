@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Help Comparison Report</title>
+    <style>
+        body {
+            font-family: 'Consolas', monospace;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+        .issues {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 5px solid #ffeeba;
+        }
+        .comparison {
+            display: flex;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            position: relative;
+        }
+        .original, .generated {
+            flex: 1;
+            padding: 10px;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .original {
+            background: #fff8f8;
+            border-right: 1px solid #eee;
+        }
+        .generated {
+            background: #f8fff8;
+        }
+        .diff-header {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: -10px -10px 10px -10px;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+        }
+        .timestamp {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .empty {
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+        }
+        .match {
+            background: #e8f5e9;
+        }
+        .nomatch {
+            background: #ffebee;
+        }
+        .section-actions {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .comparison:hover .section-actions {
+            opacity: 1;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .btn-add {
+            background: #28a745;
+        }
+        .btn-modify {
+            background: #17a2b8;
+        }
+        .btn-delete {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Help Comparison Report</h1>
+            <div class="timestamp">Generated on: 2026-01-12 20:27:39</div>
+        </div>
+<div class="comparison" data-section-id="section_0">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">Usage: virsorter run [OPTIONS] [[all|classify]] [SNAKEMAKE_ARGS]...</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">Usage: virsorter run [OPTIONS] [[all|classify]] [SNAKEMAKE_ARGS]...</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_1">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">Options:</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">Options:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_2">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -w, --working-dir PATH        output directory</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -w, --working-dir
+                        output directory</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_3">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -d, --db-dir PATH             database directory, default to the --db-dir
+                                set during installation</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -d, --db-dir
+                        database directory, default to
+                        the --db-dir set during
+                        installation</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_4">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -i, --seqfile PATH            sequence file in fa or fq format (could be
+                                compressed by gzip or bz2)  [required]</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -i, --seqfile
+                        sequence file in fa or fq format
+                        (could be compressed by gzip or
+                        bz2)  [required]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_5">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -l, --label TEXT              add label as prefix to output files; this is
+                                useful when re-running classify with different
+                                filtering options</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -l, --label
+                        add label as prefix to output
+                        files; this is useful when re-
+                        running classify with different
+                        filtering options</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_6">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --include-groups TEXT         classifiers of viral groups to included (comma
+                                separated and no space in between); available
+                                options are:
+                                dsDNAphage,NCLDV,RNA,ssDNA,lavidaviridae
+                                [default: dsDNAphage,ssDNA]</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --include-groups
+                        classifiers of viral groups to
+                        included (comma separated and no
+                        space in between); available
+                        options are: dsDNAphage,NCLDV,RN
+                        A,ssDNA,lavidaviridae [default:
+                        dsDNAphage,ssDNA]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_7">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -j, --jobs INTEGER            max # of jobs allowed in parallel.  [default:
+                                48]</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -j, --jobs
+                        max # of jobs allowed in
+                        parallel.  [default: 48]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_8">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --min-score FLOAT             minimal score to be identified as viral
+                                [default: 0.5]</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --min-score
+                        minimal score to be identified
+                        as viral [default: 0.5]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_9">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --min-length INTEGER          minimal seq length required; all seqs shorter
+                                than this will be removed  [default: 0]</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --min-length
+                        minimal seq length required; all
+                        seqs shorter than this will be
+                        removed  [default: 0]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_10">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --keep-original-seq           keep the original sequences instead of
+                                trimmed; By default, the untranslated regions
+                                at both ends of identified viral seqs are
+                                trimmed; circular sequences are modified to
+                                remove overlap between both ends and adjusted
+                                for the gene splitted into two ends;</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  --keep-original-seq
+                        keep the original sequences
+                        instead of trimmed; By default,
+                        the untranslated regions at both
+                        ends of identified viral seqs
+                        are trimmed; circular sequences
+                        are modified to remove overlap
+                        between both ends and adjusted
+                        for the gene splitted into two
+                        ends;</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_11">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --exclude-lt2gene             short seqs (less than 2 genes) does not have
+                                any scores, but those with hallmark genes are
+                                included as viral by default; use this option
+                                to exclude them</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --exclude-lt2gene
+                        short seqs (less than 2 genes)
+                        does not have any scores, but
+                        those with hallmark genes are
+                        included as viral by default;
+                        use this option to exclude them</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_12">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --prep-for-dramv              turn on generating viral seqfile and viral-
+                                affi-contigs.tab for DRAMv</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --prep-for-dramv
+                        turn on generating viral seqfile
+                        and viral- affi-contigs.tab for
+                        DRAMv</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_13">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --high-confidence-only        only output high confidence viral sequences;
+                                this is equivalent to screening final-viral-
+                                score.tsv with the following criteria:
+                                (max_score >= 0.9) OR (max_score >=0.7 AND
+                                hallmark >= 1)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --high-confidence-only
+                        only output high confidence
+                        viral sequences; this is
+                        equivalent to screening final-
+                        viral- score.tsv with the
+                        following criteria: (max_score
+                        >= 0.9) OR (max_score >=0.7 AND
+                        hallmark >= 1)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_14">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --hallmark-required           require hallmark gene on all viral seqs</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --hallmark-required
+                        require hallmark gene on all
+                        viral seqs</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_15">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --hallmark-required-on-short  require hallmark gene on short viral seqs
+                                (length cutoff as "short" were set by
+                                "MIN_SIZE_ALLOWED_WO_HALLMARK_GENE" in
+                                template-config.yaml file, default 3kbp); this
+                                can reduce false positives at reasonable cost
+                                of sensitivity</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --hallmark-required-on-short
+                        require hallmark gene on short
+                        viral seqs (length cutoff as
+                        "short" were set by "MIN_SIZE_AL
+                        LOWED_WO_HALLMARK_GENE" in
+                        template-config.yaml file,
+                        default 3kbp); this can reduce
+                        false positives at reasonable
+                        cost of sensitivity</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_16">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --viral-gene-required         require viral genes annotated, removing
+                                putative viral seqs with no genes annotated;
+                                this can reduce false positives at reasonable
+                                cost of sensitivity</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --viral-gene-required
+                        require viral genes annotated,
+                        removing putative viral seqs
+                        with no genes annotated; this
+                        can reduce false positives at
+                        reasonable cost of sensitivity</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_17">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --viral-gene-enrich-off       turn off the requirement of more viral than
+                                cellular genes for calling full sequence
+                                viral; this is useful when only using
+                                VirSorter2 to produce DRAMv input with viral
+                                sequence identified from other tools, or those
+                                trimmed by checkV</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --viral-gene-enrich-off
+                        turn off the requirement of more
+                        viral than cellular genes for
+                        calling full sequence viral;
+                        this is useful when only using
+                        VirSorter2 to produce DRAMv
+                        input with viral sequence
+                        identified from other tools, or
+                        those trimmed by checkV</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_18">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --seqname-suffix-off          turn off adding suffix (||full, ||{i}_partial,
+                                ||lt2gene) to sequence names; note that this
+                                might cause partial seqs from the same contig
+                                to have the same name; this option is could be
+                                used when you are sure there is one partial
+                                sequence at max from each contig</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --seqname-suffix-off
+                        turn off adding suffix (||full,
+                        ||{i}_partial, ||lt2gene) to
+                        sequence names; note that this
+                        might cause partial seqs from
+                        the same contig to have the same
+                        name; this option is could be
+                        used when you are sure there is
+                        one partial sequence at max from
+                        each contig</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_19">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --provirus-off                turn off extracting provirus after classifying
+                                full contigs; Togetehr with lower --max-orf-
+                                per-seq, can speed up a run significantly</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --provirus-off
+                        turn off extracting provirus
+                        after classifying full contigs;
+                        Togetehr with lower --max-orf-
+                        per-seq, can speed up a run
+                        significantly</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_20">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --max-orf-per-seq INTEGER     max # of orf used for computing taxonomic
+                                feature; this option can only be used in
+                                --provirus-off mode; if # of orf in a seq
+                                exceeds the max limit, it is sub-sampled to
+                                this # to reduce computation  [default: -1]</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --max-orf-per-seq
+                        max # of orf used for computing
+                        taxonomic feature; this option
+                        can only be used in --provirus-
+                        off mode; if # of orf in a seq
+                        exceeds the max limit, it is
+                        sub-sampled to this # to reduce
+                        computation  [default: -1]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_21">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --tmpdir TEXT                 directory name for intermediate files</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --tmpdir
+                        directory name for intermediate
+                        files</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_22">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --rm-tmpdir                   remove intermediate file directory (--tmpdir);
+                                More than 100 intermediate files are created
+                                for each run, so this is recommended when 100s
+                                of samples are processed to avoid exceeding
+                                file # quota for user</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --rm-tmpdir
+                        remove intermediate file
+                        directory (--tmpdir); More than
+                        100 intermediate files are
+                        created for each run, so this is
+                        recommended when 100s of samples
+                        are processed to avoid exceeding
+                        file # quota for user</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_23">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --verbose                     shows detailed rules output</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --verbose
+                        shows detailed rules output</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_24">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  --profile TEXT                snakemake profile e.g. for cluster execution.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  --profile
+                        snakemake profile e.g. for
+                        cluster execution.</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_25">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -n, --dryrun                  Check rules to run and files to produce</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -n, --dryrun
+                        Check rules to run and files to
+                        produce</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_26">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">  --use-conda-off               Stop using the conda envs (vs2.yaml) that come
+                                with this package and use what are installed
+                                in current system; Only useful when you want
+                                to install dependencies on your own with your
+                                own prefer version; this option works with the
+                                development version</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  --use-conda-off
+                        Stop using the conda envs
+                        (vs2.yaml) that come with this
+                        package and use what are
+                        installed in current system;
+                        Only useful when you want to
+                        install dependencies on your own
+                        with your own prefer version;
+                        this option works with the
+                        development version</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_27">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">  -h, --help                    Show this message and exit.</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">  -h, --help
+                        Show this message and exit.</div>
+</div>
+</div>
+    </div>
+</body>
+</html>

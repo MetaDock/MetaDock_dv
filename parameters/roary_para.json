@@ -1,0 +1,177 @@
+[
+    {
+        "category": "Options",
+        "short": "-p",
+        "long": "INT",
+        "needs_input": true,
+        "description": "number of threads [1]"
+    },
+    {
+        "category": "Options",
+        "short": "-o",
+        "long": "STR",
+        "needs_input": true,
+        "description": "clusters output filename [clustered_proteins]"
+    },
+    {
+        "category": "Options",
+        "short": "-f",
+        "long": "STR",
+        "needs_input": true,
+        "description": "output directory [.]"
+    },
+    {
+        "category": "Options",
+        "short": "-e",
+        "long": null,
+        "needs_input": false,
+        "description": "create a multiFASTA alignment of core genes using PRANK"
+    },
+    {
+        "category": "Options",
+        "short": "-n",
+        "long": null,
+        "needs_input": false,
+        "description": "fast core gene alignment with MAFFT, use with -e"
+    },
+    {
+        "category": "Options",
+        "short": "-i",
+        "long": "INT",
+        "needs_input": true,
+        "description": "minimum percentage identity for blastp [95]"
+    },
+    {
+        "category": "Options",
+        "short": "-cd",
+        "long": "FLOAT",
+        "needs_input": true,
+        "description": "percentage of isolates a gene must be in to be core [99]"
+    },
+    {
+        "category": "Options",
+        "short": "-qc",
+        "long": null,
+        "needs_input": false,
+        "description": "generate QC report with Kraken"
+    },
+    {
+        "category": "Options",
+        "short": "-k",
+        "long": "STR",
+        "needs_input": true,
+        "description": "path to Kraken database for QC, use with -qc"
+    },
+    {
+        "category": "Options",
+        "short": "-a",
+        "long": null,
+        "needs_input": false,
+        "description": "check dependancies and print versions"
+    },
+    {
+        "category": "Options",
+        "short": "-b",
+        "long": "STR",
+        "needs_input": true,
+        "description": "blastp executable [blastp]"
+    },
+    {
+        "category": "Options",
+        "short": "-c",
+        "long": "STR",
+        "needs_input": true,
+        "description": "mcl executable [mcl]"
+    },
+    {
+        "category": "Options",
+        "short": "-d",
+        "long": "STR",
+        "needs_input": true,
+        "description": "mcxdeblast executable [mcxdeblast]"
+    },
+    {
+        "category": "Options",
+        "short": "-g",
+        "long": "INT",
+        "needs_input": true,
+        "description": "maximum number of clusters [50000]"
+    },
+    {
+        "category": "Options",
+        "short": "-m",
+        "long": "STR",
+        "needs_input": true,
+        "description": "makeblastdb executable [makeblastdb]"
+    },
+    {
+        "category": "Options",
+        "short": "-r",
+        "long": null,
+        "needs_input": false,
+        "description": "create R plots, requires R and ggplot2"
+    },
+    {
+        "category": "Options",
+        "short": "-s",
+        "long": null,
+        "needs_input": false,
+        "description": "dont split paralogs"
+    },
+    {
+        "category": "Options",
+        "short": "-t",
+        "long": "INT",
+        "needs_input": true,
+        "description": "translation table [11]"
+    },
+    {
+        "category": "Options",
+        "short": "-ap",
+        "long": null,
+        "needs_input": false,
+        "description": "allow paralogs in core alignment"
+    },
+    {
+        "category": "Options",
+        "short": "-z",
+        "long": null,
+        "needs_input": false,
+        "description": "dont delete intermediate files"
+    },
+    {
+        "category": "Options",
+        "short": "-v",
+        "long": null,
+        "needs_input": false,
+        "description": "verbose output to STDOUT"
+    },
+    {
+        "category": "Options",
+        "short": "-w",
+        "long": null,
+        "needs_input": false,
+        "description": "print version and exit"
+    },
+    {
+        "category": "Options",
+        "short": "-y",
+        "long": null,
+        "needs_input": false,
+        "description": "add gene inference information to spreadsheet, doesnt work with -e"
+    },
+    {
+        "category": "Options",
+        "short": "-iv",
+        "long": "STR",
+        "needs_input": true,
+        "description": "Change the MCL inflation value [1.5]"
+    },
+    {
+        "category": "Options",
+        "short": "-h",
+        "long": null,
+        "needs_input": false,
+        "description": "this help message"
+    }
+]

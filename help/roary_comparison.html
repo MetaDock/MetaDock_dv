@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Help Comparison Report</title>
+    <style>
+        body {
+            font-family: 'Consolas', monospace;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+        .issues {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 5px solid #ffeeba;
+        }
+        .comparison {
+            display: flex;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            position: relative;
+        }
+        .original, .generated {
+            flex: 1;
+            padding: 10px;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .original {
+            background: #fff8f8;
+            border-right: 1px solid #eee;
+        }
+        .generated {
+            background: #f8fff8;
+        }
+        .diff-header {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: -10px -10px 10px -10px;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+        }
+        .timestamp {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .empty {
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+        }
+        .match {
+            background: #e8f5e9;
+        }
+        .nomatch {
+            background: #ffebee;
+        }
+        .section-actions {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .comparison:hover .section-actions {
+            opacity: 1;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .btn-add {
+            background: #28a745;
+        }
+        .btn-modify {
+            background: #17a2b8;
+        }
+        .btn-delete {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Help Comparison Report</h1>
+            <div class="timestamp">Generated on: 2026-01-12 20:01:47</div>
+        </div>
+<div class="comparison" data-section-id="section_0">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Please cite Roary if you use any of the results it produces:
+    Andrew J. Page, Carla A. Cummins, Martin Hunt, Vanessa K. Wong, Sandra Reuter, Matthew T. G. Holden, Maria Fookes, Daniel Falush, Jacqueline A. Keane, Julian Parkhill,</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_1">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">	"Roary: Rapid large-scale prokaryote pan genome analysis", Bioinformatics, 2015 Nov 15;31(22):3691-3693
+    doi: http://doi.org/10.1093/bioinformatics/btv421</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_2">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">	Pubmed: 26198102</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="empty">(Empty)</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_3">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="match">Usage:   roary [options] *.gff</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="match">Usage:   roary [options] *.gff</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_4">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Options: -p INT    number of threads [1]
+         -o STR    clusters output filename [clustered_proteins]
+         -f STR    output directory [.]
+         -e        create a multiFASTA alignment of core genes using PRANK
+         -n        fast core gene alignment with MAFFT, use with -e
+         -i        minimum percentage identity for blastp [95]
+         -cd FLOAT percentage of isolates a gene must be in to be core [99]
+         -qc       generate QC report with Kraken
+         -k STR    path to Kraken database for QC, use with -qc
+         -a        check dependancies and print versions
+         -b STR    blastp executable [blastp]
+         -c STR    mcl executable [mcl]
+         -d STR    mcxdeblast executable [mcxdeblast]
+         -g INT    maximum number of clusters [50000]
+         -m STR    makeblastdb executable [makeblastdb]
+         -r        create R plots, requires R and ggplot2
+         -s        dont split paralogs
+         -t INT    translation table [11]
+         -ap       allow paralogs in core alignment
+         -z        dont delete intermediate files
+         -v        verbose output to STDOUT
+         -w        print version and exit
+         -y        add gene inference information to spreadsheet, doesnt work with -e
+         -iv STR   Change the MCL inflation value [1.5]
+         -h        this help message</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -y
+                        add gene inference information
+                        to spreadsheet, doesnt work with
+                        -e</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_5">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">Example: Quickly generate a core gene alignment using 8 threads
+         roary -e --mafft -p 8 *.gff</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -n
+                        fast core gene alignment with
+                        MAFFT, use with -e</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_6">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="nomatch">For further info see: http://sanger-pathogens.github.io/Roary/</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -z
+                        dont delete intermediate files</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_1">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">Options:</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_2">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -p, INT
+                        number of threads [1]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_3">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -o, STR
+                        clusters output filename
+                        [clustered_proteins]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_4">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -f, STR
+                        output directory [.]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_5">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -e
+                        create a multiFASTA alignment of
+                        core genes using PRANK</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_7">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -i, INT
+                        minimum percentage identity for
+                        blastp [95]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_8">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -cd, FLOAT
+                        percentage of isolates a gene
+                        must be in to be core [99]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_9">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -qc
+                        generate QC report with Kraken</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_10">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -k, STR
+                        path to Kraken database for QC,
+                        use with -qc</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_11">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -a
+                        check dependancies and print
+                        versions</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_12">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -b, STR
+                        blastp executable [blastp]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_13">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -c, STR
+                        mcl executable [mcl]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_14">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -d, STR
+                        mcxdeblast executable
+                        [mcxdeblast]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_15">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -g, INT
+                        maximum number of clusters
+                        [50000]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_16">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -m, STR
+                        makeblastdb executable
+                        [makeblastdb]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_17">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -r
+                        create R plots, requires R and
+                        ggplot2</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_18">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -s
+                        dont split paralogs</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_19">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -t, INT
+                        translation table [11]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_20">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -ap
+                        allow paralogs in core alignment</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_22">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -v
+                        verbose output to STDOUT</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_23">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -w
+                        print version and exit</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_25">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -iv, STR
+                        Change the MCL inflation value
+                        [1.5]</div>
+</div>
+</div>
+<div class="comparison" data-section-id="section_new_26">
+<div class="original">
+<div class="diff-header">Original</div>
+<div class="empty">(Empty)</div>
+</div>
+<div class="generated">
+<div class="diff-header">Generated</div>
+<div class="nomatch">  -h
+                        this help message</div>
+</div>
+</div>
+    </div>
+</body>
+</html>

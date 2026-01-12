@@ -1,0 +1,184 @@
+[
+    {
+        "category": "Options",
+        "short": "-w",
+        "long": "--working-dir",
+        "needs_input": true,
+        "description": "output directory"
+    },
+    {
+        "category": "Options",
+        "short": "-d",
+        "long": "--db-dir",
+        "needs_input": true,
+        "description": "database directory, default to the --db-dir\nset during installation"
+    },
+    {
+        "category": "Options",
+        "short": "-i",
+        "long": "--seqfile",
+        "needs_input": true,
+        "description": "sequence file in fa or fq format (could be\ncompressed by gzip or bz2)  [required]"
+    },
+    {
+        "category": "Options",
+        "short": "-l",
+        "long": "--label",
+        "needs_input": true,
+        "description": "add label as prefix to output files; this is\nuseful when re-running classify with different\nfiltering options"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--include-groups",
+        "needs_input": true,
+        "description": "classifiers of viral groups to included (comma\nseparated and no space in between); available\noptions are:\ndsDNAphage,NCLDV,RNA,ssDNA,lavidaviridae\n[default: dsDNAphage,ssDNA]"
+    },
+    {
+        "category": "Options",
+        "short": "-j",
+        "long": "--jobs",
+        "needs_input": true,
+        "description": "max # of jobs allowed in parallel.  [default:\n48]"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--min-score",
+        "needs_input": true,
+        "description": "minimal score to be identified as viral\n[default: 0.5]"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--min-length",
+        "needs_input": true,
+        "description": "minimal seq length required; all seqs shorter\nthan this will be removed  [default: 0]"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--keep-original-seq",
+        "needs_input": false,
+        "description": "keep the original sequences instead of\ntrimmed; By default, the untranslated regions\nat both ends of identified viral seqs are\ntrimmed; circular sequences are modified to\nremove overlap between both ends and adjusted\nfor the gene splitted into two ends;"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--exclude-lt2gene",
+        "needs_input": false,
+        "description": "short seqs (less than 2 genes) does not have\nany scores, but those with hallmark genes are\nincluded as viral by default; use this option\nto exclude them"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--prep-for-dramv",
+        "needs_input": false,
+        "description": "turn on generating viral seqfile and viral-\naffi-contigs.tab for DRAMv"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--high-confidence-only",
+        "needs_input": false,
+        "description": "only output high confidence viral sequences;\nthis is equivalent to screening final-viral-\nscore.tsv with the following criteria:\n(max_score >= 0.9) OR (max_score >=0.7 AND\nhallmark >= 1)"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--hallmark-required",
+        "needs_input": false,
+        "description": "require hallmark gene on all viral seqs"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--hallmark-required-on-short",
+        "needs_input": false,
+        "description": "require hallmark gene on short viral seqs\n(length cutoff as \"short\" were set by\n\"MIN_SIZE_ALLOWED_WO_HALLMARK_GENE\" in\ntemplate-config.yaml file, default 3kbp); this\ncan reduce false positives at reasonable cost\nof sensitivity"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--viral-gene-required",
+        "needs_input": false,
+        "description": "require viral genes annotated, removing\nputative viral seqs with no genes annotated;\nthis can reduce false positives at reasonable\ncost of sensitivity"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--viral-gene-enrich-off",
+        "needs_input": false,
+        "description": "turn off the requirement of more viral than\ncellular genes for calling full sequence\nviral; this is useful when only using\nVirSorter2 to produce DRAMv input with viral\nsequence identified from other tools, or those\ntrimmed by checkV"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--seqname-suffix-off",
+        "needs_input": false,
+        "description": "turn off adding suffix (||full, ||{i}_partial,\n||lt2gene) to sequence names; note that this\nmight cause partial seqs from the same contig\nto have the same name; this option is could be\nused when you are sure there is one partial\nsequence at max from each contig"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--provirus-off",
+        "needs_input": false,
+        "description": "turn off extracting provirus after classifying\nfull contigs; Togetehr with lower --max-orf-\nper-seq, can speed up a run significantly"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--max-orf-per-seq",
+        "needs_input": true,
+        "description": "max # of orf used for computing taxonomic\nfeature; this option can only be used in\n--provirus-off mode; if # of orf in a seq\nexceeds the max limit, it is sub-sampled to\nthis # to reduce computation  [default: -1]"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--tmpdir",
+        "needs_input": true,
+        "description": "directory name for intermediate files"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--rm-tmpdir",
+        "needs_input": false,
+        "description": "remove intermediate file directory (--tmpdir);\nMore than 100 intermediate files are created\nfor each run, so this is recommended when 100s\nof samples are processed to avoid exceeding\nfile # quota for user"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--verbose",
+        "needs_input": false,
+        "description": "shows detailed rules output"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--profile",
+        "needs_input": true,
+        "description": "snakemake profile e.g. for cluster execution."
+    },
+    {
+        "category": "Options",
+        "short": "-n",
+        "long": "--dryrun",
+        "needs_input": false,
+        "description": "Check rules to run and files to produce"
+    },
+    {
+        "category": "Options",
+        "short": null,
+        "long": "--use-conda-off",
+        "needs_input": false,
+        "description": "Stop using the conda envs (vs2.yaml) that come\nwith this package and use what are installed\nin current system; Only useful when you want\nto install dependencies on your own with your\nown prefer version; this option works with the\ndevelopment version"
+    },
+    {
+        "category": "Options",
+        "short": "-h",
+        "long": "--help",
+        "needs_input": false,
+        "description": "Show this message and exit."
+    }
+]

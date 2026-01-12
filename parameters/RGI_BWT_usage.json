@@ -1,0 +1,8 @@
+{
+    "usage": [
+        "usage: rgi bwt [-h] -1 READ_ONE [-2 READ_TWO] [-a {kma,bowtie2,bwa}]",
+        "               [-n THREADS] -o OUTPUT_FILE [--debug] [--clean] [--local]",
+        "               [--include_wildcard] [--include_other_models] [--include_baits]",
+        "               [--mapq MAPQ] [--mapped MAPPED] [--coverage COVERAGE]"
+    ]
+}

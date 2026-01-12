@@ -1,0 +1,58 @@
+[
+    {
+        "category": "positional arguments",
+        "short": null,
+        "long": "<input>",
+        "needs_input": true,
+        "description": "Input nucleotide sequences in FASTA format (.gz, .bz2 and .xz\n                files are supported)"
+    },
+    {
+        "category": "positional arguments",
+        "short": null,
+        "long": "<output>",
+        "needs_input": true,
+        "description": "Output directory"
+    },
+    {
+        "category": "options",
+        "short": "-h",
+        "long": "--help",
+        "needs_input": false,
+        "description": "show this help message and exit"
+    },
+    {
+        "category": "options",
+        "short": "-d",
+        "long": "PATH",
+        "needs_input": true,
+        "description": "Reference database path. By default the CHECKVDB environment\n                variable is used"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--remove_tmp",
+        "needs_input": false,
+        "description": "Delete intermediate files from the output directory"
+    },
+    {
+        "category": "options",
+        "short": "-t",
+        "long": "INT",
+        "needs_input": true,
+        "description": "Number of threads to use for prodigal-gv and DIAMOND"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--restart",
+        "needs_input": false,
+        "description": "Overwrite existing intermediate files. By default CheckV\n                continues where program left off"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--quiet",
+        "needs_input": false,
+        "description": "Suppress logging messages"
+    }
+]

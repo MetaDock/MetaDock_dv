@@ -456,6 +456,955 @@
           "type": "data"
         }
       ]
+    },
+    "wf_1768211346187": {
+      "id": "wf_1768211346187",
+      "name": "BB_Spades_BAT workflow",
+      "description": "A metagenomic workflow that performs quality control, assembly, and binning of sequencing reads using BBTools, metaSPAdes, and MetaBAT2.",
+      "category": "metagenomics",
+      "complexity": "moderate",
+      "keywords": [
+        "metagenomics",
+        "quality control",
+        "assembly",
+        "binning",
+        "MAGs",
+        "BBTools",
+        "metaSPAdes",
+        "MetaBAT2"
+      ],
+      "use_cases": [
+        "Reconstructing metagenome-assembled genomes from complex microbial communities",
+        "Removing host contamination from metagenomic samples",
+        "Assembling short-read metagenomic data into contigs",
+        "Binning contigs into taxonomic groups for downstream analysis"
+      ],
+      "natural_language_patterns": [
+        "I want to assemble and bin metagenomic reads",
+        "How can I remove host DNA and assemble my metagenome?",
+        "Pipeline for generating MAGs from raw reads",
+        "Metagenome assembly and binning with contamination filtering",
+        "Workflow using BBTools, SPAdes, and MetaBAT"
+      ],
+      "resource_requirements": {
+        "cpu": "8-16 cores",
+        "memory": "32-64 GB",
+        "runtime": "6-24 hours depending on dataset size"
+      },
+      "tags": [],
+      "steps": [
+        {
+          "description": "Input raw sequencing reads from server storage.",
+          "order": 1,
+          "tool": "server-file"
+        },
+        {
+          "description": "Map and optionally remove host or contaminant reads using BBMap.",
+          "order": 2,
+          "tool": "bbmap_v37.62"
+        },
+        {
+          "description": "Perform quality trimming and adapter removal using BBDuk.",
+          "order": 3,
+          "tool": "bbduk_v37.62"
+        },
+        {
+          "description": "Assemble cleaned reads into contigs using metaSPAdes.",
+          "order": 4,
+          "tool": "metaspades_v4.2.0"
+        },
+        {
+          "description": "Bin contigs into metagenome-assembled genomes (MAGs) using MetaBAT2.",
+          "order": 5,
+          "tool": "metabat2_v2.12.1"
+        },
+        {
+          "description": "Output binned genomes to a server directory.",
+          "order": 6,
+          "tool": "server-folder"
+        }
+      ],
+      "connections": [
+        {
+          "id": "connection_1",
+          "from_tool": "node_1",
+          "to_tool": "node_2",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_2",
+          "from_tool": "node_2",
+          "to_tool": "node_3",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_3",
+          "from_tool": "node_3",
+          "to_tool": "node_4",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_4",
+          "from_tool": "node_4",
+          "to_tool": "node_5",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_5",
+          "from_tool": "node_5",
+          "to_tool": "node_6",
+          "description": "",
+          "type": "output"
+        }
+      ]
+    },
+    "wf_1768212219644": {
+      "id": "wf_1768212219644",
+      "name": "BB_HIT_BAT workflow",
+      "description": "A metagenomic workflow that uses BBTools for read preprocessing, MEGAHIT for de novo assembly, and MetaBAT2 for binning contigs into metagenome-assembled genomes (MAGs).",
+      "category": "metagenomics",
+      "complexity": "moderate",
+      "keywords": [
+        "metagenomics",
+        "read preprocessing",
+        "assembly",
+        "binning",
+        "BBTools",
+        "MEGAHIT",
+        "MetaBAT2",
+        "MAGs"
+      ],
+      "use_cases": [
+        "Reconstructing microbial genomes from complex environmental samples",
+        "Processing shotgun metagenomic data with limited computational resources",
+        "Generating binned genomes for downstream taxonomic and functional analysis"
+      ],
+      "natural_language_patterns": [
+        "I want to assemble metagenomic reads and bin genomes",
+        "Run a pipeline for MAG reconstruction from soil metagenomes",
+        "Preprocess, assemble, and bin metagenomic data using BBTools and MEGAHIT",
+        "Create metagenome-assembled genomes from sequencing reads"
+      ],
+      "resource_requirements": {
+        "cpu": "8-16 cores",
+        "memory": "16-64 GB",
+        "runtime": "2-24 hours depending on dataset size"
+      },
+      "tags": [],
+      "steps": [
+        {
+          "description": "Input raw sequencing reads from server storage.",
+          "order": 1,
+          "tool": "server-file"
+        },
+        {
+          "description": "Map and process reads using BBMap for initial quality assessment and filtering.",
+          "order": 2,
+          "tool": "bbmap_v37.62"
+        },
+        {
+          "description": "Perform quality trimming, adapter removal, and contamination filtering using BBDuk.",
+          "order": 3,
+          "tool": "bbduk_v37.62"
+        },
+        {
+          "description": "Assemble cleaned reads into contigs using MEGAHIT for efficient metagenomic assembly.",
+          "order": 4,
+          "tool": "megahit_v1.2.9"
+        },
+        {
+          "description": "Bin contigs into metagenome-assembled genomes (MAGs) using MetaBAT2 based on abundance and composition.",
+          "order": 5,
+          "tool": "metabat2_v2.12.1"
+        },
+        {
+          "description": "Output binned genomes to a designated server folder for downstream analysis.",
+          "order": 6,
+          "tool": "server-folder"
+        }
+      ],
+      "connections": [
+        {
+          "id": "connection_1",
+          "from_tool": "node_1",
+          "to_tool": "node_2",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_2",
+          "from_tool": "node_2",
+          "to_tool": "node_3",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_3",
+          "from_tool": "node_3",
+          "to_tool": "node_4",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_4",
+          "from_tool": "node_4",
+          "to_tool": "node_5",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_5",
+          "from_tool": "node_5",
+          "to_tool": "node_6",
+          "description": "",
+          "type": "output"
+        }
+      ]
+    },
+    "wf_1768218442731": {
+      "id": "wf_1768218442731",
+      "name": "Trim_HIT_BAT Workflow",
+      "description": "A metagenomic workflow that trims raw sequencing reads, performs de novo assembly, and bins contigs into metagenome-assembled genomes (MAGs) using Trimmomatic, MEGAHIT, and MetaBAT2.",
+      "category": "metagenomics",
+      "complexity": "moderate",
+      "keywords": [
+        "metagenomics",
+        "quality trimming",
+        "de novo assembly",
+        "contig binning",
+        "MAGs",
+        "Trimmomatic",
+        "MEGAHIT",
+        "MetaBAT2"
+      ],
+      "use_cases": [
+        "Reconstructing microbial genomes from complex environmental samples",
+        "Processing Illumina shotgun metagenomic data",
+        "Generating high-quality metagenome-assembled genomes for downstream analysis"
+      ],
+      "natural_language_patterns": [
+        "I want to assemble metagenomes and bin genomes from my raw reads",
+        "How can I go from FASTQ files to MAGs automatically?",
+        "Run a pipeline to trim, assemble, and bin metagenomic sequences",
+        "Create a workflow for metagenome assembly and binning using Trimmomatic, MEGAHIT, and MetaBAT2"
+      ],
+      "resource_requirements": {
+        "cpu": "8-16 cores",
+        "memory": "16-64 GB",
+        "runtime": "2-24 hours depending on dataset size"
+      },
+      "tags": [],
+      "steps": [
+        {
+          "description": "Input raw sequencing reads in FASTQ format from local storage.",
+          "order": 1,
+          "tool": "server-file"
+        },
+        {
+          "description": "Trim adapters, low-quality bases, and filter reads using Trimmomatic.",
+          "order": 2,
+          "tool": "trimmomatic_v0.40"
+        },
+        {
+          "description": "Perform de novo assembly of trimmed reads into contigs using MEGAHIT.",
+          "order": 3,
+          "tool": "megahit_v1.2.9"
+        },
+        {
+          "description": "Bin assembled contigs into metagenome-assembled genomes (MAGs) using MetaBAT2 based on sequence composition and abundance.",
+          "order": 4,
+          "tool": "metabat2_v2.12.1"
+        },
+        {
+          "description": "Output binned genomes to a specified directory on the server.",
+          "order": 5,
+          "tool": "server-folder"
+        }
+      ],
+      "connections": [
+        {
+          "id": "connection_1",
+          "from_tool": "node_1",
+          "to_tool": "node_2",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_2",
+          "from_tool": "node_2",
+          "to_tool": "node_3",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_3",
+          "from_tool": "node_3",
+          "to_tool": "node_4",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_4",
+          "from_tool": "node_4",
+          "to_tool": "node_5",
+          "description": "",
+          "type": "output"
+        }
+      ]
+    },
+    "wf_1768218554418": {
+      "id": "wf_1768218554418",
+      "name": "Trim_Spades_BAT Workflow",
+      "description": "A bioinformatics workflow that trims raw sequencing reads, performs metagenomic assembly using SPAdes, and bins contigs into genomes using MetaBAT2.",
+      "category": "metagenomics",
+      "complexity": "moderate",
+      "keywords": [
+        "metagenomics",
+        "read trimming",
+        "assembly",
+        "binning",
+        "MAGs",
+        "Trimmomatic",
+        "metaSPAdes",
+        "MetaBAT2"
+      ],
+      "use_cases": [
+        "Reconstructing metagenome-assembled genomes (MAGs) from environmental samples",
+        "Processing paired-end metagenomic reads for downstream analysis",
+        "Generating high-quality contigs from raw sequencing data"
+      ],
+      "natural_language_patterns": [
+        "I want to assemble metagenomic reads and bin genomes",
+        "Process raw reads to get genome bins",
+        "Trim reads, run SPAdes, and use MetaBAT2 for binning",
+        "Build MAGs from FASTQ files",
+        "Metagenomic pipeline from raw data to binned genomes"
+      ],
+      "resource_requirements": {
+        "cpu": "8-16 cores",
+        "memory": "32-64 GB",
+        "runtime": "several hours to days depending on dataset size"
+      },
+      "tags": [],
+      "steps": [
+        {
+          "description": "Input raw sequencing reads (e.g., paired-end FASTQ files) from the server.",
+          "order": 1,
+          "tool": "server-file"
+        },
+        {
+          "description": "Trim adapters, low-quality bases, and artifacts from raw reads using Trimmomatic.",
+          "order": 2,
+          "tool": "trimmomatic_v0.40"
+        },
+        {
+          "description": "Assemble high-quality trimmed reads into contigs using metaSPAdes.",
+          "order": 3,
+          "tool": "metaspades_v4.2.0"
+        },
+        {
+          "description": "Bin assembled contigs into metagenome-assembled genomes (MAGs) using MetaBAT2 based on sequence composition and abundance.",
+          "order": 4,
+          "tool": "metabat2_v2.12.1"
+        },
+        {
+          "description": "Output the resulting genome bins to a server directory for further analysis.",
+          "order": 5,
+          "tool": "server-folder"
+        }
+      ],
+      "connections": [
+        {
+          "id": "connection_1",
+          "from_tool": "node_1",
+          "to_tool": "node_2",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_2",
+          "from_tool": "node_2",
+          "to_tool": "node_3",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_3",
+          "from_tool": "node_3",
+          "to_tool": "node_4",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_4",
+          "from_tool": "node_4",
+          "to_tool": "node_5",
+          "description": "",
+          "type": "output"
+        }
+      ]
+    },
+    "wf_1768218679935": {
+      "id": "wf_1768218679935",
+      "name": "GTDB-TK Workflow",
+      "description": "A workflow for taxonomic classification of microbial genomes using the GTDB-TK toolkit.",
+      "category": "taxonomy",
+      "complexity": "moderate",
+      "keywords": [
+        "GTDB-TK",
+        "taxonomic classification",
+        "microbial genomics",
+        "genome annotation",
+        "phylogenetics"
+      ],
+      "use_cases": [
+        "Classify bacterial and archaeal genomes to species level using GTDB reference trees",
+        "Standardize taxonomy assignments across draft and complete genomes",
+        "Prepare genomic datasets for comparative phylogenomic analyses"
+      ],
+      "natural_language_patterns": [
+        "classify my genomes with GTDB-TK",
+        "run taxonomic assignment on metagenome-assembled genomes",
+        "use GTDB-TK to get species labels for my isolates",
+        "assign taxonomy to microbial contigs using GTDB"
+      ],
+      "resource_requirements": {
+        "cpu": "8 cores",
+        "memory": "16 GB",
+        "runtime": "2-24 hours depending on dataset size"
+      },
+      "tags": [],
+      "steps": [
+        {
+          "description": "Input genomic sequences in FASTA format from a server file source.",
+          "order": 1,
+          "tool": "server-file"
+        },
+        {
+          "description": "Perform taxonomic classification using the GTDB-TK classify workflow version 2.4.0.",
+          "order": 2,
+          "tool": "gtdbtk_classify_wf_v2.4.0"
+        },
+        {
+          "description": "Output results to a server folder, including classified taxonomy and intermediate files.",
+          "order": 3,
+          "tool": "server-folder"
+        }
+      ],
+      "connections": [
+        {
+          "id": "connection_1",
+          "from_tool": "server-file",
+          "to_tool": "gtdbtk_classify_wf_v2.4.0",
+          "description": "Genomic input sequences are passed from server file to GTDB-TK classifier.",
+          "type": ""
+        },
+        {
+          "id": "connection_2",
+          "from_tool": "gtdbtk_classify_wf_v2.4.0",
+          "to_tool": "server-folder",
+          "description": "Classification results and output files are saved to a server folder.",
+          "type": ""
+        }
+      ]
+    },
+    "wf_1768219015672": {
+      "id": "wf_1768219015672",
+      "name": "phylophlan3 workflow",
+      "description": "A phylogenetic analysis workflow using PhyloPhlAn3 to infer accurate microbial phylogenies from genomic sequences by detecting marker genes, aligning them, and constructing a phylogenetic tree.",
+      "category": "phylogenetics",
+      "complexity": "moderate",
+      "keywords": [
+        "phylogenetics",
+        "microbial genomics",
+        "phylogenetic tree",
+        "marker gene",
+        "sequence alignment",
+        "PhyloPhlAn3"
+      ],
+      "use_cases": [
+        "Inferring evolutionary relationships among bacterial genomes",
+        "Large-scale microbial phylogeny reconstruction from draft genomes",
+        "Marker gene-based phylogenetic analysis of metagenome-assembled genomes (MAGs)"
+      ],
+      "natural_language_patterns": [
+        "I want to build a phylogenetic tree from my microbial genomes",
+        "How can I use PhyloPhlAn3 for phylogeny inference?",
+        "Create a microbial phylogeny using genomic sequences",
+        "Run PhyloPhlAn3 on my FASTA files to get a tree",
+        "Automated phylogenetic analysis of bacteria using marker genes"
+      ],
+      "resource_requirements": {
+        "cpu": "4 cores",
+        "memory": "16 GB",
+        "notes": "Runtime varies significantly based on dataset size and complexity; larger datasets may require more memory and longer runtimes.",
+        "runtime": "2-24 hours"
+      },
+      "tags": [],
+      "steps": [
+        {
+          "description": "Input genomic sequence files (e.g., FASTA) from server storage.",
+          "order": 1,
+          "tool": "server-file"
+        },
+        {
+          "description": "Perform phylogenetic tree inference using PhyloPhlAn3 with automatic marker gene detection and alignment.",
+          "order": 2,
+          "tool": "phylophlan3"
+        },
+        {
+          "description": "Save the resulting phylogenetic tree and associated output files to a server directory.",
+          "order": 3,
+          "tool": "server-folder"
+        }
+      ],
+      "connections": [
+        {
+          "id": "connection_1",
+          "from_tool": "server-file",
+          "to_tool": "phylophlan3",
+          "description": "Genomic sequences are passed from input storage to PhyloPhlAn3 for processing.",
+          "type": "data"
+        },
+        {
+          "id": "connection_2",
+          "from_tool": "phylophlan3",
+          "to_tool": "server-folder",
+          "description": "The inferred phylogenetic tree and related outputs are saved to a designated server directory.",
+          "type": "data"
+        }
+      ]
+    },
+    "wf_1768220296036": {
+      "id": "wf_1768220296036",
+      "name": "Prokka_Roary_RAxML Workflow",
+      "description": "A bioinformatics workflow for prokaryotic genome annotation, pan-genome analysis, and phylogenetic tree construction using Prokka, Roary, and RAxML.",
+      "category": "genomics",
+      "complexity": "moderate",
+      "keywords": [
+        "prokaryotic genomes",
+        "genome annotation",
+        "pan-genome",
+        "phylogenetics",
+        "Prokka",
+        "Roary",
+        "RAxML"
+      ],
+      "use_cases": [
+        "Annotating multiple bacterial genomes",
+        "Identifying core and accessory genes across strains",
+        "Constructing phylogenetic trees from core gene alignments"
+      ],
+      "natural_language_patterns": [
+        "I want to annotate bacterial genomes and build a phylogenetic tree",
+        "How can I analyze the pan-genome of my isolates?",
+        "Run Prokka, then Roary, then RAxML on my assemblies",
+        "Create a phylogeny from annotated prokaryotic genomes"
+      ],
+      "resource_requirements": {
+        "cpu": "4-8 cores",
+        "memory": "8-16 GB",
+        "runtime": "1-6 hours"
+      },
+      "tags": [],
+      "steps": [
+        {
+          "description": "Input FASTA files containing assembled prokaryotic genomes.",
+          "order": 1,
+          "tool": "server-file"
+        },
+        {
+          "description": "Annotate prokaryotic genomes using Prokka to generate GFF3, GBK, and other annotation files.",
+          "order": 2,
+          "tool": "prokka_v1.14.6"
+        },
+        {
+          "description": "Perform pan-genome analysis using Roary to identify core and accessory genes across annotated genomes.",
+          "order": 3,
+          "tool": "roary"
+        },
+        {
+          "description": "Infer a maximum likelihood phylogenetic tree from the core gene alignment produced by Roary.",
+          "order": 4,
+          "tool": "RAxML"
+        },
+        {
+          "description": "Output results including annotations, pan-genome data, and phylogenetic tree to a designated folder.",
+          "order": 5,
+          "tool": "server-folder"
+        }
+      ],
+      "connections": [
+        {
+          "id": "connection_1",
+          "from_tool": "node_1",
+          "to_tool": "node_2",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_2",
+          "from_tool": "node_2",
+          "to_tool": "node_3",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_3",
+          "from_tool": "node_3",
+          "to_tool": "node_4",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_4",
+          "from_tool": "node_4",
+          "to_tool": "node_5",
+          "description": "",
+          "type": "output"
+        }
+      ]
+    },
+    "wf_1768220387970": {
+      "id": "wf_1768220387970",
+      "name": "Prokka_Roary_IQTree Workflow",
+      "description": "A bioinformatics workflow for prokaryotic genome annotation, pan-genome analysis, and phylogenetic tree construction using Prokka, Roary, and IQ-TREE.",
+      "category": "genomics",
+      "complexity": "moderate",
+      "keywords": [
+        "prokaryotic genomes",
+        "genome annotation",
+        "pan-genome",
+        "phylogenetics",
+        "Prokka",
+        "Roary",
+        "IQ-TREE"
+      ],
+      "use_cases": [
+        "Annotating multiple bacterial genome assemblies",
+        "Identifying core and accessory genes across strains",
+        "Constructing a phylogenetic tree from core gene alignments"
+      ],
+      "natural_language_patterns": [
+        "I want to annotate bacterial genomes and build a phylogenetic tree",
+        "How can I perform pan-genome analysis and phylogeny from assemblies?",
+        "Run Prokka, then Roary, then IQ-TREE on my genomes",
+        "Create a core gene alignment and tree from annotated genomes"
+      ],
+      "resource_requirements": {
+        "cpu": "4-8 cores",
+        "memory": "8-16 GB",
+        "runtime": "1-4 hours depending on dataset size"
+      },
+      "tags": [],
+      "steps": [
+        {
+          "description": "Input genomic assembly files in FASTA format.",
+          "order": 1,
+          "tool": "server-file"
+        },
+        {
+          "description": "Annotate prokaryotic genomes to predict genes, CDSs, and functional features.",
+          "order": 2,
+          "tool": "prokka_v1.14.6"
+        },
+        {
+          "description": "Perform pan-genome analysis to identify core and accessory genes across annotated genomes.",
+          "order": 3,
+          "tool": "roary"
+        },
+        {
+          "description": "Infer a maximum-likelihood phylogenetic tree from the core gene alignment generated by Roary.",
+          "order": 4,
+          "tool": "IQ-Tree"
+        },
+        {
+          "description": "Output results including annotations, gene presence/absence matrix, and phylogenetic tree.",
+          "order": 5,
+          "tool": "server-folder"
+        }
+      ],
+      "connections": [
+        {
+          "id": "connection_1",
+          "from_tool": "node_1",
+          "to_tool": "node_2",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_2",
+          "from_tool": "node_2",
+          "to_tool": "node_3",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_3",
+          "from_tool": "node_3",
+          "to_tool": "node_4",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_4",
+          "from_tool": "node_4",
+          "to_tool": "node_5",
+          "description": "",
+          "type": "output"
+        }
+      ]
+    },
+    "wf_1768221118024": {
+      "id": "wf_1768221118024",
+      "name": "CheckV_VirSorter Workflow",
+      "description": "A bioinformatics workflow that integrates CheckV and VirSorter for comprehensive viral sequence identification, quality assessment, and downstream processing of metagenomic contigs.",
+      "category": "viral_sequence_analysis",
+      "complexity": "moderate",
+      "keywords": [
+        "viral detection",
+        "metagenomics",
+        "contig analysis",
+        "quality assessment",
+        "host contamination",
+        "viral classification"
+      ],
+      "use_cases": [
+        "Identify viral sequences in assembled metagenomic contigs",
+        "Assess the quality and completeness of viral genomes",
+        "Remove host-derived contamination from viral contigs",
+        "Combine evidence from multiple viral prediction tools for higher confidence calls"
+      ],
+      "natural_language_patterns": [
+        "I want to find viruses in my metagenome assembly",
+        "Run CheckV and VirSorter on my contigs",
+        "How can I filter out host contamination from viral sequences?",
+        "Analyze viral contigs for quality and hallmark genes",
+        "Integrated pipeline for viral sequence validation"
+      ],
+      "resource_requirements": {
+        "cpu": "8 cores",
+        "memory": "16 GB",
+        "runtime": "2-6 hours depending on dataset size"
+      },
+      "tags": [],
+      "steps": [
+        {
+          "description": "Input FASTA file containing assembled contigs or sequences for viral analysis.",
+          "order": 1,
+          "tool": "server-file"
+        },
+        {
+          "description": "Performs end-to-end viral contig identification, quality assessment, and removal of host contamination using CheckV.",
+          "order": 2,
+          "tool": "CheckV_end_to_end"
+        },
+        {
+          "description": "Predicts viral sequences within the input contigs using VirSorter, assigning confidence scores and identifying viral hallmark genes.",
+          "order": 3,
+          "tool": "VirSorter_Run"
+        },
+        {
+          "description": "Output directory storing final results including classified viral sequences and associated metadata.",
+          "order": 4,
+          "tool": "server-folder"
+        }
+      ],
+      "connections": [
+        {
+          "id": "connection_1",
+          "from_tool": "node_1",
+          "to_tool": "node_2",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_2",
+          "from_tool": "node_2",
+          "to_tool": "node_3",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_3",
+          "from_tool": "node_3",
+          "to_tool": "node_4",
+          "description": "",
+          "type": "output"
+        }
+      ]
+    },
+    "wf_1768221215217": {
+      "id": "wf_1768221215217",
+      "name": "BB_RGI Workflow",
+      "description": "A bioinformatics workflow that processes raw sequencing data using BBTools for read alignment and quality trimming, followed by antibiotic resistance gene detection with RGI (ResFinder Gene Identifier).",
+      "category": "custom",
+      "complexity": "moderate",
+      "keywords": [
+        "antibiotic resistance",
+        "read alignment",
+        "quality trimming",
+        "BBTools",
+        "RGI",
+        "FASTQ processing",
+        "gene detection"
+      ],
+      "use_cases": [
+        "Detecting antibiotic resistance genes in bacterial isolates",
+        "Preprocessing raw sequencing reads for downstream analysis",
+        "Integrating quality control and functional gene annotation in microbial genomics"
+      ],
+      "natural_language_patterns": [
+        "I want to find antibiotic resistance genes from my FASTQ files",
+        "Process raw reads and identify resistance markers using BBTools and RGI",
+        "Build a pipeline for QC, alignment, and AMR gene detection",
+        "Analyze sequencing data for antimicrobial resistance with BBMap and RGI"
+      ],
+      "resource_requirements": {
+        "cpu": "4-8 cores",
+        "memory": "8-16 GB",
+        "runtime": "1-3 hours depending on dataset size"
+      },
+      "tags": [],
+      "steps": [
+        {
+          "description": "Input raw sequencing data file (e.g., FASTQ) into the workflow.",
+          "order": 1,
+          "tool": "server-file"
+        },
+        {
+          "description": "Align sequencing reads to a reference genome using BBMap for initial mapping.",
+          "order": 2,
+          "tool": "bbmap_v37.62"
+        },
+        {
+          "description": "Quality trim and filter reads using BBduk to remove adapters and low-quality sequences.",
+          "order": 3,
+          "tool": "bbduk_v37.62"
+        },
+        {
+          "description": "Identify antibiotic resistance genes using Resistance Gene Identifier with BWT algorithm.",
+          "order": 4,
+          "tool": "RGI_BWT"
+        },
+        {
+          "description": "Output processed results to a designated server folder.",
+          "order": 5,
+          "tool": "server-folder"
+        }
+      ],
+      "connections": [
+        {
+          "id": "connection_1",
+          "from_tool": "node_1",
+          "to_tool": "node_2",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_2",
+          "from_tool": "node_2",
+          "to_tool": "node_3",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_3",
+          "from_tool": "node_3",
+          "to_tool": "node_4",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_4",
+          "from_tool": "node_4",
+          "to_tool": "node_5",
+          "description": "",
+          "type": "output"
+        }
+      ]
+    },
+    "wf_1768221270471": {
+      "id": "wf_1768221270471",
+      "name": "Trim_RGI Workflow",
+      "description": "A bioinformatics workflow that trims raw sequencing reads using Trimmomatic and then performs antibiotic resistance gene detection using RGI (ResFinder Gene Identifier) via BWT alignment.",
+      "category": "custom",
+      "complexity": "moderate",
+      "keywords": [
+        "Trimmomatic",
+        "RGI",
+        "antibiotic resistance",
+        "gene detection",
+        "read trimming",
+        "BWT alignment",
+        "FASTQ"
+      ],
+      "use_cases": [
+        "Preprocessing raw sequencing reads and identifying antibiotic resistance genes in bacterial samples.",
+        "Analyzing metagenomic datasets for antimicrobial resistance profiling.",
+        "Quality control and functional annotation of NGS data in clinical or environmental microbiology."
+      ],
+      "natural_language_patterns": [
+        "I want to trim my reads and find antibiotic resistance genes.",
+        "How can I detect AMR genes from FASTQ files after quality trimming?",
+        "Run Trimmomatic and RGI on my raw sequencing data.",
+        "Pipeline for QC and resistance gene identification in bacteria."
+      ],
+      "resource_requirements": {
+        "cpu": "4 cores",
+        "memory": "8 GB",
+        "runtime": "2-4 hours depending on dataset size"
+      },
+      "tags": [],
+      "steps": [
+        {
+          "description": "Input raw sequencing data file (e.g., FASTQ) from server storage.",
+          "order": 1,
+          "tool": "server-file"
+        },
+        {
+          "description": "Process raw reads by removing adapters, low-quality bases, and trimming ends using Trimmomatic version 0.40.",
+          "order": 2,
+          "tool": "trimmomatic_v0.40"
+        },
+        {
+          "description": "Detect antibiotic resistance genes in trimmed reads using the ResFinder Gene Identifier with BWT-based alignment method.",
+          "order": 3,
+          "tool": "RGI_BWT"
+        },
+        {
+          "description": "Save the output results from RGI analysis to a designated folder on the server.",
+          "order": 4,
+          "tool": "server-folder"
+        }
+      ],
+      "connections": [
+        {
+          "id": "connection_1",
+          "from_tool": "node_1",
+          "to_tool": "node_2",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_2",
+          "from_tool": "node_2",
+          "to_tool": "node_3",
+          "description": "",
+          "type": "output"
+        },
+        {
+          "id": "connection_3",
+          "from_tool": "node_3",
+          "to_tool": "node_4",
+          "description": "",
+          "type": "output"
+        }
+      ]
     }
   }
 }

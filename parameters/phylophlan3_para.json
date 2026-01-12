@@ -1,0 +1,338 @@
+[
+    {
+        "category": "options",
+        "short": "-h",
+        "long": "--help",
+        "needs_input": false,
+        "description": "show this help message and exit"
+    },
+    {
+        "category": "options",
+        "short": "-i",
+        "long": "--input",
+        "needs_input": true,
+        "description": "Folder containing your input genomes and/or proteomes\n(default: None)"
+    },
+    {
+        "category": "options",
+        "short": "-c",
+        "long": "--clean",
+        "needs_input": true,
+        "description": "Clean the output and partial data produced for the\nspecified project (default: None)"
+    },
+    {
+        "category": "options",
+        "short": "-o",
+        "long": "--output",
+        "needs_input": true,
+        "description": "Output folder name, otherwise it will be the name of\nthe input folder concatenated with the name of the\ndatabase used (default: None)"
+    },
+    {
+        "category": "options",
+        "short": "-d",
+        "long": "--database",
+        "needs_input": true,
+        "description": "The name of the database of markers to use (default:\nNone)"
+    },
+    {
+        "category": "options",
+        "short": "-t",
+        "long": "--db_type",
+        "needs_input": true,
+        "description": "Specify the type of the database of markers, where \"n\"\nstands for nucleotides and \"a\" for amino acids. If not\nspecified, PhyloPhlAn will automatically detect the\ntype of database (default: None)"
+    },
+    {
+        "category": "options",
+        "short": "-f",
+        "long": "--config_file",
+        "needs_input": true,
+        "description": "The configuration file to use. Four ready-to-use\nconfiguration files can be generated using the\n\"phylophlan_write_default_configs.sh\" script (default:\nNone)"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--diversity",
+        "needs_input": true,
+        "description": "Specify the expected diversity of the phylogeny,\nautomatically adjust some parameters: \"low\": for\ngenus-/species-/strain-level phylogenies; \"medium\":\nfor class-/order-level phylogenies; \"high\": for\nphylum-/tree-of-life size phylogenies (default: None)"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--strainphlan",
+        "needs_input": false,
+        "description": "The inputs are aligned markers from StrainPhlAn\n(default: False)"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--accurate",
+        "needs_input": false,
+        "description": "Use more phylogenetic signal which can result in more\naccurate phylogeny; affected parameters depend on the\n\"--diversity\" level (default: False)"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--fast",
+        "needs_input": false,
+        "description": "Perform more a faster phylogeny reconstruction by\nreducing the phylogenetic positions to use; affected\nparameters depend on the \"--diversity\" level (default: False)"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--clean_all",
+        "needs_input": false,
+        "description": "Remove all installation and database files\nautomatically generated (default: False)"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--database_list",
+        "needs_input": false,
+        "description": "List of all the available databases that can be\nspecified with the -d/--database option (default: False)"
+    },
+    {
+        "category": "options",
+        "short": "-s",
+        "long": "--submat",
+        "needs_input": true,
+        "description": "Specify the substitution matrix to use, available\nsubstitution matrices can be listed with \"--\nsubmat_list\" (default: None)"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--submat_list",
+        "needs_input": false,
+        "description": "List of all the available substitution matrices that\ncan be specified with the -s/--submat option (default: False)"
+    },
+    {
+        "category": "options",
+        "short": null,
+        "long": "--submod_list",
+        "needs_input": false,
+        "description": "List of all the available substitution models that can\nbe specified with the --maas option (default: False)"
+    },
+    {
+        "category": "options",
+        "short": "--nproc",
+        "long": "NPROC",
+        "needs_input": true,
+        "description": "The number of cores to use (default: 1)"
+    },
+    {
+        "category": "options",
+        "short": "--min_num_proteins",
+        "long": "MIN_NUM_PROTEINS",
+        "needs_input": true,
+        "description": "Proteomes with less than this number of proteins will\nbe discarded (default: 1)"
+    },
+    {
+        "category": "options",
+        "short": "--min_len_protein",
+        "long": "MIN_LEN_PROTEIN",
+        "needs_input": true,
+        "description": "Proteins in proteomes shorter than this value will be\ndiscarded (default: 50)"
+    },
+    {
+        "category": "options",
+        "short": "--min_num_markers",
+        "long": "MIN_NUM_MARKERS",
+        "needs_input": true,
+        "description": "Input genomes or proteomes that map to less than the\nspecified number of markers will be discarded\n(default: 1)"
+    },
+    {
+        "category": "options",
+        "short": "--trim",
+        "long": "{gap_trim,gap_perc,not_variant,greedy}",
+        "needs_input": true,
+        "description": "Specify which type of trimming to perform: \"gap_trim\":\nexecute what specified in the \"trim\" section of the\nconfiguration file; \"gap_perc\": remove columns with a\npercentage of gaps above a certain threshold (see \"--\ngap_perc_threshold\" parameter)\"not_variant\": remove\ncolumns with at least one nucleotide/amino acid\nappearing above a certain threshold (see \"--\nnot_variant_threshold\" parameter); \"greedy\": performs\nall the above trimming steps; If not specified, no\ntrimming will be performed (default: None)"
+    },
+    {
+        "category": "options",
+        "short": "--gap_perc_threshold",
+        "long": "GAP_PERC_THRESHOLD",
+        "needs_input": true,
+        "description": "Specify the value used to consider a column not\nvariant when \"--trim not_variant\" is specified\n(default: 0.8)"
+    },
+    {
+        "category": "options",
+        "short": "--not_variant_threshold",
+        "long": "NOT_VARIANT_THRESHOLD",
+        "needs_input": true,
+        "description": "Specify the value used to consider a column not\nvariant when \"--trim not_variant\" is specified\n(default: 0.99)"
+    },
+    {
+        "category": "options",
+        "short": "--subsample",
+        "long": "{phylophlan,onethousand,sevenhundred,fivehundred,threehundred,onehundred,fifty,twentyfive,tenpercent,twentyfivepercent,fiftypercent,full}",
+        "needs_input": true,
+        "description": "The number of positions to retain from each single\nmarker, available option are: \"phylophlan\": specific\nnumber of positions for each PhyloPhlAn marker (only\nwhen \"--database phylophlan\"); \"onethousand\": return\nthe top 1000 positions; \"sevenhundred\": return the top\n700; \"fivehundred\": return the top 500; \"threehundred\"\nreturn the top 300; \"onehundred\": return the top 100\npositions; \"fifty\": return the top 50 positions;\n\"twentyfive\": return the top 25 positions;\n\"fiftypercent\": return the top 50 percent positions;\n\"twentyfivepercent\": return the top 25% positions;\n\"tenpercent\": return the top 10% positions; \"full\":\nfull alignment. (default: full)"
+    },
+    {
+        "category": "options",
+        "short": "--unknown_fraction",
+        "long": "UNKNOWN_FRACTION",
+        "needs_input": true,
+        "description": "Define the amount of unknowns (\"X\" and \"-\") allowed in\neach column of the MSA of the markers (default: 0.3)"
+    },
+    {
+        "category": "options",
+        "short": "--scoring_function",
+        "long": "{trident,muscle,random}",
+        "needs_input": true,
+        "description": "Specify which scoring function to use to evaluate\ncolumns in the MSA results (default: None)"
+    },
+    {
+        "category": "options",
+        "short": "--sort",
+        "long": null,
+        "needs_input": false,
+        "description": "If specified, the markers will be ordered, when using\nthe PhyloPhlAn database, it will be automatically set\nto \"True\" (default: False)"
+    },
+    {
+        "category": "options",
+        "short": "--remove_fragmentary_entries",
+        "long": null,
+        "needs_input": false,
+        "description": "If specified the MSAs will be checked and cleaned from\nfragmentary entries. See --fragmentary_threshold for\nthe threshold values above which an entry will be\nconsidered fragmentary (default: False)"
+    },
+    {
+        "category": "options",
+        "short": "--fragmentary_threshold",
+        "long": "FRAGMENTARY_THRESHOLD",
+        "needs_input": true,
+        "description": "The fraction of gaps in the MSA to be considered\nfragmentary and hence discarded (default: 0.85)"
+    },
+    {
+        "category": "options",
+        "short": "--min_num_entries",
+        "long": "MIN_NUM_ENTRIES",
+        "needs_input": true,
+        "description": "The minimum number of entries to be present for each\nof the markers in the database (default: 4)"
+    },
+    {
+        "category": "options",
+        "short": "--maas",
+        "long": "MAAS",
+        "needs_input": true,
+        "description": "Select a mapping file that specifies the substitution\nmodel of amino acid to use for each of the markers for\nthe gene tree reconstruction. File must be tab-\nseparated (default: None)"
+    },
+    {
+        "category": "options",
+        "short": "--remove_only_gaps_entries",
+        "long": null,
+        "needs_input": false,
+        "description": "If specified, entries in the MSAs composed only of\ngaps (\"-\") will be removed. This is equivalent to\nspecify \"--remove_fragmentary_entries\n--fragmentary_threshold 1\" (default: False)"
+    },
+    {
+        "category": "options",
+        "short": "--mutation_rates",
+        "long": null,
+        "needs_input": false,
+        "description": "If specified will produced a mutation rates table for\neach of the aligned markers and a summary table for\nthe concatenated MSA. This operation can take a long\ntime to finish (default: False)"
+    },
+    {
+        "category": "options",
+        "short": "--force_nucleotides",
+        "long": null,
+        "needs_input": false,
+        "description": "If specified force PhyloPhlAn to use nucleotide\nsequences for the phylogenetic analysis, even in the\ncase of a database of amino acids (default: False)"
+    },
+    {
+        "category": "options",
+        "short": "--convert_N2gap",
+        "long": null,
+        "needs_input": false,
+        "description": "If specified Ns will be forced to gaps (-) after the\nMSAs and only whit nucleotides MSAs (default: False)"
+    },
+    {
+        "category": "options",
+        "short": "--update",
+        "long": null,
+        "needs_input": false,
+        "description": "Update the databases file (default: False)"
+    },
+    {
+        "category": "options",
+        "short": "--citation",
+        "long": null,
+        "needs_input": false,
+        "description": "Show citation"
+    },
+    {
+        "category": "options",
+        "short": "--verbose",
+        "long": null,
+        "needs_input": false,
+        "description": "Makes PhyloPhlAn verbose (default: False)"
+    },
+    {
+        "category": "options",
+        "short": "-v",
+        "long": "--version",
+        "needs_input": false,
+        "description": "Prints the current PhyloPhlAn version and exit"
+    },
+    {
+        "category": "Folder paths:",
+        "short": "--input_folder",
+        "long": "INPUT_FOLDER",
+        "needs_input": true,
+        "description": "Path to the folder containing the input data (default:\n                        input/)"
+    },
+    {
+        "category": "Folder paths:",
+        "short": "--data_folder",
+        "long": "DATA_FOLDER",
+        "needs_input": true,
+        "description": "Path to the folder where to store the intermediate\n                        files, default is \"tmp\" inside the project's output\n                        folder (default: None)"
+    },
+    {
+        "category": "Folder paths:",
+        "short": "--databases_folder",
+        "long": "DATABASES_FOLDER",
+        "needs_input": true,
+        "description": "Path to the folder containing the database files\n                        (default: phylophlan_databases/)"
+    },
+    {
+        "category": "Folder paths:",
+        "short": "--submat_folder",
+        "long": "SUBMAT_FOLDER",
+        "needs_input": true,
+        "description": "Path to the folder containing the substitution\n                        matrices to use to compute the column score for the\n                        subsampling step (default:\n                        phylophlan_substitution_matrices/)"
+    },
+    {
+        "category": "Folder paths:",
+        "short": "--submod_folder",
+        "long": "SUBMOD_FOLDER",
+        "needs_input": true,
+        "description": "Path to the folder containing the mapping file with\n                        substitution models for each marker for the gene tree\n                        building (default: phylophlan_substitution_models/)"
+    },
+    {
+        "category": "Folder paths:",
+        "short": "--configs_folder",
+        "long": "CONFIGS_FOLDER",
+        "needs_input": true,
+        "description": "Path to the folder containing the configuration files\n                        (default: phylophlan_configs/)"
+    },
+    {
+        "category": "Folder paths:",
+        "short": "--output_folder",
+        "long": "OUTPUT_FOLDER",
+        "needs_input": true,
+        "description": "Path to the output folder where to save the results\n                        (default: )"
+    },
+    {
+        "category": "Filename extensions:",
+        "short": "--genome_extension",
+        "long": "GENOME_EXTENSION",
+        "needs_input": true,
+        "description": "Extension for input genomes (default: .fna)"
+    },
+    {
+        "category": "Filename extensions:",
+        "short": "--proteome_extension",
+        "long": "PROTEOME_EXTENSION",
+        "needs_input": true,
+        "description": "Extension for input proteomes (default: .faa)"
+    }
+]

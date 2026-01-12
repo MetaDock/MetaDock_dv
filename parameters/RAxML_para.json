@@ -1,0 +1,310 @@
+[
+    {
+        "category": "positional arguments",
+        "short": null,
+        "long": "<command>",
+        "needs_input": true,
+        "description": "One of the following commands: \n\n  - 'info'                : Print version, citation, and basic parameter overview\n  - 'selftest'            : Run a short self-test to verify RAxML is working properly\n  - 'parsimony'           : Compute a parsimony starting tree\n  - 'jackknife'           : Perform a bootstrap/jackknife analysis\n  - 'bootstrap'           : Synonym for jackknife\n  - 'search'              : Perform a thorough ML tree search\n  - 'evaluate'            : Compute ML estimates of branch lengths and substitution parameters on a fixed topology\n  - 'append'              : Append bootstrapped trees to an ML tree\n  - 'classify'            : Assign query sequences to a reference tree (experimental)\n  - 'consense'            : Compute a consensus tree from a set of input trees"
+    },
+    {
+        "category": "Input parameters",
+        "short": "-s",
+        "long": "PHYLIP_FILE",
+        "needs_input": true,
+        "description": "Name of the input multiple sequence alignment file in PHYLIP format."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-q",
+        "long": "QUANT_FILE",
+        "needs_input": true,
+        "description": "Specify a file that contains multiple partitions for the alignment. The file format is described in the manual."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-t",
+        "long": "TREE_FILE",
+        "needs_input": true,
+        "description": "Initial or fixed tree file name. If you specify a tree file with -t, RAxML will not compute a parsimony starting tree, but read the tree from the file instead. This is useful for bootstrapping or when you want to evaluate a specific tree."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-z",
+        "long": "BOOTSTRAP_FILE",
+        "needs_input": true,
+        "description": "File containing multiple trees (e.g., bootstrap trees). Used for bootstrapping or for computing a consensus tree."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-u",
+        "long": "TAXONOMY_FILE",
+        "needs_input": true,
+        "description": "File with taxonomy information for the sequences. Used in conjunction with the classify command."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-f",
+        "long": "FUNCTION",
+        "needs_input": true,
+        "description": "Specifies the algorithm to be executed. See the list under <command> above for available functions. Note that some functions require additional parameters."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-m",
+        "long": "MODEL",
+        "needs_input": true,
+        "description": "Substitution model to use. Examples: GTRGAMMA, GTRCAT, PROTGAMMAAUTO, etc. See the manual for a complete list of available models."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-V",
+        "long": null,
+        "needs_input": false,
+        "description": "If this flag is used, RAxML will treat all sites in the alignment as variable. This is useful for certain types of analyses where invariant sites should be ignored."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-N",
+        "long": "NUMBER",
+        "needs_input": true,
+        "description": "Number of alternative runs/analyses to perform. For example, when conducting a tree search, RAxML will perform N independent searches starting from different parsimony trees."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-J",
+        "long": "TYPE",
+        "needs_input": true,
+        "description": "Generate a random starting tree using either e.g., BIONJ or PARSIMONY methods. Type can be BIONJ or PARSIMONY."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-d",
+        "long": null,
+        "needs_input": false,
+        "description": "Use DNA evolutionary models (same as specifying -m GTRGAMMA for DNA)."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-p",
+        "long": "INTEGER",
+        "needs_input": true,
+        "description": "Random seed for generating pseudorandom numbers (e.g., for bootstrapping or tree searching)."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-w",
+        "long": "PATH",
+        "needs_input": true,
+        "description": "Full path to write output files. Make sure the path exists and is writable."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-n",
+        "long": "NAME",
+        "needs_input": true,
+        "description": "Name appended to result files (e.g., RAxML_result.NAME)."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-c",
+        "long": "CAT_CUTOFF",
+        "needs_input": true,
+        "description": "Specify the rate category cutoff for CAT-based models. Default is usually 10 or 20 depending on the model."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-b",
+        "long": "BOOTSTRAP_SEED",
+        "needs_input": true,
+        "description": "Random number seed for bootstrapping. Must be specified when doing bootstrapping (-f b or -f j)."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-T",
+        "long": "THREADS",
+        "needs_input": true,
+        "description": "Number of threads to use for parallelization (SMP parallelization only)."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-i",
+        "long": "ALPHA",
+        "needs_input": true,
+        "description": "Specify the initial alpha shape parameter for the gamma distribution of rate heterogeneity across sites."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-k",
+        "long": null,
+        "needs_input": false,
+        "description": "Use the KRYLOV method for optimizing branch lengths (experimental)."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-g",
+        "long": "GROUPING_FILE",
+        "needs_input": true,
+        "description": "File specifying predefined taxon groupings (used in certain constraint-based analyses)."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-l",
+        "long": "LOG_FILE",
+        "needs_input": true,
+        "description": "Specify a custom log file name to write RAxML output."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-o",
+        "long": "OUTGROUP",
+        "needs_input": true,
+        "description": "Comma-separated list of taxon names to be used as outgroup(s). The tree will be rooted at these taxa."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-x",
+        "long": "RANDOMIZE_SEED",
+        "needs_input": true,
+        "description": "Random seed for randomizing stepwise addition order during parsimony tree construction."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-y",
+        "long": null,
+        "needs_input": false,
+        "description": "Resume a previous run that was interrupted. RAxML will attempt to recover intermediate files and continue."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-R",
+        "long": "RESTORE_FILE",
+        "needs_input": true,
+        "description": "Restore a run from a checkpoint file (e.g., RAxML_checkpoint.NAME)."
+    },
+    {
+        "category": "Input parameters",
+        "short": "-I",
+        "long": "ITERATIONS",
+        "needs_input": true,
+        "description": "Number of iterations for certain algorithms (e.g., thorough search options)."
+    },
+    {
+        "category": "Output parameters",
+        "short": "-w",
+        "long": "PATH",
+        "needs_input": true,
+        "description": "Full path to write output files. Make sure the path exists and is writable."
+    },
+    {
+        "category": "Output parameters",
+        "short": "-n",
+        "long": "NAME",
+        "needs_input": true,
+        "description": "Name appended to result files (e.g., RAxML_result.NAME)."
+    },
+    {
+        "category": "Output parameters",
+        "short": "-l",
+        "long": "LOG_FILE",
+        "needs_input": true,
+        "description": "Specify a custom log file name to write RAxML output."
+    },
+    {
+        "category": "Output parameters",
+        "short": "-M",
+        "long": null,
+        "needs_input": false,
+        "description": "Do not print bipartition support values on the ML tree (suppresses printing of bootstrap values)."
+    },
+    {
+        "category": "Output parameters",
+        "short": "-C",
+        "long": null,
+        "needs_input": false,
+        "description": "Do not print confidence values on the tree (alternative to -M)."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "-T",
+        "long": "THREADS",
+        "needs_input": true,
+        "description": "Number of threads to use for parallelization (SMP parallelization only)."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "-p",
+        "long": "INTEGER",
+        "needs_input": true,
+        "description": "Random seed for generating pseudorandom numbers (e.g., for bootstrapping or tree searching)."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "-b",
+        "long": "BOOTSTRAP_SEED",
+        "needs_input": true,
+        "description": "Random number seed for bootstrapping. Must be specified when doing bootstrapping (-f b or -f j)."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "-x",
+        "long": "RANDOMIZE_SEED",
+        "needs_input": true,
+        "description": "Random seed for randomizing stepwise addition order during parsimony tree construction."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "-i",
+        "long": "ALPHA",
+        "needs_input": true,
+        "description": "Specify the initial alpha shape parameter for the gamma distribution of rate heterogeneity across sites."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "-c",
+        "long": "CAT_CUTOFF",
+        "needs_input": true,
+        "description": "Specify the rate category cutoff for CAT-based models. Default is usually 10 or 20 depending on the model."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "-I",
+        "long": "ITERATIONS",
+        "needs_input": true,
+        "description": "Number of iterations for certain algorithms (e.g., thorough search options)."
+    },
+    {
+        "category": "Processing parameters",
+        "short": "-k",
+        "long": null,
+        "needs_input": false,
+        "description": "Use the KRYLOV method for optimizing branch lengths (experimental)."
+    },
+    {
+        "category": "Miscellaneous parameters",
+        "short": "-h",
+        "long": null,
+        "needs_input": false,
+        "description": "Print help message and exit."
+    },
+    {
+        "category": "Miscellaneous parameters",
+        "short": "-v",
+        "long": null,
+        "needs_input": false,
+        "description": "Print version information and exit."
+    },
+    {
+        "category": "Miscellaneous parameters",
+        "short": "-y",
+        "long": null,
+        "needs_input": false,
+        "description": "Resume a previous run that was interrupted. RAxML will attempt to recover intermediate files and continue."
+    },
+    {
+        "category": "Miscellaneous parameters",
+        "short": "-R",
+        "long": "RESTORE_FILE",
+        "needs_input": true,
+        "description": "Restore a run from a checkpoint file (e.g., RAxML_checkpoint.NAME)."
+    }
+]

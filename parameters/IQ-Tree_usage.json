@@ -1,0 +1,6 @@
+{
+    "usage": [
+        "Usage: iqtree [-s ALIGNMENT] [-p PARTITION] [-m MODEL] [-t TREE] ...",
+        "Usage: iqtree --alisim <OUTPUT_PREFIX> [-m MODEL] [-t TREE] ..."
+    ]
+}

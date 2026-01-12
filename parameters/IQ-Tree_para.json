@@ -1,0 +1,639 @@
+[
+    {
+        "category": "COMPLEX MODELS",
+        "short": "-m",
+        "long": "\"MIX{m1,...,mK}\"",
+        "needs_input": true,
+        "description": "Mixture model with K components"
+    },
+    {
+        "category": "COMPLEX MODELS",
+        "short": "-m",
+        "long": "\"FMIX{f1,...fK}\"",
+        "needs_input": true,
+        "description": "Frequency mixture model with K components"
+    },
+    {
+        "category": "COMPLEX MODELS",
+        "short": null,
+        "long": "--mix-opt",
+        "needs_input": false,
+        "description": "Optimize mixture weights (default: detect)"
+    },
+    {
+        "category": "COMPLEX MODELS",
+        "short": "-m",
+        "long": "...+ASC",
+        "needs_input": true,
+        "description": "Ascertainment bias correction"
+    },
+    {
+        "category": "COMPLEX MODELS",
+        "short": null,
+        "long": "--tree-freq",
+        "needs_input": true,
+        "description": "Input tree to infer site frequency model"
+    },
+    {
+        "category": "COMPLEX MODELS",
+        "short": null,
+        "long": "--site-freq",
+        "needs_input": true,
+        "description": "Input site frequency model file"
+    },
+    {
+        "category": "COMPLEX MODELS",
+        "short": null,
+        "long": "--freq-max",
+        "needs_input": false,
+        "description": "Posterior maximum instead of mean approximation"
+    },
+    {
+        "category": "TREE TOPOLOGY TEST",
+        "short": null,
+        "long": "--trees",
+        "needs_input": true,
+        "description": "Set of trees to evaluate log-likelihoods"
+    },
+    {
+        "category": "TREE TOPOLOGY TEST",
+        "short": null,
+        "long": "--test",
+        "needs_input": true,
+        "description": "Replicates for topology test"
+    },
+    {
+        "category": "TREE TOPOLOGY TEST",
+        "short": null,
+        "long": "--test-weight",
+        "needs_input": false,
+        "description": "Perform weighted KH and SH tests"
+    },
+    {
+        "category": "TREE TOPOLOGY TEST",
+        "short": null,
+        "long": "--test-au",
+        "needs_input": false,
+        "description": "Approximately unbiased (AU) test (Shimodaira 2002)"
+    },
+    {
+        "category": "TREE TOPOLOGY TEST",
+        "short": null,
+        "long": "--sitelh",
+        "needs_input": false,
+        "description": "Write site log-likelihoods to .sitelh file"
+    },
+    {
+        "category": "ANCESTRAL STATE RECONSTRUCTION",
+        "short": null,
+        "long": "--ancestral",
+        "needs_input": false,
+        "description": "Ancestral state reconstruction by empirical Bayes"
+    },
+    {
+        "category": "ANCESTRAL STATE RECONSTRUCTION",
+        "short": null,
+        "long": "--asr-min",
+        "needs_input": true,
+        "description": "Min probability of ancestral state (default: equil freq)"
+    },
+    {
+        "category": "TEST OF SYMMETRY",
+        "short": null,
+        "long": "--symtest",
+        "needs_input": false,
+        "description": "Perform three tests of symmetry"
+    },
+    {
+        "category": "TEST OF SYMMETRY",
+        "short": null,
+        "long": "--symtest-only",
+        "needs_input": false,
+        "description": "Do --symtest then exist"
+    },
+    {
+        "category": "TEST OF SYMMETRY",
+        "short": null,
+        "long": "--symtest-remove-bad",
+        "needs_input": false,
+        "description": "Do --symtest and remove bad partitions"
+    },
+    {
+        "category": "TEST OF SYMMETRY",
+        "short": null,
+        "long": "--symtest-remove-good",
+        "needs_input": false,
+        "description": "Do --symtest and remove good partitions"
+    },
+    {
+        "category": "TEST OF SYMMETRY",
+        "short": null,
+        "long": "--symtest-type",
+        "needs_input": true,
+        "description": "Use MARginal/INTernal test when removing partitions"
+    },
+    {
+        "category": "TEST OF SYMMETRY",
+        "short": null,
+        "long": "--symtest-pval",
+        "needs_input": true,
+        "description": "P-value cutoff (default: 0.05)"
+    },
+    {
+        "category": "TEST OF SYMMETRY",
+        "short": null,
+        "long": "--symtest-keep-zero",
+        "needs_input": false,
+        "description": "Keep NAs in the tests"
+    },
+    {
+        "category": "CONCORDANCE FACTOR ANALYSIS",
+        "short": "-t",
+        "long": "FILE",
+        "needs_input": true,
+        "description": "Reference tree to assign concordance factor"
+    },
+    {
+        "category": "CONCORDANCE FACTOR ANALYSIS",
+        "short": null,
+        "long": "--gcf",
+        "needs_input": true,
+        "description": "Set of source trees for gene concordance factor (gCF)"
+    },
+    {
+        "category": "CONCORDANCE FACTOR ANALYSIS",
+        "short": null,
+        "long": "--df-tree",
+        "needs_input": false,
+        "description": "Write discordant trees associated with gDF1"
+    },
+    {
+        "category": "CONCORDANCE FACTOR ANALYSIS",
+        "short": null,
+        "long": "--scf",
+        "needs_input": true,
+        "description": "Number of quartets for site concordance factor (sCF)"
+    },
+    {
+        "category": "CONCORDANCE FACTOR ANALYSIS",
+        "short": null,
+        "long": "--scfl",
+        "needs_input": true,
+        "description": "Like --scf but using likelihood (recommended)"
+    },
+    {
+        "category": "CONCORDANCE FACTOR ANALYSIS",
+        "short": "-s",
+        "long": "FILE",
+        "needs_input": true,
+        "description": "Sequence alignment for --scf"
+    },
+    {
+        "category": "CONCORDANCE FACTOR ANALYSIS",
+        "short": "-p",
+        "long": "FILE|DIR",
+        "needs_input": true,
+        "description": "Partition file or directory for --scf"
+    },
+    {
+        "category": "CONCORDANCE FACTOR ANALYSIS",
+        "short": null,
+        "long": "--cf-verbose",
+        "needs_input": false,
+        "description": "Write CF per tree/locus to cf.stat_tree/_loci"
+    },
+    {
+        "category": "CONCORDANCE FACTOR ANALYSIS",
+        "short": null,
+        "long": "--cf-quartet",
+        "needs_input": false,
+        "description": "Write sCF for all resampled quartets to .cf.quartet"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--alisim",
+        "needs_input": true,
+        "description": "Activate AliSim and specify the output alignment filename"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": "-t",
+        "long": "TREE_FILE",
+        "needs_input": true,
+        "description": "Set the input tree file name"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--length",
+        "needs_input": true,
+        "description": "Set the length of the root sequence"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--num-alignments",
+        "needs_input": true,
+        "description": "Set the number of output datasets"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--seqtype",
+        "needs_input": true,
+        "description": "BIN, DNA, AA, CODON, MORPH{NUM_STATES} (default: auto-detect)\n                            For morphological data, 0<NUM_STATES<=32"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": "--m",
+        "long": "MODEL_STRING",
+        "needs_input": true,
+        "description": "Specify the evolutionary model. See Manual for more detail"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--mdef",
+        "needs_input": true,
+        "description": "Name of a NEXUS model file to define new models (see Manual)"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--fundi",
+        "needs_input": true,
+        "description": "Specify a list of taxa, and Rho (Fundi weight) for FunDi model"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--indel",
+        "needs_input": true,
+        "description": "<INS>,<DEL>       Set the insertion and deletion rate of the indel model,\n                            relative to the substitution rate"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--indel-size",
+        "needs_input": true,
+        "description": "<INS_DIS>,<DEL_DIS> Set the insertion and deletion size distributions"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--sub-level-mixture",
+        "needs_input": false,
+        "description": "Enable the feature to simulate substitution-level mixture model"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--no-unaligned",
+        "needs_input": false,
+        "description": "Disable outputing a file of unaligned sequences \n                            when using indel models"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--root-seq",
+        "needs_input": true,
+        "description": "FILE,SEQ_NAME  Specify the root sequence from an alignment"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": "-s",
+        "long": "FILE",
+        "needs_input": true,
+        "description": "Specify the input sequence alignment"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--no-copy-gaps",
+        "needs_input": false,
+        "description": "Disable copying gaps from input alignment (default: false)"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--site-freq",
+        "needs_input": true,
+        "description": "<OPTION>      Specify the option (MEAN (default), or SAMPLING, or MODEL)\n                            to mimic the site-frequencies for mixture models from\n                            the input alignment (see Manual)"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--site-rate",
+        "needs_input": true,
+        "description": "<OPTION>      Specify the option (MEAN (default), or SAMPLING, or MODEL)\n                            to mimic the discrete rate heterogeneity from\n                            the input alignment (see Manual)"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": "-t",
+        "long": "RANDOM{MODEL,NUM_TAXA}",
+        "needs_input": true,
+        "description": "Specify the model and the number of taxa to generate a random tree"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": "-rlen",
+        "long": "MIN MEAN MAX",
+        "needs_input": true,
+        "description": "Specify three numbers: minimum, mean and maximum branch lengths\n                            when generating a random tree"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": "-p",
+        "long": "FILE",
+        "needs_input": true,
+        "description": "NEXUS/RAxML partition file\n                            Edge-linked proportional partition model"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": "-q",
+        "long": "FILE",
+        "needs_input": true,
+        "description": "Like -p but edge-linked equal partition model "
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": "-Q",
+        "long": "FILE",
+        "needs_input": true,
+        "description": "Like -p but edge-unlinked partition model"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--distribution",
+        "needs_input": true,
+        "description": "Supply a definition file of distributions,\n                            which could be used to generate random model parameters"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--branch-distribution",
+        "needs_input": true,
+        "description": "DIS Specify a distribution, from which branch lengths of the input trees\n                            are randomly generated and overridden."
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--branch-scale",
+        "needs_input": true,
+        "description": "SCALE      Specify a value to scale all branch lengths"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--single-output",
+        "needs_input": false,
+        "description": "Output all alignments into a single file"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--write-all",
+        "needs_input": false,
+        "description": "Enable outputting internal sequences"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": null,
+        "long": "--seed",
+        "needs_input": true,
+        "description": "NUM                Random seed number (default: CPU clock)\n                            Be careful to make the AliSim reproducible,\n                            users should specify the seed number"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": "-gz",
+        "long": null,
+        "needs_input": false,
+        "description": "Enable output compression but taking longer running time"
+    },
+    {
+        "category": "ALISIM: ALIGNMENT SIMULATOR",
+        "short": "-af",
+        "long": "phy|fasta",
+        "needs_input": true,
+        "description": "Set the output format (default: phylip)"
+    },
+    {
+        "category": "ANALYSIS WITH GENTRIUS ALGORITHM",
+        "short": null,
+        "long": "--gentrius",
+        "needs_input": true,
+        "description": "File must contain either a single species-tree or a set of subtrees."
+    },
+    {
+        "category": "ANALYSIS WITH GENTRIUS ALGORITHM",
+        "short": "-pr_ab_matrix",
+        "long": "FILE",
+        "needs_input": true,
+        "description": "Presence-absence matrix of loci coverage."
+    },
+    {
+        "category": "ANALYSIS WITH GENTRIUS ALGORITHM",
+        "short": "-s",
+        "long": "FILE",
+        "needs_input": true,
+        "description": "PHYLIP/FASTA/NEXUS/CLUSTAL/MSF alignment file(s)"
+    },
+    {
+        "category": "ANALYSIS WITH GENTRIUS ALGORITHM",
+        "short": "-p",
+        "long": "FILE",
+        "needs_input": true,
+        "description": "NEXUS/RAxML partition file"
+    },
+    {
+        "category": "ANALYSIS WITH GENTRIUS ALGORITHM",
+        "short": "-g_stop_t",
+        "long": "NUM",
+        "needs_input": true,
+        "description": "Stop after NUM species-trees were generated, or use 0 to turn off this stopping rule. Default: 1MLN trees."
+    },
+    {
+        "category": "ANALYSIS WITH GENTRIUS ALGORITHM",
+        "short": "-g_stop_i",
+        "long": "NUM",
+        "needs_input": true,
+        "description": "Stop after NUM intermediate trees were visited, or use 0 to turn off this stopping rule. Default: 10MLN trees."
+    },
+    {
+        "category": "ANALYSIS WITH GENTRIUS ALGORITHM",
+        "short": "-g_stop_h",
+        "long": "NUM",
+        "needs_input": true,
+        "description": "Stop after NUM hours (CPU time), or use 0 to turn off this stopping rule. Default: 7 days."
+    },
+    {
+        "category": "ANALYSIS WITH GENTRIUS ALGORITHM",
+        "short": "-g_non_stop",
+        "long": null,
+        "needs_input": false,
+        "description": "Turn off all stopping rules."
+    },
+    {
+        "category": "ANALYSIS WITH GENTRIUS ALGORITHM",
+        "short": "-g_query",
+        "long": "FILE",
+        "needs_input": true,
+        "description": "Species-trees to test for identical set of subtrees."
+    },
+    {
+        "category": "ANALYSIS WITH GENTRIUS ALGORITHM",
+        "short": "-g_print",
+        "long": null,
+        "needs_input": false,
+        "description": "Write all generated species-trees. WARNING: there might be millions of trees!"
+    },
+    {
+        "category": "ANALYSIS WITH GENTRIUS ALGORITHM",
+        "short": "-g_print_lim",
+        "long": "NUM",
+        "needs_input": true,
+        "description": "Limit on the number of species-trees to be written."
+    },
+    {
+        "category": "ANALYSIS WITH GENTRIUS ALGORITHM",
+        "short": "-g_print_induced",
+        "long": null,
+        "needs_input": false,
+        "description": "Write induced partition subtrees."
+    },
+    {
+        "category": "ANALYSIS WITH GENTRIUS ALGORITHM",
+        "short": "-g_print_m",
+        "long": null,
+        "needs_input": false,
+        "description": "Write presence-absence matrix."
+    },
+    {
+        "category": "ANALYSIS WITH GENTRIUS ALGORITHM",
+        "short": "-g_rm_leaves",
+        "long": "NUM",
+        "needs_input": true,
+        "description": "Invoke reverse analysis for complex datasets."
+    },
+    {
+        "category": "GENOMIC EPIDEMIOLOGICAL ANALYSIS",
+        "short": null,
+        "long": "--pathogen",
+        "needs_input": false,
+        "description": "Apply CMAPLE tree search algorithm if sequence\n                       divergence is low, otherwise, apply IQ-TREE algorithm."
+    },
+    {
+        "category": "GENOMIC EPIDEMIOLOGICAL ANALYSIS",
+        "short": null,
+        "long": "--pathogen-force",
+        "needs_input": false,
+        "description": "Apply CMAPLE tree search algorithm regardless\n                       of sequence divergence."
+    },
+    {
+        "category": "GENOMIC EPIDEMIOLOGICAL ANALYSIS",
+        "short": null,
+        "long": "--alrt",
+        "needs_input": true,
+        "description": "<num_rep>     Specify number of replicates to compute SH-aLRT."
+    },
+    {
+        "category": "GENOMIC EPIDEMIOLOGICAL ANALYSIS",
+        "short": null,
+        "long": "--sprta",
+        "needs_input": false,
+        "description": "Compute SPRTA (DeMaio et al., 2024) branch supports."
+    },
+    {
+        "category": "GENOMIC EPIDEMIOLOGICAL ANALYSIS",
+        "short": null,
+        "long": "--sprta-zero-branch",
+        "needs_input": false,
+        "description": "Compute SPRTA supports for zero-length branches."
+    },
+    {
+        "category": "GENOMIC EPIDEMIOLOGICAL ANALYSIS",
+        "short": null,
+        "long": "--sprta-other-places",
+        "needs_input": false,
+        "description": "Output alternative SPRs and their SPRTA supports."
+    },
+    {
+        "category": "GENOMIC EPIDEMIOLOGICAL ANALYSIS",
+        "short": "-T",
+        "long": "<num_thread>",
+        "needs_input": true,
+        "description": "Specify number of threads used for computing\n                       branch supports (SH-aLRT or SPRTA)."
+    },
+    {
+        "category": "TIME TREE RECONSTRUCTION",
+        "short": null,
+        "long": "--date",
+        "needs_input": true,
+        "description": "FILE          File containing dates of tips or ancestral nodes"
+    },
+    {
+        "category": "TIME TREE RECONSTRUCTION",
+        "short": null,
+        "long": "--date",
+        "needs_input": true,
+        "description": "TAXNAME       Extract dates from taxon names after last '|'"
+    },
+    {
+        "category": "TIME TREE RECONSTRUCTION",
+        "short": null,
+        "long": "--date-tip",
+        "needs_input": true,
+        "description": "STRING    Tip dates as a real number or YYYY-MM-DD"
+    },
+    {
+        "category": "TIME TREE RECONSTRUCTION",
+        "short": null,
+        "long": "--date-root",
+        "needs_input": true,
+        "description": "STRING   Root date as a real number or YYYY-MM-DD"
+    },
+    {
+        "category": "TIME TREE RECONSTRUCTION",
+        "short": null,
+        "long": "--date-ci",
+        "needs_input": true,
+        "description": "NUM        Number of replicates to compute confidence interval"
+    },
+    {
+        "category": "TIME TREE RECONSTRUCTION",
+        "short": null,
+        "long": "--clock-sd",
+        "needs_input": true,
+        "description": "NUM       Std-dev for lognormal relaxed clock (default: 0.2)"
+    },
+    {
+        "category": "TIME TREE RECONSTRUCTION",
+        "short": null,
+        "long": "--date-no-outgroup",
+        "needs_input": false,
+        "description": "Exclude outgroup from time tree"
+    },
+    {
+        "category": "TIME TREE RECONSTRUCTION",
+        "short": null,
+        "long": "--date-outlier",
+        "needs_input": true,
+        "description": "NUM   Z-score cutoff to remove outlier tips/nodes (e.g. 3)"
+    },
+    {
+        "category": "TIME TREE RECONSTRUCTION",
+        "short": null,
+        "long": "--date-options",
+        "needs_input": true,
+        "description": "\"..\"  Extra options passing directly to LSD2"
+    },
+    {
+        "category": "TIME TREE RECONSTRUCTION",
+        "short": null,
+        "long": "--dating",
+        "needs_input": true,
+        "description": "STRING      Dating method: LSD for least square dating (default)"
+    }
+]

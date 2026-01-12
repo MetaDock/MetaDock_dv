@@ -47,6 +47,7 @@ class WorkflowBuilder {
     this.loadComponents();
     this.setupEventListeners();
     this.setupCanvas();
+    this.updateDeleteButtonState();
     
     console.log('WorkflowBuilder initialized successfully');
     
@@ -255,7 +256,7 @@ class WorkflowBuilder {
     // Delete key
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Delete' && this.selectedNode) {
-        this.deleteNode(this.selectedNode);
+        this.deleteSelectedNode();
       }
     });
 
@@ -287,6 +288,13 @@ class WorkflowBuilder {
     document.getElementById('export-workflow').addEventListener('click', () => {
       this.exportWorkflow();
     });
+
+    const deleteSelectedBtn = document.getElementById('delete-selected');
+    if (deleteSelectedBtn) {
+      deleteSelectedBtn.addEventListener('click', () => {
+        this.deleteSelectedNode();
+      });
+    }
 
     // Component search (optional)
     const componentSearch = document.getElementById('component-search');
@@ -1119,6 +1127,7 @@ class WorkflowBuilder {
     node.classList.add('selected');
     this.selectedNode = node;
     this.showNodeProperties(node);
+    this.updateDeleteButtonState();
   }
 
   deselectAll() {
@@ -1127,6 +1136,7 @@ class WorkflowBuilder {
     });
     this.selectedNode = null;
     this.hideProperties();
+    this.updateDeleteButtonState();
   }
 
   showNodeProperties(node) {
@@ -1197,7 +1207,26 @@ class WorkflowBuilder {
     }
   }
 
-  deleteNode(nodeId) {
+  deleteSelectedNode() {
+    if (!this.selectedNode) {
+      alert('Select a component on the canvas to delete.');
+      return;
+    }
+    const nodeId = typeof this.selectedNode === 'string' ? this.selectedNode : this.selectedNode.id;
+    if (!nodeId) {
+      console.warn('Selected node has no id, cannot delete.');
+      return;
+    }
+    this.deleteNode(nodeId);
+  }
+
+  deleteNode(nodeOrId) {
+    const nodeId = typeof nodeOrId === 'string' ? nodeOrId : nodeOrId?.id;
+    if (!nodeId) {
+      console.warn('Invalid node id for deletion:', nodeOrId);
+      return;
+    }
+
     const node = document.getElementById(nodeId);
     if (node) {
       node.remove();
@@ -1224,6 +1253,14 @@ class WorkflowBuilder {
     
     // Update placeholder visibility
     this.updateCanvasPlaceholder();
+    this.updateDeleteButtonState();
+  }
+
+  updateDeleteButtonState() {
+    const btn = document.getElementById('delete-selected');
+    if (btn) {
+      btn.disabled = !this.selectedNode;
+    }
   }
 
   clearCanvas() {

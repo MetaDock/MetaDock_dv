@@ -1,0 +1,32 @@
+{
+    "usage": [
+        "usage: phylophlan [-h] [-i INPUT | -c CLEAN] [-o OUTPUT] [-d DATABASE]",
+        "                  [-t {n,a}] [-f CONFIG_FILE] --diversity {low,medium,high}",
+        "                  [--strainphlan] [--accurate | --fast] [--clean_all]",
+        "                  [--database_list] [-s SUBMAT] [--submat_list]",
+        "                  [--submod_list] [--nproc NPROC]",
+        "                  [--min_num_proteins MIN_NUM_PROTEINS]",
+        "                  [--min_len_protein MIN_LEN_PROTEIN]",
+        "                  [--min_num_markers MIN_NUM_MARKERS]",
+        "                  [--trim {gap_trim,gap_perc,not_variant,greedy}]",
+        "                  [--gap_perc_threshold GAP_PERC_THRESHOLD]",
+        "                  [--not_variant_threshold NOT_VARIANT_THRESHOLD]",
+        "                  [--subsample {phylophlan,onethousand,sevenhundred,fivehundred,threehundred,onehundred,fifty,twentyfive,tenpercent,twentyfivepercent,fiftypercent,full}]",
+        "                  [--unknown_fraction UNKNOWN_FRACTION]",
+        "                  [--scoring_function {trident,muscle,random}] [--sort]",
+        "                  [--remove_fragmentary_entries]",
+        "                  [--fragmentary_threshold FRAGMENTARY_THRESHOLD]",
+        "                  [--min_num_entries MIN_NUM_ENTRIES] [--maas MAAS]",
+        "                  [--remove_only_gaps_entries] [--mutation_rates]",
+        "                  [--force_nucleotides] [--convert_N2gap]",
+        "                  [--input_folder INPUT_FOLDER] [--data_folder DATA_FOLDER]",
+        "                  [--databases_folder DATABASES_FOLDER]",
+        "                  [--submat_folder SUBMAT_FOLDER]",
+        "                  [--submod_folder SUBMOD_FOLDER]",
+        "                  [--configs_folder CONFIGS_FOLDER]",
+        "                  [--output_folder OUTPUT_FOLDER]",
+        "                  [--genome_extension GENOME_EXTENSION]",
+        "                  [--proteome_extension PROTEOME_EXTENSION] [--update]",
+        "                  [--citation] [--verbose] [-v]"
+    ]
+}

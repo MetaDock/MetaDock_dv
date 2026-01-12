@@ -240,5 +240,89 @@ module.exports = {
     "selectionRoute": "/complete-selection-prokka_v1.14.6",
     "env": "",
     "hasStderr": true
+  },
+  "phylophlan3": {
+    "title": "phylophlan3 Parameters",
+    "toolName": "phylophlan3",
+    "route": "phylophlan3",
+    "commandRoute": "/run-command-phylophlan3",
+    "usagePath": "parameters/phylophlan3_usage.json",
+    "paraPath": "parameters/phylophlan3_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-phylophlan3",
+    "env": "",
+    "hasStderr": true
+  },
+  "roary": {
+    "title": "roary Parameters",
+    "toolName": "roary",
+    "route": "roary",
+    "commandRoute": "/run-command-roary",
+    "usagePath": "parameters/roary_usage.json",
+    "paraPath": "parameters/roary_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-roary",
+    "env": "",
+    "hasStderr": true
+  },
+  "RAxML": {
+    "title": "RAxML Parameters",
+    "toolName": "RAxML",
+    "route": "RAxML",
+    "commandRoute": "/run-command-RAxML",
+    "usagePath": "parameters/RAxML_usage.json",
+    "paraPath": "parameters/RAxML_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-RAxML",
+    "env": "",
+    "hasStderr": true
+  },
+  "IQ-Tree": {
+    "title": "IQ-Tree Parameters",
+    "toolName": "IQ-Tree",
+    "route": "IQ-Tree",
+    "commandRoute": "/run-command-IQ-Tree",
+    "usagePath": "parameters/IQ-Tree_usage.json",
+    "paraPath": "parameters/IQ-Tree_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-IQ-Tree",
+    "env": "",
+    "hasStderr": true
+  },
+  "CheckV_end_to_end": {
+    "title": "CheckV_end_to_end Parameters",
+    "toolName": "CheckV_end_to_end",
+    "route": "CheckV_end_to_end",
+    "commandRoute": "/run-command-CheckV_end_to_end",
+    "usagePath": "parameters/CheckV_end_to_end_usage.json",
+    "paraPath": "parameters/CheckV_end_to_end_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-CheckV_end_to_end",
+    "env": "",
+    "hasStderr": true
+  },
+  "VirSorter_Run": {
+    "title": "VirSorter_Run Parameters",
+    "toolName": "VirSorter_Run",
+    "route": "VirSorter_Run",
+    "commandRoute": "/run-command-VirSorter_Run",
+    "usagePath": "parameters/VirSorter_Run_usage.json",
+    "paraPath": "parameters/VirSorter_Run_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-VirSorter_Run",
+    "env": "",
+    "hasStderr": true
+  },
+  "RGI_BWT": {
+    "title": "RGI_BWT Parameters",
+    "toolName": "RGI_BWT",
+    "route": "RGI_BWT",
+    "commandRoute": "/run-command-RGI_BWT",
+    "usagePath": "parameters/RGI_BWT_usage.json",
+    "paraPath": "parameters/RGI_BWT_para.json",
+    "html": "tool.ejs",
+    "selectionRoute": "/complete-selection-RGI_BWT",
+    "env": "",
+    "hasStderr": true
   }
 };

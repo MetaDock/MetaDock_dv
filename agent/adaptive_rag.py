@@ -6,6 +6,7 @@ Implements query routing, retrieval scoring, hallucination detection, and self-c
 import json
 import logging
 import requests
+import threading
 from typing import Dict, List, Any, Optional, Literal
 from datetime import datetime
 import time
@@ -1213,6 +1214,7 @@ Create a concise title (max 20 characters):"""),
         """Stream answer to question"""
         steps = []
         current_question = question
+        start_ts = time.time()
         
         yield {"type": "step", "content": "Analyzing question...", "steps": steps}
         
@@ -1275,6 +1277,7 @@ Create a concise title (max 20 characters):"""),
                 logger.info("=" * 80)
                 
                 yield {"type": "final", "answer": full_answer, "sources": [], "steps": steps}
+                self._launch_tail_eval(route, current_question, [], full_answer, steps, start_ts, [])
                 return
             except Exception as e:
                 logger.error("General LLM streaming failed: %s", str(e))
@@ -1343,6 +1346,7 @@ Create a concise title (max 20 characters):"""),
                         })
                 
                 yield {"type": "final", "answer": full_answer, "sources": sources, "steps": steps}
+                self._launch_tail_eval(route, current_question, [], full_answer, steps, start_ts, sources)
                 return
                 
             except Exception as e:
@@ -1481,6 +1485,7 @@ Create a concise title (max 20 characters):"""),
                         
                         logger.info("🏠 Fallback to general LLM successful")
                         yield {"type": "final", "answer": fallback_answer, "sources": [], "steps": steps}
+                        self._launch_tail_eval(route, current_question, filtered_docs, fallback_answer, steps, start_ts, [])
                         return
                         
                     except Exception as fallback_error:
@@ -1490,13 +1495,13 @@ Create a concise title (max 20 characters):"""),
                         return
                 
                 yield {"type": "final", "answer": full_answer, "sources": unique_sources, "steps": steps}
+                self._launch_tail_eval(route, current_question, filtered_docs, full_answer, steps, start_ts, unique_sources)
                 return
                 
             except Exception as e:
                 logger.warning("Streaming attempt %d failed: %s", attempt + 1, str(e))
                 
                 if attempt < max_retries - 1:
-                    import time
                     time.sleep(retry_delay)
                     retry_delay *= 2
                     yield {"type": "step", "content": f"Connection issue, retrying... (attempt {attempt + 2})", "steps": steps}
@@ -1523,6 +1528,59 @@ Create a concise title (max 20 characters):"""),
                 unique_sources.append(doc.metadata)
                 seen_sources.add(source_filename)
         return unique_sources
+    
+    def _launch_tail_eval(self, route: str, question: str, docs: List[Document], answer: str, steps: List[str], start_ts: float, sources: List[Dict]):
+        """Fire-and-forget tail evaluation to avoid blocking streaming output"""
+        try:
+            threading.Thread(
+                target=self._run_tail_eval,
+                args=(route, question, docs, answer, steps, start_ts, sources),
+                daemon=True,
+            ).start()
+        except Exception as e:
+            logger.warning("Tail eval launch failed: %s", str(e))
+    
+    def _run_tail_eval(self, route: str, question: str, docs: List[Document], answer: str, steps: List[str], start_ts: float, sources: List[Dict]):
+        """Tail evaluation: hallucination + answer quality (internal only)"""
+        try:
+            is_grounded = self.check_hallucination(docs, answer)
+        except Exception as e:
+            logger.warning("Tail eval hallucination check failed: %s", str(e))
+            is_grounded = None
+        
+        try:
+            is_useful = self.grade_answer(question, answer)
+        except Exception as e:
+            logger.warning("Tail eval answer grading failed: %s", str(e))
+            is_useful = None
+        
+        durations = {"total_ms": int((time.time() - start_ts) * 1000)}
+        self._record_eval_metrics(route, question, docs, answer, is_grounded, is_useful, steps, durations, sources)
+    
+    def _record_eval_metrics(self, route: str, question: str, docs: List[Document], answer: str,
+                             is_grounded: Optional[bool], is_useful: Optional[bool],
+                             steps: List[str], durations: Dict[str, Any], sources: List[Dict]):
+        """Record internal eval metrics for later analysis"""
+        try:
+            doc_sources = []
+            for doc in docs or []:
+                meta = getattr(doc, "metadata", {}) or {}
+                src = meta.get("source")
+                if src:
+                    doc_sources.append(src)
+            question_snippet = (question or "").replace("\n", " ")[:120]
+            logger.info(
+                "📊 RAG EVAL route=%s grounded=%s useful=%s docs=%d duration_ms=%s question=%.120s sources=%s",
+                route,
+                is_grounded,
+                is_useful,
+                len(doc_sources),
+                durations.get("total_ms"),
+                question_snippet,
+                [s.get("source") or s.get("title") for s in (sources or [])],
+            )
+        except Exception as e:
+            logger.warning("Failed to record eval metrics: %s", str(e))
     
     def _get_current_llm(self):
         """Get current LLM from global client"""

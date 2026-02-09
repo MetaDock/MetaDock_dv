@@ -350,7 +350,7 @@
             });
     }
 
-        // Add event listener for Enter key in directory input
+    // Add event listener for Enter key in directory input
     document.getElementById('dirInput').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             goToFolder();
@@ -394,7 +394,7 @@
             
             setTimeout(() => {
                     const basePath = window.location.pathname.split('/').slice(0, 2).join('/') || '/'; 
-                    window.location.href = basePath;
+                window.location.href = basePath;
             }, 200);
 
         } catch (error) {

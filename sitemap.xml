@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://metadock.github.io/MetaDock/</loc>
+         <loc>https://MetaDock.github.io/MetaDock_dv/</loc>
          <lastmod>2026-03-30</lastmod>
     </url>
     <url>
-         <loc>https://metadock.github.io/MetaDock/agent-api-reference/</loc>
+         <loc>https://MetaDock.github.io/MetaDock_dv/agent-api-reference/</loc>
          <lastmod>2026-03-30</lastmod>
     </url>
     <url>
-         <loc>https://metadock.github.io/MetaDock/api-overview/</loc>
+         <loc>https://MetaDock.github.io/MetaDock_dv/api-overview/</loc>
          <lastmod>2026-03-30</lastmod>
     </url>
     <url>
-         <loc>https://metadock.github.io/MetaDock/architecture/</loc>
+         <loc>https://MetaDock.github.io/MetaDock_dv/architecture/</loc>
          <lastmod>2026-03-30</lastmod>
     </url>
     <url>
-         <loc>https://metadock.github.io/MetaDock/evaluation-guide/</loc>
+         <loc>https://MetaDock.github.io/MetaDock_dv/evaluation-guide/</loc>
          <lastmod>2026-03-30</lastmod>
     </url>
     <url>
-         <loc>https://metadock.github.io/MetaDock/handover-runbook/</loc>
+         <loc>https://MetaDock.github.io/MetaDock_dv/handover-runbook/</loc>
          <lastmod>2026-03-30</lastmod>
     </url>
     <url>
-         <loc>https://metadock.github.io/MetaDock/node-api-reference/</loc>
+         <loc>https://MetaDock.github.io/MetaDock_dv/node-api-reference/</loc>
          <lastmod>2026-03-30</lastmod>
     </url>
     <url>
-         <loc>https://metadock.github.io/MetaDock/platform-user-guide/</loc>
+         <loc>https://MetaDock.github.io/MetaDock_dv/platform-user-guide/</loc>
          <lastmod>2026-03-30</lastmod>
     </url>
     <url>
-         <loc>https://metadock.github.io/MetaDock/prompt-assets/</loc>
+         <loc>https://MetaDock.github.io/MetaDock_dv/prompt-assets/</loc>
          <lastmod>2026-03-30</lastmod>
     </url>
     <url>
-         <loc>https://metadock.github.io/MetaDock/setup-migration-guide/</loc>
+         <loc>https://MetaDock.github.io/MetaDock_dv/setup-migration-guide/</loc>
          <lastmod>2026-03-30</lastmod>
     </url>
     <url>
-         <loc>https://metadock.github.io/MetaDock/writing-style-guide/</loc>
+         <loc>https://MetaDock.github.io/MetaDock_dv/writing-style-guide/</loc>
          <lastmod>2026-03-30</lastmod>
     </url>
 </urlset>

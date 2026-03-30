@@ -1,0 +1,10 @@
+# version: 1.0
+# last_updated: 2025-02
+# related_experiments: Workflow Planner (KG-based matching, S1 Genome Assembly)
+
+# Workflow planner is currently rule-based; this file reserves space for
+# future LLM-based planning prompts if needed.
+# workflow_planning:
+#   system: |
+#     You are a bioinformatics workflow planning expert...
+#   human: "{user_request}"

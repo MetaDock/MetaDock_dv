@@ -1,0 +1,42 @@
+# version: 1.0
+# last_updated: 2025-02
+# related_experiments: Doc relevance, hallucination, answer quality (RAG eval)
+
+grade_document:
+  system_structured: |
+    You are an expert at evaluating the relevance of a retrieved document to a user question.
+    Your goal is to filter out documents that are not relevant.
+    Score the relevance on a scale from 0.0 to 1.0, where 0.0 is completely irrelevant and 1.0 is highly relevant.
+    A document is relevant if it contains specific information that can directly help answer the user's question.
+    General mentions of keywords are not enough for a high score.
+    For example, if the user asks about running a workflow on the platform, a document detailing the parameters of a specific tool (like 'pyani') is NOT relevant.
+  system_text: |
+    You are an expert at evaluating the relevance of a retrieved document to a user question.
+    Your goal is to filter out documents that are not relevant.
+    Please provide a relevance score from 0.0 to 1.0.
+    A document is relevant if it contains specific information that can directly help answer the user's question.
+    For example, if the user asks about running a workflow on the platform, a document detailing a specific tool's parameters is NOT relevant.
+    Only provide the numerical score, with no explanation.
+  human: "Retrieved document: \n\n {document} \n\n User question: {question}"
+
+hallucination:
+  system_structured: |
+    You are an expert at detecting whether AI responses are based on provided facts.
+    Evaluate whether the answer is based on the provided document content, rather than fabricated information.
+    Give a binary score 'yes' for fact-based, 'no' for hallucination.
+  system_text: |
+    You are an expert at detecting whether AI responses are based on provided facts.
+    Evaluate whether the answer is based on the provided document content, rather than fabricated information.
+    Please answer 'yes' (based on document facts) or 'no' (hallucination). Only answer yes or no, no explanation needed.
+  human: "Documents: \n\n {documents} \n\n AI Answer: {generation}"
+
+grade_answer:
+  system_structured: |
+    You are an expert at evaluating answer quality.
+    Evaluate whether the AI-generated answer truly solves the user's problem.
+    Give a binary score 'yes' for problem solved, 'no' for not solved.
+  system_text: |
+    You are an expert at evaluating answer quality.
+    Evaluate whether the AI-generated answer truly solves the user's problem.
+    Please answer 'yes' (problem solved) or 'no' (not solved). Only answer yes or no, no explanation needed.
+  human: "User question: {question} \n\n AI Answer: {generation}"

@@ -31,6 +31,56 @@ The agent system consists of:
 
 The agent is powered by a Python backend using Flask, LangChain, and FAISS, which is automatically started by the main server.
 
+## Project layout
+
+- **backend-node/** – Node server: `server.js`, `handlers/`, `config/` (tools, visualization, index), `admin/` (routes, controllers, services, views, scripts, data).
+- **backend-agent/** – Python agent:
+  - **core/** – `adaptive_rag.py`, `bioinfo_agent.py`, `workflow_planner.py`, `session_memory.py`, `spades_quast_kg.py`
+  - **infra/** – `agent_client.py`, `document_processor.py`
+  - **api/** – `agent_server.py`
+  - **prompts/** – YAML prompts (routing, grading, rag_general, etc.)
+  - `config.py`, `prompt_loader.py`
+- **frontend/** – `public/` (static, views), `components/`.
+- **data/** – `help_pages_for_test/`, `parameters/`, `spades_quast_kg.json`, `custom_workflows.json`.
+- **evals/** – `datasets/`, `scripts/` for RAG and workflow evaluation.
+- **tests/** – Unit and integration tests.
+- **docs/** – `architecture.md`, `evaluation-guide.md`, `prompt-assets.md`, `handover-runbook.md`.
+
+Configure project-root `.env` and set `REMOTE_WORKDIR` plus API keys. See `docs/handover-runbook.md` for a short handover list.
+
+## Quick Run
+
+1. **Install dependencies** from project root:
+   - `npm install`
+   - `python -m venv .venv`
+   - activate venv, then `pip install -r requirements.txt`
+2. **Configure environment**:
+   - Copy `.env.example` to `.env`
+   - Fill your local values in `.env` (`REMOTE_WORKDIR`, API keys, etc.)
+   - Never commit `.env` (secrets must stay local)
+3. **Optional vector store build** (first-time RAG setup):
+   - `python backend-agent/infra/document_processor.py`
+4. **Start application**:
+   - `npm start` (or `node backend-node/server.js`)
+   - Node starts the Python agent automatically (`backend-agent/api/agent_server.py`)
+   - Open `http://localhost:3000` (or `PORT` in `.env`)
+
+Node-only startup (same entrypoint script): `npm run start:backend`  
+Manual agent startup: `python backend-agent/api/agent_server.py`
+
+## Documentation Site (MkDocs)
+
+Run from project root:
+
+```shell
+pip install mkdocs mkdocs-material
+mkdocs serve
+```
+
+Open: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+Published docs (GitHub Pages): [https://MetaDock.github.io/MetaDock_dv/](https://MetaDock.github.io/MetaDock_dv/)
+
 ## Setup and Installation
 
 1.  **Clone the repository**
@@ -62,7 +112,7 @@ The agent is powered by a Python backend using Flask, LangChain, and FAISS, whic
     ```
 
 5.  **Configure Environment Variables**
-    Modify a `.env` file in the project root directory (`MetaDock_dv/.env`) and use your API keys:
+    Copy `.env.example` to `.env` in the project root directory (`MetaDock_dv/.env`), then set your local API keys and runtime paths.
     
     ```env
     # AI Model API Keys
@@ -89,6 +139,8 @@ The agent is powered by a Python backend using Flask, LangChain, and FAISS, whic
     
     **Note:** 
     - ✅ **Now supports `.env` file** - All environment variables are automatically loaded from `.env` file
+    - Start from `.env.example`; keep real secrets only in local `.env`
+    - Do not commit `.env` to Git; if a secret is accidentally exposed, rotate it immediately
     - At least one API key (Qwen or Gemini) is required for the AI agent to work
     - Users can also input their API keys through the web interface after starting the application
     - Get Qwen API key at: https://dashscope.console.aliyun.com/
@@ -96,12 +148,11 @@ The agent is powered by a Python backend using Flask, LangChain, and FAISS, whic
     - For Gemini, also install: `pip install google-genai`
 
 6.  **Initialize the AI Agent Vector Database (First Time Only)**
-    Build the vector database for document retrieval:
+    Build the vector database for document retrieval (run from project root):
     ```shell
-    cd agent
-    python document_processor.py
-    cd ..
+    python backend-agent/infra/document_processor.py
     ```
+    Or with backend-agent on `PYTHONPATH`: `PYTHONPATH=backend-agent python -c "from infra.document_processor import DocumentProcessor; DocumentProcessor().build_vector_store()"`
     
     This step:
     - ✅ Processes 12 bioinformatics tool documents from `help_pages_for_test/`
@@ -111,22 +162,22 @@ The agent is powered by a Python backend using Flask, LangChain, and FAISS, whic
     - 🔄 Automatically detects and updates only changed documents on subsequent runs
 
 7.  **Start the application**
-    This will launch the Node.js server, which automatically starts the Python agent server:
+    From project root. This launches the Node server (backend-node) and starts the Python agent (backend-agent/api/agent_server.py):
     ```shell
-    node server.js
+    npm start
     ```
+    or `node backend-node/server.js`.
 
 8.  **Access the application**
-    Open your browser and navigate to [http://localhost:3010](http://localhost:3010).
+    Open your browser and navigate to [http://localhost:3000](http://localhost:3000) (or `PORT` in `.env`).
 
 ## 🔧 Agent System Maintenance
 
 ### Updating Documents
-When you add or modify files in `help_pages_for_test/`, update the vector database:
+When you add or modify files in `data/help_pages_for_test/`, update the vector database:
 ```shell
-cd agent
-python document_processor.py  # Automatic detection of changes
-python document_processor.py --force  # Force rebuild
+PYTHONPATH=backend-agent python -c "from infra.document_processor import DocumentProcessor; DocumentProcessor().build_vector_store()"
+# or: python backend-agent/infra/document_processor.py
 ```
 
 ### Agent System Status
@@ -140,11 +191,12 @@ curl http://localhost:5111/status
 ```
 
 ### Manual Agent Restart
-If needed, restart just the agent component:
+If needed, run the agent from project root (so paths resolve correctly):
 ```shell
-cd agent
-python agent_server.py
+cd backend-agent
+python api/agent_server.py
 ```
+Or: `PYTHONPATH=backend-agent python backend-agent/api/agent_server.py`
 
 ## 🎯 Model Support
 

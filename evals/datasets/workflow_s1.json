@@ -1,0 +1,10 @@
+{
+  "name": "S1 Genome Assembly",
+  "description": "SPAdes + QUAST workflow input config for evaluation",
+  "data_paths": {
+    "left_reads": "/path/to/left.fastq.gz",
+    "right_reads": "/path/to/right.fastq.gz"
+  },
+  "expected_thresholds": {},
+  "notes": "Replace data_paths with real paths when running evals; see docs/evaluation-guide.md"
+}

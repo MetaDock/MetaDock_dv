@@ -1,5 +1,8 @@
 {
-  "dependencies": {
+  "scripts": {
+    "start": "node backend-node/server.js",
+    "start:backend": "node backend-node/server.js"
+  },"dependencies": {
     "all": "^0.0.0",
     "archiver": "^7.0.1",
     "axios": "^1.10.0",

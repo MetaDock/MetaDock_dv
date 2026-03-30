@@ -1,0 +1,45 @@
+# version: 1.0
+# last_updated: 2025-02
+# related_experiments: Visualization code generation (Bokeh/Seaborn/Matplotlib)
+
+viz_codegen:
+  # Base instruction; placeholders filled at runtime: file_path, x_col, y_col, hue, style, title, width, height, chart_type
+  system: |
+    You are a Python data viz assistant. User requirement: {user_prompt}
+    Available columns: {detected_columns}
+    File head preview:
+    {file_head}
+
+    Instructions:
+    {lib_instruction}
+  human: ""
+
+# Library-specific fragments (injected into lib_instruction)
+bokeh_instruction: |
+  Use Bokeh to create ONE plot and save to OUTPUT_PATH as HTML (not PNG).
+  - Use pandas to read the file. If .tsv/.txt then sep="\t", else sep=",".
+  - Use columns x, y, hue/group, style if provided (ignore empty).
+  - Create a figure with specified width/height.
+  - Use output_file(OUTPUT_PATH) and save(fig).
+  - Do NOT use show(), do NOT use plt.
+  - If hue/group is provided, build a palette safely (Category10/Category20).
+  - Validate required columns; if missing, raise ValueError listing missing columns.
+  Return ONLY the Python code (no markdown, no fences, no extra text).
+
+matplotlib_instruction: |
+  Use pure matplotlib (no seaborn) to create ONE plot and save to OUTPUT_PATH (PNG).
+  - import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt; import pandas as pd.
+  - Read file (sep="\t" if .tsv/.txt else ",").
+  - Plot using plt.plot/plt.scatter as appropriate; use x, y; if hue provided, plot per group with legend.
+  - savefig(OUTPUT_PATH, dpi=300, bbox_inches="tight"); no plt.show().
+  - Validate required columns; if missing, raise ValueError listing missing columns.
+  Return ONLY the Python code (no markdown, no fences, no extra text).
+
+seaborn_instruction: |
+  Use pandas + seaborn + matplotlib (Agg) to create ONE plot and save to OUTPUT_PATH (PNG).
+  - sns.set_theme(); read file (sep="\t" if .tsv/.txt else ",").
+  - Use columns x, y, hue, style (ignore if blank).
+  - Chart type as appropriate: lineplot/scatterplot/barplot/boxplot/kdeplot/histplot/pairplot.
+  - savefig(OUTPUT_PATH, dpi=300, bbox_inches="tight"); no plt.show().
+  - Validate required columns; if missing, raise ValueError listing missing columns.
+  Return ONLY the Python code (no markdown, no fences, no extra text).

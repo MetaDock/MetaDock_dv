@@ -1,0 +1,2 @@
+{"question": "How do I run FastQC on paired-end reads?", "answer": "Use FastQC with forward and reverse FASTQ files.", "evidence": ["FastQC documentation"]}
+{"question": "What is the default output of SPAdes?", "answer": "Contigs and scaffolds in the output folder.", "evidence": ["SPAdes manual"]}

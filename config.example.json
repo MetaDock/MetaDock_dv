@@ -1,0 +1,17 @@
+{
+  "description": "Example remote server and data path config. Copy to config.json and adjust.",
+  "remote": {
+    "host": "your-server.example.com",
+    "username": "user",
+    "workingDir": "/home/user",
+    "condaPath": "/home/user/miniconda3"
+  },
+  "data_paths": {
+    "workflow_s1_left": "/path/to/left.fastq.gz",
+    "workflow_s1_right": "/path/to/right.fastq.gz"
+  },
+  "evals": {
+    "rag_dataset": "evals/datasets/rag_qa.jsonl",
+    "workflow_config": "evals/datasets/workflow_s1.json"
+  }
+}

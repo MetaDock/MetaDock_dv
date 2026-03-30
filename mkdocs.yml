@@ -1,0 +1,40 @@
+site_name: MetaDock Documentation
+site_description: Developer and platform documentation for MetaDock
+site_url: https://MetaDock.github.io/MetaDock_dv/
+repo_url: https://github.com/MetaDock/MetaDock_dv
+repo_name: MetaDock/MetaDock_dv
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - search.suggest
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+
+exclude_docs: |
+  README.md
+
+nav:
+  - Home: index.md
+  - Start Here:
+    - Setup & Migration Guide: setup-migration-guide.md
+    - Handover Runbook: handover-runbook.md
+  - Product & Architecture:
+    - System Architecture: architecture.md
+    - Platform User Guide: platform-user-guide.md
+  - API Docs:
+    - API Overview: api-overview.md
+    - Node API Reference: node-api-reference.md
+    - Agent API Reference: agent-api-reference.md
+  - Experiments & Reproducibility:
+    - Prompt Assets: prompt-assets.md
+    - Evaluation Guide: evaluation-guide.md
+  - Documentation Standards:
+    - Writing Style Guide: writing-style-guide.md
